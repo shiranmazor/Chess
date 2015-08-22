@@ -4,6 +4,9 @@
 
 #include<stdio.h>
 
+#define WHITE  1
+#define BLACK  0
+
 #define WHITE_P 'm'
 #define WHITE_B 'b'
 #define WHITE_N 'n'
@@ -22,7 +25,7 @@
 #define EMPTY ' '
 
 #define BOARD_SIZE 8
-
+char board[BOARD_SIZE][BOARD_SIZE];
 //game structs:
 typedef struct Pos Pos;
 typedef struct PosNode PosNode;
@@ -79,17 +82,14 @@ struct Move{
 
 
 //functions declarations:
-void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
-void print_line();
-void clear_board();
-void init_board(char board[BOARD_SIZE][BOARD_SIZE]);
+
 void freeMove(Move *move);
 void freeMoveWithoutDest(MoveNode *moveNode);
 void freeMoves(MoveNode *moveNodeHead, Move* notDelete);
 void freeMoveNode(MoveNode *moveNode);
 int isValidPos(Pos *pos);
 Pos * formatPos(char* pos_input);
-int boardInitializeOk();
+
 
 
 char* getStringFormatMove(Move move);
