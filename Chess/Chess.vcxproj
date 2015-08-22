@@ -68,6 +68,7 @@
     <ClInclude Include="ChessHelp.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="FileHandle.h" />
+    <ClInclude Include="minimax.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chess.c" />

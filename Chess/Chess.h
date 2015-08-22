@@ -1,3 +1,4 @@
+#pragma once
 #ifndef CHESS_
 #define CHESS_
 

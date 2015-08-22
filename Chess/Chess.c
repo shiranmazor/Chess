@@ -126,7 +126,7 @@ int isValidPos(Pos *pos)
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE])
 {
 	//Todo: implement
-	reutnr NULL;
+	return NULL;
 }
 
 MoveNode *createMoveNode(Pos pos, Pos destPos, int eat)

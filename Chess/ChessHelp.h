@@ -1,9 +1,12 @@
+#pragma once
 #include<stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
 #include <math.h>
 #include <stdlib.h>
+
+#define perror_message(func_name) (perror("Error: standard function %s has failed", func_name));
 
 #define malloc(x) myMalloc(x)
 #define free(x) myFree(x)
