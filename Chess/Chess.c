@@ -88,7 +88,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&upRight) && getColor(board[upRight.x, upRight.y]) ==  getOpponnetColor(userColor))
 		{
 			MoveNode * moveNode = createMoveNode(pos, upRight,1);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 
 		Pos upLeft;
@@ -98,7 +98,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&upLeft) && getColor(board[upLeft.x, upLeft.y]) == getOpponnetColor(userColor))
 		{
 			MoveNode * moveNode = createMoveNode(pos, upLeft, 1);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 
 		Pos upCenter;
@@ -108,7 +108,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&upCenter) && board[upCenter.x, upCenter.y] == EMPTY)
 		{
 			MoveNode * moveNode = createMoveNode(pos, upCenter, 0);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 	}
 	else
@@ -121,7 +121,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&downRight) && getColor(board[downRight.x, downRight.y]) == getOpponnetColor(userColor))
 		{
 			MoveNode * moveNode = createMoveNode(pos, downRight, 1);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 
 		Pos downLeft;
@@ -131,7 +131,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&downLeft) && getColor(board[downLeft.x, downLeft.y]) == getOpponnetColor(userColor))
 		{
 			MoveNode * moveNode = createMoveNode(pos, downLeft, 1);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 
 		Pos downCenter;
@@ -141,7 +141,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		if (isValidPos(&downCenter) && board[downCenter.x, downCenter.y] == EMPTY)
 		{
 			MoveNode * moveNode = createMoveNode(pos, downCenter, 0);
-			addMoveNodeToList(&movesList, &movesList, moveNode);
+			addMoveNodeToList(&movesList, moveNode);
 		}
 
 	}
@@ -149,7 +149,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	return movesList;
 }
 
-//returns all valid diagonial adjacent position
+//returns all valid diagonial adjacent positions
 void getDiagAdjPositions(Pos pos, Pos** adj)
 {
 	//down:
@@ -174,10 +174,39 @@ void getDiagAdjPositions(Pos pos, Pos** adj)
 			adj[i] = NULL;;
 		}
 	}
-	//return adj;
 }
 
-//returns all valid adjacent position
+//returns all valid straight adjacent positions
+void getStraightAdjPositions(Pos pos, Pos** adj)
+{
+	//down:
+	adj[0]->x = pos.x;
+	adj[0]->y = pos.y - 1;
+
+	//left:
+	adj[1]->x = pos.x - 1;
+	adj[1]->y = pos.y;
+
+	//right:
+	adj[2]->x = pos.x + 1;
+	adj[2]->y = pos.y;
+
+	//up:
+	adj[3]->x = pos.x;
+	adj[3]->y = pos.y + 1;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (!isValidPos(adj[i]))
+		{
+			free(adj[i]);
+			adj[i] = NULL;;
+		}
+	}
+}
+
+
+//returns all valid adjacent positions
 void getAdjPositions(Pos pos, Pos** adj)
 {
 	//down:
@@ -219,6 +248,49 @@ void getAdjPositions(Pos pos, Pos** adj)
 	//return adj;
 }
 
+//returns all valid kinght next positions
+void getKnightPositions(Pos pos, Pos** adj)
+{
+	//up left:
+	adj[0]->x = pos.x - 2;
+	adj[0]->y = pos.y + 1;
+
+	adj[1]->x = pos.x - 1;
+	adj[1]->y = pos.y + 2;
+	
+	//up right:
+	adj[2]->x = pos.x + 2;
+	adj[2]->y = pos.y + 1;
+
+	adj[3]->x = pos.x + 1;
+	adj[3]->y = pos.y + 2;
+
+	//down left
+	adj[4]->x = pos.x - 2;
+	adj[4]->y = pos.y - 1;
+
+	adj[5]->x = pos.x - 1 ;
+	adj[5]->y = pos.y - 2;
+
+	//down right
+	adj[6]->x = pos.x + 2;
+	adj[6]->y = pos.y - 1;
+
+	adj[7]->x = pos.x + 1;
+	adj[7]->y = pos.y - 2;
+
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (!isValidPos(adj[i]))
+		{
+			free(adj[i]);
+			adj[i] = NULL;;
+		}
+	}
+}
+
+
 MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	MoveNode * movesList = NULL;
@@ -229,34 +301,38 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 	{
 		if (adj[i] != NULL)
 		{
-			char nextToolOnTheSamePath = board[adj[i]->x][adj[i]->y];
-			
+			Pos  nextPosOnSameDirection;
+			nextPosOnSameDirection.x = adj[i]->x;
+			nextPosOnSameDirection.y = adj[i]->y;
+
 			while (1)
 			{
+				char nextToolOnTheSamePath = board[nextPosOnSameDirection.x][nextPosOnSameDirection.y];
+
 				if (getColor(nextToolOnTheSamePath) == playerColor)
 					break;
 
 				MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
-				addMoveNodeToList(&movesList, &movesList, moveNode);
+				addMoveNodeToList(&movesList, moveNode);
 
 				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) //we can eat it, but that's it for this direction
 					break;
 
-				int xDiff = adj[i]->x - pos.x;
-				int yDiff = adj[i]->y - pos.y;
-				Pos nextPosOnSameDirection;
-				nextPosOnSameDirection.x = adj[i]->x + xDiff;
-				nextPosOnSameDirection.y = adj[i]->y + yDiff;
+				int xDiff = nextPosOnSameDirection.x - pos.x;
+				int yDiff = nextPosOnSameDirection.y - pos.y;
+				
+				nextPosOnSameDirection.x = nextPosOnSameDirection.x + xDiff;
+				nextPosOnSameDirection.y = nextPosOnSameDirection.y + yDiff;
 
 				if (!isValidPos(&nextPosOnSameDirection)) //we reached end of board
 					break;
 
-				char nextToolOnTheSamePath = board[nextPosOnSameDirection.x][nextPosOnSameDirection.y];
+				
 
 			}
 		}
 	}
-
+	//todo free adj array, in all functions who uses adj
 	return movesList;
 }
 
@@ -276,11 +352,94 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 				break;
 
 			MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
-			addMoveNodeToList(&movesList, &movesList, moveNode);			
+			addMoveNodeToList(&movesList, moveNode);			
 		}
 	}
 
 	return movesList;
+}
+
+MoveNode * getLastNodeInList(MoveNode * list)
+{
+	MoveNode * last = list;
+	if (last == NULL)
+		return last;
+
+	while (last->next)
+		last = last->next;
+
+	return last;
+	
+}
+
+MoveNode *getQueenMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	//combine rook and bishop
+	MoveNode * movesList = getBishopMoves(pos, board[BOARD_SIZE][BOARD_SIZE], playerColor);
+	addMoveNodeToList(&movesList, getRookMoves(pos, board[BOARD_SIZE][BOARD_SIZE], playerColor));
+
+	return movesList;
+}
+
+MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	MoveNode * movesList = NULL;
+	Pos** adj = malloc(4 * sizeof(Pos*));
+	getStraightAdjPositions(pos, adj);
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (adj[i] != NULL)
+		{
+			Pos  nextPosOnSameDirection;
+			nextPosOnSameDirection.x = adj[i]->x;
+			nextPosOnSameDirection.y = adj[i]->y;
+
+			while (1)
+			{
+				char nextToolOnTheSamePath = board[nextPosOnSameDirection.x][nextPosOnSameDirection.y];
+
+				if (getColor(nextToolOnTheSamePath) == playerColor)
+					break;
+
+				MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
+				addMoveNodeToList(&movesList, moveNode);
+
+				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) //we can eat it, but that's it for this direction
+					break;
+
+				int xDiff = nextPosOnSameDirection.x - pos.x;
+				int yDiff = nextPosOnSameDirection.y - pos.y;
+
+				nextPosOnSameDirection.x = nextPosOnSameDirection.x + xDiff;
+				nextPosOnSameDirection.y = nextPosOnSameDirection.y + yDiff;
+
+				if (!isValidPos(&nextPosOnSameDirection)) //we reached end of board
+					break;
+			}
+		}
+	}
+	return movesList;
+}
+
+MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	MoveNode * movesList = NULL;
+	Pos** adj = malloc(8 * sizeof(Pos*));
+	getStraightAdjPositions(pos, adj);
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (adj[i] != NULL)
+		{
+			char nextToolOnTheSamePath = board[adj[i]->x][adj[i]->y];
+			if (getColor(nextToolOnTheSamePath) == playerColor)
+				break;
+
+			MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
+			addMoveNodeToList(&movesList, moveNode);
+		}
+	}
 }
 
 //return all user moves
@@ -329,13 +488,7 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 					break;
 			}
 
-			MoveNode *moveNode = movesList;
-			while (moveNode)
-			{
-				maxEats = moveNode->move->eat;
-				addMoveNodeToList(&firstMoveNode, &lastNode, moveNode);
-				moveNode = moveNode->next;
-			}
+			addMoveNodeToList(&firstMoveNode, movesList);
 		}
 	}
 
@@ -387,17 +540,19 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 }
 
 
-void addMoveNodeToList(MoveNode **movesList, MoveNode **last, MoveNode * moveNode)
+void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
 {
 	if (!*(movesList)) //empty list
 	{
 		*(movesList) = moveNode;
-		*(last) = *(movesList);
+		//*(last) = *(movesList);
 	}
 	else
 	{
-		(*(last))->next = moveNode;
-		*(last) = (*(last))->next;
+		MoveNode *last = getLastNodeInList(&movesList);
+		MoveNode **lastPtr = &last;
+		(*(lastPtr))->next = moveNode;
+		//*(lastPtr) = (*(lastPtr))->next;
 	}
 }
 

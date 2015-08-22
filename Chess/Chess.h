@@ -104,6 +104,6 @@ char* getStringFormatPos(Pos* pos);
 int checkifPlayerWins(int player_color);
 int performMove(Move move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE]);
-void addMoveNodeToList(MoveNode **movesList, MoveNode **last, MoveNode * moveNode);
-MoveNode *createMoveNode(Pos pos, Pos destPos, int eat);
+void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
+MoveNode *createMoveNode(Pos pos, Pos destPos);
 #endif CHESS_
