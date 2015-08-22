@@ -22,6 +22,38 @@
 
 #define BOARD_SIZE 8
 
+//game structs:
+typedef struct Pos Pos;
+typedef struct PosNode PosNode;
+typedef struct MoveNode MoveNode;
+typedef struct Move Move;
+struct PosNode
+{
+	Pos *pos;
+	PosNode *next;
+};
+
+struct Pos
+{
+	//char x;
+	int x;
+	int y;
+};
+
+struct MoveNode
+{
+	Move *move;
+	MoveNode *next;
+
+};
+
+struct Move{
+	Pos *currPos;
+	int eat;
+	PosNode *dest;
+};
+
+
 // board initialization
 #define ENTER_SETTINGS "Enter game settings:\n" 
 #define WRONG_GAME_MODE "Wrong game mode\n"
@@ -45,4 +77,25 @@
 #define print_message(message) (printf("%s", message));
 
 
+//functions declarations:
+void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
+void print_line();
+void clear_board();
+void init_board(char board[BOARD_SIZE][BOARD_SIZE]);
+void freeMove(Move *move);
+void freeMoveWithoutDest(MoveNode *moveNode);
+void freeMoves(MoveNode *moveNodeHead, Move* notDelete);
+void freeMoveNode(MoveNode *moveNode);
+int isValidPos(Pos *pos);
+Pos * formatPos(char* pos_input);
+int boardInitializeOk();
+
+
+char* getStringFormatMove(Move move);
+char* getStringFormatPos(Pos* pos);
+int checkifPlayerWins(int player_color);
+int performMove(Move move);
+MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE]);
+void addMoveNodeToList(MoveNode **movesList, MoveNode **last, MoveNode * moveNode);
+MoveNode *createMoveNode(Pos pos, Pos destPos, int eat);
 #endif CHESS_
