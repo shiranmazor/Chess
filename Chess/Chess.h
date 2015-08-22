@@ -106,4 +106,5 @@ int performMove(Move move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE]);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
+MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 #endif CHESS_

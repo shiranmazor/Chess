@@ -46,7 +46,34 @@ void freeMoveNode(MoveNode *moveNode)
 	free(moveNode);
 }
 
+MoveNode * getLastNodeInList(MoveNode * list)
+{
+	MoveNode * last = list;
+	if (last == NULL)
+		return last;
 
+	while (last->next)
+		last = last->next;
+
+	return last;
+
+}
+
+void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
+{
+	if (!*(movesList)) //empty list
+	{
+		*(movesList) = moveNode;
+		//*(last) = *(movesList);
+	}
+	else
+	{
+		MoveNode *last = getLastNodeInList(&movesList);
+		MoveNode **lastPtr = &last;
+		(*(lastPtr))->next = moveNode;
+		//*(lastPtr) = (*(lastPtr))->next;
+	}
+}
 
 //returns false if pos is outside the board
 int isValidPos(Pos *pos)
@@ -359,18 +386,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 	return movesList;
 }
 
-MoveNode * getLastNodeInList(MoveNode * list)
-{
-	MoveNode * last = list;
-	if (last == NULL)
-		return last;
 
-	while (last->next)
-		last = last->next;
-
-	return last;
-	
-}
 
 MoveNode *getQueenMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
@@ -540,21 +556,7 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 }
 
 
-void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
-{
-	if (!*(movesList)) //empty list
-	{
-		*(movesList) = moveNode;
-		//*(last) = *(movesList);
-	}
-	else
-	{
-		MoveNode *last = getLastNodeInList(&movesList);
-		MoveNode **lastPtr = &last;
-		(*(lastPtr))->next = moveNode;
-		//*(lastPtr) = (*(lastPtr))->next;
-	}
-}
+
 
 Pos * formatPos(char* pos_input)
 {
