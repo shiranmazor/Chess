@@ -51,7 +51,9 @@ void freeMoveNode(MoveNode *moveNode)
 //returns false if pos is outside the board
 int isValidPos(Pos *pos)
 {
-	//Todo: implement
+	if (pos->x >= BOARD_SIZE || pos->x < 0 || pos->y >= BOARD_SIZE || pos->y < 0)
+		return 0;
+	return 1;
 }
 
 //return all user moves

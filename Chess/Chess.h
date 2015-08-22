@@ -3,6 +3,8 @@
 #define CHESS_
 
 #include<stdio.h>
+#include "ChessHelp.h"
+#include "FileHandle.h"
 
 #define WHITE  1
 #define BLACK  0
@@ -25,7 +27,12 @@
 #define EMPTY ' '
 
 #define BOARD_SIZE 8
+
+//global variables:
 char board[BOARD_SIZE][BOARD_SIZE];
+int gameMode = 1;//1- two players, 2- playey vs AI(computer)
+int minimax_depth = 1; //default - 1, regular between 1-4, best -0
+int userColor = WHITE;//relevent only in player vs AI
 //game structs:
 typedef struct Pos Pos;
 typedef struct PosNode PosNode;
