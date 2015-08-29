@@ -41,9 +41,10 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -67,7 +68,7 @@
     <ClInclude Include="Chess.h" />
     <ClInclude Include="ChessHelp.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="FileHandle.h" />
+    <ClInclude Include="fileHandle.h" />
     <ClInclude Include="minimax.h" />
   </ItemGroup>
   <ItemGroup>

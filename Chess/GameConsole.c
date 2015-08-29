@@ -129,6 +129,7 @@ void settingState()
 		}
 	}
 }
+
 void executeSettingCmd(char* input)
 {
 	//trim all spaces from start and end:
@@ -189,12 +190,264 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "load"))
 	{
+		int filePathLen = strlen(arr[1]);
+		char* filePath = arr[1];
+		//check if file exist if not print error
 		//call file handle
 	}
+	else if (strstr(input, "clear"))
+	{
+		//clear the board
+		clear_board();
+	}
+	else if (strstr(input, "next_player"))
+	{
+		if (strcmp(arr[1], "black"))
+			startPlayer = BLACK;
+		//else white player is already defined as default
+	}
+	else if (strstr(input, "rm"))
+	{
+		remove_disc(arr[1]);
+	}
+	else if (strstr(input, "set"))
+	{
+		set_disc(arr[1], arr[2], arr[3]);
+	}
+	else if (strstr(input, "print"))
+	{
+		print_board(board);
+	}
+	else if (strstr(input, "quit"))
+	{
+		exit(0);
+	}
+	else if (strstr(input, "start"))
+	{
+		
+		//check board init
+		int kings = countKings();
+		if (kings != 2)
+		{
+			printf("%s", WROND_BOARD_INITIALIZATION);
+		}//check for a tie or lose for the first player and print messsage
+		else if (checkForTie(startPlayer) == 1 )
+		{
+			printf("%s", TIE);
+			exit(0);
+		}
+		else if (isPlayerLose(startPlayer) == 1)
+		{
+			if (startPlayer == WHITE)
+				printf("%s", MATE_WHITE);
+			else
+				printf("%s", MATE_BLACK);
+			exit(0);
+		}
+		else
+		{
+			//moving to game state:
+			GameState();
+		}
+		
+	}
 }
+
+int countKings()
+{
+	int kingsCounter = 0;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (board[i][j] == WHITE_K || board[i][j] == BLACK_K)
+				kingsCounter++;
+		}
+	}
+	return kingsCounter;
+}
+int checkNewBoardValidation(int color, char* Tool)
+{
+	//define counters
+	int rooks, bishops, knights, queens, kings, pawn = 0;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (userColor == WHITE)
+			{
+				switch (board[i][j])
+				{
+				case WHITE_B:
+					bishops++;
+					break;
+				case WHITE_K:
+					kings++;
+					break;
+				case WHITE_N:
+					knights++;
+					break;
+				case WHITE_P:
+					pawn++;
+				case WHITE_Q:
+					queens++;
+					break;
+				case WHITE_R:
+					rooks++;
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				switch (board[i][j])
+				{
+				case BLACK_B:
+					bishops++;
+					break;
+				case BLACK_K:
+					kings++;
+					break;
+				case BLACK_N:
+					knights++;
+					break;
+				case BLACK_P:
+					pawn++;
+				case BLACK_Q:
+					queens++;
+					break;
+				case BLACK_R:
+					rooks++;
+					break;
+				default:
+					break;
+				}
+			}
+			
+		}
+	}
+	//check if current tool is valid
+	if (strcmp(Tool, "king") == 0)
+	{
+		if (kings < 1)
+			return 1;
+		else
+			return 0;
+	}
+	if (strcmp(Tool, "queen") == 0)
+	{
+		if (queens < 1)
+			return 1;
+		else
+			return 0;
+	}
+	if (strcmp(Tool, "rook") == 0)
+	{
+		if (rooks < 2)
+			return 1;
+		else
+			return 0;
+	}
+	if (strcmp(Tool, "knight") == 0)
+	{
+		if (knights < 2)
+			return 1;
+		else
+			return 0;
+	}
+	if (strcmp(Tool, "bishop") == 0)
+	{
+		if (bishops < 2)
+			return 1;
+		else
+			return 0;
+	}
+	if (strcmp(Tool, "pawn") == 0)
+	{
+		if (pawn < 8)
+			return 1;
+		else
+			return 0;
+	}
+	return 0;
+}
+void set_disc(char* pos_input, char* color, char* type)
+{
+	int col;
+	if (strcmp(color, "black") == 0)
+		col = BLACK;
+	else
+		col = WHITE;
+
+	Pos *pos = formatPos(pos_input);
+	if (pos == NULL)
+	{
+		return;
+	}
+	else
+	{
+		if (!checkNewBoardValidation(col, type))
+		{
+			printf("%s", NO_PIECE);
+			free(pos);
+			return;
+		}
+		if (col == BLACK)
+		{
+			if (strcmp(type, "king") == 0)
+				board[pos->x][pos->y] = BLACK_K;
+			else if (strcmp(type, "queen") == 0)
+				board[pos->x][pos->y] = BLACK_Q;
+			else if (strcmp(type, "rook") == 0)
+				board[pos->x][pos->y] = BLACK_R;
+			else if (strcmp(type, "bishop") == 0)
+				board[pos->x][pos->y] = BLACK_B;
+			else if (strcmp(type, "knight") == 0)
+				board[pos->x][pos->y] = BLACK_N;
+			else if (strcmp(type, "pawn") == 0)
+				board[pos->x][pos->y] = BLACK_P;
+		}
+		else if (col == WHITE)
+		{
+			if (strcmp(type, "king") == 0)
+				board[pos->x][pos->y] = WHITE_K;
+			else if (strcmp(type, "queen") == 0)
+				board[pos->x][pos->y] = WHITE_Q;
+			else if (strcmp(type, "rook") == 0)
+				board[pos->x][pos->y] = WHITE_R;
+			else if (strcmp(type, "bishop") == 0)
+				board[pos->x][pos->y] = WHITE_B;
+			else if (strcmp(type, "knight") == 0)
+				board[pos->x][pos->y] = WHITE_N;
+			else if (strcmp(type, "pawn") == 0)
+				board[pos->x][pos->y] = WHITE_P;
+		}
+	}
+	free(pos);
+}
+void remove_disc(char* input)
+{
+	//input is <x,y>
+	Pos *pos = formatPos(input);
+
+	if (pos)
+	{
+		int x_int = pos->x;
+		board[x_int][pos->y] = EMPTY;
+	}
+	free(pos);
+}
+
+void GameState()
+{
+
+}
+
 int main()
 {
 	init_board(board);
 	print_board(board);
+	settingState();
 	return 0;
 }

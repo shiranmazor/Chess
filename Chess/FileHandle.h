@@ -1,1 +1,1 @@
-#pragma once
+int isFileExist();

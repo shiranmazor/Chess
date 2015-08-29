@@ -24,13 +24,13 @@
     <ClInclude Include="ChessHelp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FileHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="minimax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fileHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

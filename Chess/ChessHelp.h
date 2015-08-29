@@ -6,8 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define perror_message(func_name) (perror("Error: standard function %s has failed", func_name));
-
+#define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define malloc(x) myMalloc(x)
 #define free(x) myFree(x)
 #define calloc(x,y) myCalloc(x,y)

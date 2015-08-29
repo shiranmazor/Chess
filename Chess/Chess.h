@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CHESS_
 #define CHESS_
 
@@ -33,6 +32,7 @@ char board[BOARD_SIZE][BOARD_SIZE];
 int gameMode = 1;//1- two players, 2- playey vs AI(computer)
 int minimax_depth = 1; //default - 1, regular between 1-4, best -0
 int userColor = WHITE;//relevent only in player vs AI
+int startPlayer = WHITE;
 //game structs:
 typedef struct Pos Pos;
 typedef struct PosNode PosNode;
@@ -58,7 +58,8 @@ struct MoveNode
 
 };
 
-struct Move{
+struct Move
+{
 	Pos *currPos;
 	int eat;
 	PosNode *dest;
@@ -83,8 +84,9 @@ struct Move{
 #define ILLEGAL_CALTLING_MOVE "Illegal castling move\n"  
 
 #define TIE "The game ends in a tie\n"
-
-#define perror_message(func_name) (perror("Error: standard function %s has failed", func_name));
+#define MATE_WHITE "Mate! white player wins the game\n"
+#define MATE_BLACK "Mate! black player wins the game\n"
+#define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define print_message(message) (printf("%s", message));
 
 
@@ -95,9 +97,8 @@ void freeMoveWithoutDest(MoveNode *moveNode);
 void freeMoves(MoveNode *moveNodeHead, Move* notDelete);
 void freeMoveNode(MoveNode *moveNode);
 int isValidPos(Pos *pos);
+int isValidIndexes(int i, int j);
 Pos * formatPos(char* pos_input);
-
-
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
@@ -107,4 +108,20 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE]);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
 MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
-#endif CHESS_
+int checkForTie(int playerColor);
+int isPlayerUnderCheck(int playerColor);
+int isPlayerUnderMate(int playerColor);
+int isPlayerStuck(int playerColor);
+int isPlayerLose(int playerColor);
+Pos* getKingPos(int playerColor);
+
+//check validation help functions:
+int checkRookThreat(int oponnentColor, Pos *kingPos);
+int checkBishopThreat(int oponnentColor, Pos *kingPos);
+int checkKnightThreat(int oponnentColor, Pos *kingPos);
+int checkPawnThreat(int oponnentColor, Pos *kingPos);
+int checkQueenThreat(int oponnentColor, Pos *kingPos);
+int checkKingThreat(int oponnentColor, Pos *kingPos);
+
+
+#endif CHESS_;

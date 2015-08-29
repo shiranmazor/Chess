@@ -82,6 +82,12 @@ int isValidPos(Pos *pos)
 		return 0;
 	return 1;
 }
+int isValidIndexes(int i, int j)
+{
+	if (i < 0 || i >= BOARD_SIZE || j < 0 || j >= BOARD_SIZE)
+		return 0;
+	return 1;
+}
 
 int getOpponentColor(int userColor)
 {
@@ -232,7 +238,6 @@ void getStraightAdjPositions(Pos pos, Pos** adj)
 	}
 }
 
-
 //returns all valid adjacent positions
 void getAdjPositions(Pos pos, Pos** adj)
 {
@@ -317,7 +322,6 @@ void getKnightPositions(Pos pos, Pos** adj)
 	}
 }
 
-
 MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	MoveNode * movesList = NULL;
@@ -363,7 +367,6 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 	return movesList;
 }
 
-
 MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	MoveNode * movesList = NULL;
@@ -385,8 +388,6 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 
 	return movesList;
 }
-
-
 
 MoveNode *getQueenMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
@@ -555,9 +556,6 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	return moveNode;
 }
 
-
-
-
 Pos * formatPos(char* pos_input)
 {
 	char **arr = NULL;
@@ -579,7 +577,7 @@ Pos * formatPos(char* pos_input)
 	freeArray(arr, arr_len);
 
 
-	if (pos->x < 0 || pos->x > 9 || pos->y<0 || pos->y>9 || ((pos->x + pos->y) % 2 != 0))
+	if (!isValidPos(pos))
 	{
 		if (printf("%s", WRONG_POSITION) < 0)
 		{
@@ -591,12 +589,6 @@ Pos * formatPos(char* pos_input)
 	}
 
 	return pos;
-}
-
-int boardInitializeOk()
-{
-	//Todo:implement
-	return 0;
 }
 
 char* getStringFormatMove(Move move)
@@ -658,4 +650,715 @@ int performMove(Move move)
 {
 	//todo:implement
 	return 0;
+}
+
+/*check if player color has at least one valid move, return 1 if not*/
+int isPlayerStuck(int playerColor)
+{
+	MoveNode *moveList = getMoves(board, playerColor);
+	if (moveList == NULL)
+		return 1;
+	else
+		return 0;
+}
+
+/*check if the opponent rook is threating the king*/
+int checkRookThreat(int oponnentColor, Pos *kingPos)
+{
+	int i = kingPos->x;
+	int j = kingPos->y;
+	int isThreat = 0;
+	if (oponnentColor == BLACK)
+	{
+		while (j < 7)//scan up
+		{
+			if (board[i][j + 1] == EMPTY)
+				j++;
+			else if (board[i][j + 1] != BLACK_R)
+				break;
+			else if (board[i][j + 1] == BLACK_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}	
+		}
+		j = kingPos->y;
+		while (j > 0)//scan down
+		{
+			if (board[i][j - 1] == EMPTY)
+				j--;
+			else if (board[i][j - 1] != BLACK_R)
+				break;
+			else if (board[i][j - 1] == BLACK_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (i  < 7)//scan right
+		{
+			if (board[i+1][j] == EMPTY)
+				i++;
+			else if (board[i+1][j] != BLACK_R)
+				break;
+			else if (board[i+1][j] == BLACK_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		while (i > 0)//scan left
+		{
+			if (board[i-1][j] == EMPTY)
+				i--;
+			else if (board[i - 1][j] != BLACK_R)
+				break;
+			else if (board[i - 1][j] == BLACK_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	else
+	{
+		while (j < 7)//scan up
+		{
+			if (board[i][j + 1] == EMPTY)
+				j++;
+			else if (board[i][j + 1] != WHITE_R)
+				break;
+			else if (board[i][j + 1] == WHITE_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (j > 0)//scan down
+		{
+			if (board[i][j - 1] == EMPTY)
+				j--;
+			else if (board[i][j - 1] != WHITE_R)
+				break;
+			else if (board[i][j - 1] == WHITE_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (i  < 7)//scan right
+		{
+			if (board[i + 1][j] == EMPTY)
+				i++;
+			else if (board[i + 1][j] != WHITE_R)
+				break;
+			else if (board[i + 1][j] == WHITE_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		while (i > 0)//scan left
+		{
+			if (board[i - 1][j] == EMPTY)
+				i--;
+			else if (board[i - 1][j] != WHITE_R)
+				break;
+			else if (board[i - 1][j] == WHITE_R)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	return 0;
+	
+}
+
+/*check if the opponent bishop is threating the king*/
+int checkBishopThreat(int oponnentColor, Pos *kingPos)
+{
+	
+	int isThreat = 0;
+	if (oponnentColor == BLACK)
+	{
+		int i = kingPos->x;
+		int j = kingPos->y;
+		while (i >0 && j < 7)//scan up left
+		{
+			if (board[i - 1][j + 1] == EMPTY)
+			{
+				i--;
+				j++;
+			}
+			else if (board[i - 1][j + 1] != BLACK_B)
+				break;
+			else if (board[i - 1][j + 1] == BLACK_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j < 7)//scan up right
+		{
+			if (board[i + 1][j + 1] == EMPTY)
+			{
+				i++;
+				j++;
+			}
+			else if (board[i + 1][j + 1] != BLACK_B)
+				break;
+			else if (board[i + 1][j + 1] == BLACK_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j > 0)//scan down left
+		{
+			if (board[i - 1][j - 1] == EMPTY)
+			{
+				i--;
+				j--;
+			}
+			else if (board[i - 1][j - 1] != BLACK_B)
+				break;
+			else if (board[i - 1][j - 1] == BLACK_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j > 0)//scan down right
+		{
+			if (board[i + 1][j - 1] == EMPTY)
+			{
+				i++;
+				j--;
+			}
+			else if (board[i + 1][j - 1] != BLACK_B)
+				break;
+			else if (board[i + 1][j - 1] == BLACK_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	else
+	{
+		int i = kingPos->x;
+		int j = kingPos->y;
+		while (i >0 && j < 7)//scan up left
+		{
+			if (board[i - 1][j + 1] == EMPTY)
+			{
+				i--;
+				j++;
+			}
+			else if (board[i - 1][j + 1] != WHITE_B)
+				break;
+			else if (board[i - 1][j + 1] == WHITE_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j < 7)//scan up right
+		{
+			if (board[i + 1][j + 1] == EMPTY)
+			{
+				i++;
+				j++;
+			}
+			else if (board[i + 1][j + 1] != WHITE_B)
+				break;
+			else if (board[i + 1][j + 1] == WHITE_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j > 0)//scan down left
+		{
+			if (board[i - 1][j - 1] == EMPTY)
+			{
+				i--;
+				j--;
+			}
+			else if (board[i - 1][j - 1] != WHITE_B)
+				break;
+			else if (board[i - 1][j - 1] == WHITE_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j > 0)//scan down right
+		{
+			if (board[i + 1][j - 1] == EMPTY)
+			{
+				i++;
+				j--;
+			}
+			else if (board[i + 1][j - 1] != WHITE_B)
+				break;
+			else if (board[i + 1][j - 1] == WHITE_B)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	return 0;
+}
+
+/*check if the opponent queen is threating the king - combination of rook and bishop*/
+int checkQueenThreat(int oponnentColor, Pos *kingPos)
+{
+	int i = kingPos->x;
+	int j = kingPos->y;
+	int isThreat = 0;
+	if (oponnentColor == BLACK)
+	{
+		while (j < 7)//scan up
+		{
+			if (board[i][j + 1] == EMPTY)
+				j++;
+			else if (board[i][j + 1] != BLACK_Q)
+				break;
+			else if (board[i][j + 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (j > 0)//scan down
+		{
+			if (board[i][j - 1] == EMPTY)
+				j--;
+			else if (board[i][j - 1] != BLACK_Q)
+				break;
+			else if (board[i][j - 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (i  < 7)//scan right
+		{
+			if (board[i + 1][j] == EMPTY)
+				i++;
+			else if (board[i + 1][j] != BLACK_Q)
+				break;
+			else if (board[i + 1][j] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		while (i > 0)//scan left
+		{
+			if (board[i - 1][j] == EMPTY)
+				i--;
+			else if (board[i - 1][j] != BLACK_Q)
+				break;
+			else if (board[i - 1][j] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		//check diagonals:
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j < 7)//scan up left
+		{
+			if (board[i - 1][j + 1] == EMPTY)
+			{
+				i--;
+				j++;
+			}
+			else if (board[i - 1][j + 1] != BLACK_Q)
+				break;
+			else if (board[i - 1][j + 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j < 7)//scan up right
+		{
+			if (board[i + 1][j + 1] == EMPTY)
+			{
+				i++;
+				j++;
+			}
+			else if (board[i + 1][j + 1] != BLACK_Q)
+				break;
+			else if (board[i + 1][j + 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j > 0)//scan down left
+		{
+			if (board[i - 1][j - 1] == EMPTY)
+			{
+				i--;
+				j--;
+			}
+			else if (board[i - 1][j - 1] != BLACK_Q)
+				break;
+			else if (board[i - 1][j - 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j > 0)//scan down right
+		{
+			if (board[i + 1][j - 1] == EMPTY)
+			{
+				i++;
+				j--;
+			}
+			else if (board[i + 1][j - 1] != BLACK_Q)
+				break;
+			else if (board[i + 1][j - 1] == BLACK_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	else
+	{
+		while (j < 7)//scan up
+		{
+			if (board[i][j + 1] == EMPTY)
+				j++;
+			else if (board[i][j + 1] != WHITE_Q)
+				break;
+			else if (board[i][j + 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (j > 0)//scan down
+		{
+			if (board[i][j - 1] == EMPTY)
+				j--;
+			else if (board[i][j - 1] != WHITE_Q)
+				break;
+			else if (board[i][j - 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		j = kingPos->y;
+		while (i  < 7)//scan right
+		{
+			if (board[i + 1][j] == EMPTY)
+				i++;
+			else if (board[i + 1][j] != WHITE_Q)
+				break;
+			else if (board[i + 1][j] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		while (i > 0)//scan left
+		{
+			if (board[i - 1][j] == EMPTY)
+				i--;
+			else if (board[i - 1][j] != WHITE_Q)
+				break;
+			else if (board[i - 1][j] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		//check diagonals:
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j < 7)//scan up left
+		{
+			if (board[i - 1][j + 1] == EMPTY)
+			{
+				i--;
+				j++;
+			}
+			else if (board[i - 1][j + 1] != WHITE_Q)
+				break;
+			else if (board[i - 1][j + 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j < 7)//scan up right
+		{
+			if (board[i + 1][j + 1] == EMPTY)
+			{
+				i++;
+				j++;
+			}
+			else if (board[i + 1][j + 1] != WHITE_Q)
+				break;
+			else if (board[i + 1][j + 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i >0 && j > 0)//scan down left
+		{
+			if (board[i - 1][j - 1] == EMPTY)
+			{
+				i--;
+				j--;
+			}
+			else if (board[i - 1][j - 1] != WHITE_Q)
+				break;
+			else if (board[i - 1][j - 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+		i = kingPos->x;
+		j = kingPos->y;
+		while (i < 7 && j > 0)//scan down right
+		{
+			if (board[i + 1][j - 1] == EMPTY)
+			{
+				i++;
+				j--;
+			}
+			else if (board[i + 1][j - 1] != WHITE_Q)
+				break;
+			else if (board[i + 1][j - 1] == WHITE_Q)
+			{
+				isThreat = 1;
+				return isThreat;
+			}
+		}
+	}
+	return 0;
+}
+
+/*check if the opponent knight is threating the king*/
+int checkKnightThreat(int oponnentColor, Pos *kingPos)
+{
+	int i = kingPos->x;
+	int j = kingPos->y;
+	if (oponnentColor == BLACK)
+	{
+		if (isValidIndexes(i - 2, j + 1) == 1 && board[i - 2][j + 1] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 2) == 1 && board[i - 1][j + 2] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i + 2, j + 1) == 1 && board[i + 2][j + 1] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i + 1, j + 2) == 1 && board[i + 1][j + 2] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i - 2, j - 1) == 1 && board[i - 2][j - 1] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 2) == 1 && board[i - 1][j - 2] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i + 2, j - 1) == 1 && board[i + 2][j - 1] == BLACK_N)
+			return 1;
+		else if (isValidIndexes(i + 1, j -2) == 1 && board[i + 1][j - 2] == BLACK_N)
+			return 1;
+	}
+	else
+	{
+		if (isValidIndexes(i - 2, j + 1) == 1 && board[i - 2][j + 1] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 2) == 1 && board[i - 1][j + 2] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i + 2, j + 1) == 1 && board[i + 2][j + 1] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i + 1, j + 2) == 1 && board[i + 1][j + 2] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i - 2, j - 1) == 1 && board[i - 2][j - 1] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 2) == 1 && board[i - 1][j - 2] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i + 2, j - 1) == 1 && board[i + 2][j - 1] == WHITE_N)
+			return 1;
+		else if (isValidIndexes(i + 1, j - 2) == 1 && board[i + 1][j - 2] == WHITE_N)
+			return 1;
+	}
+	return 0;
+}
+
+/*find the king position on the board*/
+Pos* getKingPos(int playerColor)
+{
+	Pos* pos = malloc(sizeof(Pos));
+	if (pos == NULL)
+	{
+		perror_message("getKingPos");
+		exit(0);
+	}
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (playerColor == WHITE && board[i][j] == WHITE_K)
+			{
+				pos->x = i;
+				pos->y = j;
+				return pos;
+			}
+			else if (playerColor == BLACK && board[i][j] == BLACK_K)
+			{
+				pos->x = i;
+				pos->y = j;
+				return pos;
+			}
+
+		}
+	}
+	//there is not king
+	free(pos);
+	return NULL;
+}
+
+/*check if the opponent Pwan is threating the king*/
+int checkPawnThreat(int oponnentColor, Pos *kingPos)
+{
+	int i = kingPos->x;
+	int j = kingPos->y;
+	if (oponnentColor == BLACK)
+	{
+		if (isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == BLACK_P)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == BLACK_P)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == BLACK_P)
+			return 1;
+		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == BLACK_P)
+			return 1;
+	}
+	else
+	{
+		if(isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == WHITE_P)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == WHITE_P)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_P)
+			return 1;
+		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == WHITE_P)
+			return 1;
+	}
+	return 0;
+
+}
+
+/*check if the opponent King is threating the king*/
+int checkKingThreat(int oponnentColor, Pos *kingPos)
+{
+	int i = kingPos->x;
+	int j = kingPos->y;
+	if (oponnentColor == BLACK)
+	{
+		//diagonals
+		if (isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == BLACK_K)
+			return 1;
+		//right  and left , up and down
+		else if (isValidIndexes(i + 1, j) && board[i + 1][j] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j) && board[i - 1][j] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i, j - 1) && board[i][j - 1] == BLACK_K)
+			return 1;
+		else if (isValidIndexes(i , j + 1) && board[i][j + 1] == BLACK_K)
+			return 1;
+
+	}
+	else
+	{
+		if (isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == WHITE_K)
+			return 1;
+		//right  and left , up and down
+		else if (isValidIndexes(i + 1, j) && board[i + 1][j] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i - 1, j) && board[i - 1][j] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i, j - 1) && board[i][j - 1] == WHITE_K)
+			return 1;
+		else if (isValidIndexes(i, j + 1) && board[i][j + 1] == WHITE_K)
+			return 1;
+	}
+	return 0;
+}
+
+/*check all options of threats on the player King, if there is no king return 1*/
+int isPlayerUnderCheck(int playerColor)
+{
+	Pos *kingPos = getKingPos(playerColor);
+	
+	int opponentColor = getOpponentColor(playerColor);
+	if (checkRookThreat(opponentColor, kingPos) == 1 || checkBishopThreat(opponentColor, kingPos) == 1 || checkKingThreat(opponentColor, kingPos) ==1
+		|| checkKnightThreat(opponentColor, kingPos) == 1 || checkPawnThreat(opponentColor, kingPos) == 1 ||
+		checkQueenThreat(opponentColor, kingPos) == 1)
+	{
+		free(kingPos);
+		return 1;
+	}
+	free(kingPos);
+	return 0;
+		
 }
