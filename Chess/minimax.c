@@ -1,13 +1,15 @@
 #include "minimax.h"
 
 //recursive function for return the scoring result of the best move
-int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Move** bestMove, int alpha, int beta, int isMax)
+int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Move** bestMove, 
+	int alpha, int beta, int isMax, int boardCounter)
 {
+	//if depth  == -1 we are in best difficulty
 	//get user and
 	MoveNode* moves = getMoves(board, computerColor);
 
 	//check if no moves or depth is 0
-	if (moves == NULL || depth == 0)
+	if (moves == NULL || depth == 0 || boardCounter == 1000000)
 	{
 		//print_board(board);
 		int res = score(board, computerColor);
@@ -25,9 +27,10 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 				int newRes = 0;
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, newBoard, *(movesPointer->move));
+				boardCounter++;
 				//print_board(board);
 				//print_board(newBoard);
-				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 0);
+				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 0, boardCounter);
 				
 				//insert prunning:
 				if (newRes > alpha)
@@ -60,8 +63,8 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 				int newRes = 0;
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, newBoard, *(movesPointer->move));
-
-				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 1);
+				boardCounter++;
+				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 1, boardCounter);
 				if (alpha >= beta)
 				{
 					freeMoves(moves, *(bestMove));
