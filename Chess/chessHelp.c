@@ -223,3 +223,6 @@ void reduceSpaces(char *str)
 	*dest = '\0';
 }
 
+
+
+

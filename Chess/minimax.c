@@ -1,102 +1,142 @@
 #include "minimax.h"
 
 //recursive function for return the scoring result of the best move
-/*
-int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int isMaxplayer, Move** bestMove)
+int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Move** bestMove, int alpha, int beta, int isMax)
 {
-char playerm;
-char playerk;
-char direction;
+	//get user and
+	MoveNode* moves = getMoves(board, computerColor);
 
-int player_color = WHITE;
-//the computer is always max player
-if (isMaxplayer == 1)
-{
-player_color = computer_color;
-playerk = game_players.computer_k;
-playerm = game_players.computer_m;
-direction = game_players.computer_direction;
-}
-else
-{
-if (computer_color == WHITE)
-player_color = BLACK;
-playerk = game_players.user_k;
-playerm = game_players.user_m;
-direction = game_players.user_direction;
-}
-//get user and
-MoveNode* moves = getMoves(board, playerm, playerk, direction);
+	//check if no moves or depth is 0
+	if (moves == NULL || depth == 0)
+	{
+		//print_board(board);
+		int res = score(board, computerColor);
+		freeMoves(moves, NULL);
+		//return res*(-1);
+		return res;
+	}
+	else//############ let's generate minimax tree!
+	{
+		if (isMax == 1)//player is the computer
+		{
+			MoveNode* movesPointer = moves;
+			while (movesPointer != NULL)
+			{
+				int newRes = 0;
+				char newBoard[BOARD_SIZE][BOARD_SIZE];
+				performMoveMinimax(board, newBoard, *(movesPointer->move));
+				//print_board(board);
+				//print_board(newBoard);
+				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 0);
+				
+				//insert prunning:
+				if (newRes > alpha)
+				{
+					alpha = newRes;
+					if (depth == minimax_depth)//check if we are in first recursion
+						*(bestMove) = movesPointer->move;
 
-//check if no moves or depth is 0
-if (moves == NULL || depth == 0)
-{
-//print_board(board);
-int res = score(board, player_color);
-freeMoves(moves, NULL);
-return res*(-1);
-}
-else//############ let's generate minimax tree!
-{
-if (isMaxplayer == 1)//player is the computer
-{
-int bestValue = -100;
-MoveNode* movesPointer = moves;
-while (movesPointer != NULL)
-{
-int newRes = 0;
-char newBoard[BOARD_SIZE][BOARD_SIZE];
-performMove(board, newBoard, *(movesPointer->move), direction);
-//print_board(board);
-//print_board(newBoard);
-newRes = minimax(newBoard, depth - 1, 0, bestMove);
+				}
+				if (alpha > beta)
+				{
+					freeMoves(moves, *(bestMove));
+					return beta; //pruning
+				}
+				movesPointer = movesPointer->next;
+			}
+			/*
+			if (!*(bestMove) && depth == minimax_depth)//all the  moves are bad
+			*(bestMove) = moves->move;
+			*/
 
+			freeMoves(moves, *(bestMove));
+			return alpha;
+		}
+		else//player is the user:
+		{
+			MoveNode* movesPointer = moves;
+			while (movesPointer != NULL)
+			{
+				int newRes = 0;
+				char newBoard[BOARD_SIZE][BOARD_SIZE];
+				performMoveMinimax(board, newBoard, *(movesPointer->move));
 
-//check if we are in first recursion
-if (depth == minimax_depth && bestValue < newRes)
-{
-bestValue = newRes;
-*(bestMove) = movesPointer->move;
+				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 1);
+				if (alpha >= beta)
+				{
+					freeMoves(moves, *(bestMove));
+					return alpha;
+				}
 
-}
-else if (bestValue < newRes)
-bestValue = newRes;
+				movesPointer = movesPointer->next;
+			}
 
-movesPointer = movesPointer->next;
-}
+			freeMoves(moves, *(bestMove));
+			return beta;
+		}
 
-if (!*(bestMove) && depth == minimax_depth)//all the  moves are bad
-*(bestMove) = moves->move;
-
-freeMoves(moves, *(bestMove));
-return bestValue;
-}
-else//player is the user:
-{
-int bestValue = 100;
-MoveNode* movesPointer = moves;
-while (movesPointer != NULL)
-{
-int newRes = 0;
-char newBoard[BOARD_SIZE][BOARD_SIZE];
-performMove(board, newBoard, *(movesPointer->move), direction);
-//print_board(board);
-//print_board(newBoard);
-
-newRes = minimax(newBoard, depth - 1, 1, bestMove);
-if (bestValue > newRes)
-bestValue = newRes;
-
-
-movesPointer = movesPointer->next;
+	}
 }
 
-freeMoves(moves, *(bestMove));
-return bestValue;
-}
+int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor)
 
+{
+	int opponentColor = BLACK;
+	if (PlayerColor == BLACK)
+		opponentColor = WHITE;
+	int tie = 999;
+	int result = 0;
+	int winning = 1000;
+	int loosing = -1000;
+	
+	int pawnScore = 1, knightBishopScore = 3, rookScore = 5;
+	int queendScore = 9, kingScore = 400;
+	if (checkForTie(board, PlayerColor) == 1)
+	{
+		return tie;
+	}
+	else if (isPlayerUnderMate(board, PlayerColor) == 1)
+	{
+		return loosing;
+	}
+	else if (isPlayerUnderMate(board, opponentColor) == 1)
+	{
+		return winning;
+	}
+	else
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			for (int i = 0; i < BOARD_SIZE; i++)
+			{
+				if (PlayerColor == WHITE)
+				{
+					if (board[i][j] == WHITE_B || board[i][j] == WHITE_N)
+						result = result + knightBishopScore;
+					else if (board[i][j] == WHITE_P)
+						result = result + pawnScore;
+					else if (board[i][j] == WHITE_R)
+						result = result + rookScore;
+					else if (board[i][j] == WHITE_Q)
+						result = result + queendScore;
+					else if (board[i][j] == WHITE_K)
+						result = result + kingScore;
+				}
+				else//player is black
+				{
+					if (board[i][j] == BLACK_B || board[i][j] == BLACK_N)
+						result = result + knightBishopScore;
+					else if (board[i][j] == BLACK_P)
+						result = result + pawnScore;
+					else if (board[i][j] == BLACK_R)
+						result = result + rookScore;
+					else if (board[i][j] == BLACK_Q)
+						result = result + queendScore;
+					else if (board[i][j] == BLACK_K)
+						result = result + kingScore;
+				}
+			}
+		}
+		return result;
+	}
 }
-freeMoves(moves, *(bestMove));
-}
-
-*/

@@ -170,7 +170,7 @@ void executeSettingCmd(char* input)
 		}
 		else if (strstr(input, "best"))
 		{
-			minimax_depth = 0;
+			minimax_depth = -1;
 		}
 	}
 	else if (strstr(input, "user_color"))

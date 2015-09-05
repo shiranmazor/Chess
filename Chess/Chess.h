@@ -30,7 +30,7 @@
 //global variables:
 char board[BOARD_SIZE][BOARD_SIZE];
 int gameMode = 1;//1- two players, 2- playey vs AI(computer)
-int minimax_depth = 1; //default - 1, regular between 1-4, best -0
+int minimax_depth = 1; //default = 1, regular between 1-4, best (-1)
 int userColor = WHITE;//relevent only in player vs AI
 int startPlayer = WHITE;
 //game structs:
@@ -102,26 +102,27 @@ Pos * formatPos(char* pos_input);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
-int checkifPlayerWins(int player_color);
-int performMove(Move move);
-MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE]);
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move move);
+MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
 MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
-int checkForTie(int playerColor);
-int isPlayerUnderCheck(int playerColor);
-int isPlayerUnderMate(int playerColor);
+int checkForTie(char board[BOARD_SIZE][BOARD_SIZE],int playerColor);
+int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE],int playerColor);
+int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isPlayerStuck(int playerColor);
-int isPlayerLose(int playerColor);
+int checkForATie(int playerColor);
 Pos* getKingPos(int playerColor);
+void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
+void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
 
 //check validation help functions:
-int checkRookThreat(int oponnentColor, Pos *kingPos);
-int checkBishopThreat(int oponnentColor, Pos *kingPos);
-int checkKnightThreat(int oponnentColor, Pos *kingPos);
-int checkPawnThreat(int oponnentColor, Pos *kingPos);
-int checkQueenThreat(int oponnentColor, Pos *kingPos);
-int checkKingThreat(int oponnentColor, Pos *kingPos);
+int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
+int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
+int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
+int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
+int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
+int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 
 
 #endif CHESS_;

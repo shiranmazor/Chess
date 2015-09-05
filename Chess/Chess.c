@@ -640,16 +640,65 @@ char* getStringFormatPos(Pos* pos)
 
 }
 
-int checkifPlayerWins(int player_color)
+void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE])
 {
-	//todo:implement
-	return 0;
+	//copy board to move board:
+	for (int j = 0; j <BOARD_SIZE; j++)
+	{
+		for (int i = 0; i < BOARD_SIZE; i++)
+		{
+			newBoard[i][j] = board[i][j];
+		}
+	}
 }
 
-int performMove(Move move)
+int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
-	//todo:implement
+	if (isPlayerUnderCheck(board,playerColor) == 0)
+		return 0;
+	int isMate = 1;
+	char boardCopy[BOARD_SIZE][BOARD_SIZE];
+	MoveNode * moves = getMoves(board, playerColor);
+	if (moves == NULL)
+		return 1;
+	MoveNode* movesPointer = moves;
+	while (movesPointer != NULL)
+	{
+		performMoveMinimax(board, boardCopy, *(movesPointer->move));
+		if (isPlayerUnderCheck(boardCopy, playerColor) == 0)
+		{
+			isMate = 0;
+			break;
+		}
+		movesPointer = movesPointer->next;
+	}
+	freeMoves(moves, NULL);
+	return isMate;
+	
 	return 0;
+}
+int checkForATie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheck(board,playerColor) == 0)
+		return 1;
+	return 0;
+}
+/*perform move assuming it's valid in order to check the newBoard*/
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move move)
+{
+	copyBoard(board, newBoard);
+	Pos* curr = move.currPos;
+	Pos* nextPos = move.dest->pos;
+	char Player = newBoard[curr->x][curr->y];
+
+	newBoard[curr->x][curr->y] = EMPTY;
+	newBoard[nextPos->x][nextPos->y] = Player;
+
+	//check promotion in case of pawn:
+	if (Player == WHITE_P)
+		checkAndPerformPromotion(newBoard, nextPos, WHITE);
+	else if (Player == BLACK_P)
+		checkAndPerformPromotion(newBoard, nextPos, BLACK);
 }
 
 /*check if player color has at least one valid move, return 1 if not*/
@@ -663,7 +712,7 @@ int isPlayerStuck(int playerColor)
 }
 
 /*check if the opponent rook is threating the king*/
-int checkRookThreat(int oponnentColor, Pos *kingPos)
+int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -781,7 +830,7 @@ int checkRookThreat(int oponnentColor, Pos *kingPos)
 }
 
 /*check if the opponent bishop is threating the king*/
-int checkBishopThreat(int oponnentColor, Pos *kingPos)
+int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	
 	int isThreat = 0;
@@ -931,7 +980,7 @@ int checkBishopThreat(int oponnentColor, Pos *kingPos)
 }
 
 /*check if the opponent queen is threating the king - combination of rook and bishop*/
-int checkQueenThreat(int oponnentColor, Pos *kingPos)
+int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -1186,7 +1235,7 @@ int checkQueenThreat(int oponnentColor, Pos *kingPos)
 }
 
 /*check if the opponent knight is threating the king*/
-int checkKnightThreat(int oponnentColor, Pos *kingPos)
+int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -1265,7 +1314,7 @@ Pos* getKingPos(int playerColor)
 }
 
 /*check if the opponent Pwan is threating the king*/
-int checkPawnThreat(int oponnentColor, Pos *kingPos)
+int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -1296,7 +1345,7 @@ int checkPawnThreat(int oponnentColor, Pos *kingPos)
 }
 
 /*check if the opponent King is threating the king*/
-int checkKingThreat(int oponnentColor, Pos *kingPos)
+int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -1346,14 +1395,15 @@ int checkKingThreat(int oponnentColor, Pos *kingPos)
 }
 
 /*check all options of threats on the player King, if there is no king return 1*/
-int isPlayerUnderCheck(int playerColor)
+int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	Pos *kingPos = getKingPos(playerColor);
 	
 	int opponentColor = getOpponentColor(playerColor);
-	if (checkRookThreat(opponentColor, kingPos) == 1 || checkBishopThreat(opponentColor, kingPos) == 1 || checkKingThreat(opponentColor, kingPos) ==1
-		|| checkKnightThreat(opponentColor, kingPos) == 1 || checkPawnThreat(opponentColor, kingPos) == 1 ||
-		checkQueenThreat(opponentColor, kingPos) == 1)
+	if (checkRookThreat(board, opponentColor, kingPos) == 1 || checkBishopThreat(board,opponentColor, kingPos) == 1 ||
+		checkKingThreat(board,opponentColor, kingPos) == 1
+		|| checkKnightThreat(board, opponentColor, kingPos) == 1 || checkPawnThreat(board,opponentColor, kingPos) == 1 ||
+		checkQueenThreat(board,opponentColor, kingPos) == 1)
 	{
 		free(kingPos);
 		return 1;
