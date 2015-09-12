@@ -1,9 +1,13 @@
 #ifndef CHESS_
 #define CHESS_
 
-#include<stdio.h>
+#ifndef CHESS_HELP_H
 #include "ChessHelp.h"
+#endif CHESS_HELP_H
+
+#ifndef FILE_HANDLE_H
 #include "FileHandle.h"
+#endif FILE_HANDLE_H
 
 #define WHITE  1
 #define BLACK  0
@@ -27,12 +31,12 @@
 
 #define BOARD_SIZE 8
 
-
 char board[BOARD_SIZE][BOARD_SIZE];
-int gameMode = 1;
-int minimax_depth = 1; 
-int userColor = WHITE;
-int startPlayer = WHITE;
+int gameMode;
+int minimax_depth;
+int userColor;
+int startPlayer;
+
 
 typedef struct Pos Pos;
 typedef struct PosNode PosNode;
@@ -101,16 +105,15 @@ Pos * formatPos(char* pos_input);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
-void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move *move);
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move* move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
 MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
-int checkForTie(char board[BOARD_SIZE][BOARD_SIZE],int playerColor);
+int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE],int playerColor);
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isPlayerStuck(int playerColor);
-int checkForATie(int playerColor);
 Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
@@ -123,4 +126,7 @@ int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *
 int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 
 
-#endif CHESS_;
+#endif CHESS_
+
+
+

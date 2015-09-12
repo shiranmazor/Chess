@@ -1,6 +1,13 @@
-#pragma once
+#ifndef CONSOLE_H
+#define CONSOLE_H
+
+#ifndef CHESS_
 #include "Chess.h"
+#endif CHESS_
+
 #include "ChessHelp.h"
+
+
 
 void settingState();
 void executeSettingCmd(char* input);
@@ -17,3 +24,6 @@ void remove_disc(char* input);
 void set_disc(char* pos_input, char* color, char* type);
 int checkNewBoardValidation(int color, char* Tool);
 int countKings();
+
+#endif CONSOLE_H
+

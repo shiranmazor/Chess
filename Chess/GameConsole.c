@@ -1,5 +1,6 @@
 #include "Console.h"
 
+
 void print_line()
 {
 	int i;
@@ -43,16 +44,13 @@ void clear_board()
 	}
 }
 
-/*
-initialize the board for starting chess gamse, white player is always down
-*/
+
 void init_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
 	int i, j;
 
 	//init first and last line with - j=0, and 7
-	//with bishp,rook,knight, queen, king
-	//line=0 white player
+	//with bishp,rook,knight, queen, kingr
 	board[0][0] = WHITE_R;
 	board[1][0] = WHITE_N;
 	board[2][0] = WHITE_B;
@@ -192,8 +190,7 @@ void executeSettingCmd(char* input)
 	{
 		int filePathLen = strlen(arr[1]);
 		char* filePath = arr[1];
-		//check if file exist if not print error
-		//call file handle
+
 	}
 	else if (strstr(input, "clear"))
 	{
@@ -230,13 +227,13 @@ void executeSettingCmd(char* input)
 		if (kings != 2)
 		{
 			printf("%s", WROND_BOARD_INITIALIZATION);
-		}//check for a tie or lose for the first player and print messsage
-		else if (checkForTie(board,startPlayer) == 1)
+		}
+		else if (checkForTie(board, startPlayer) == 1)
 		{
 			printf("%s", TIE);
 			exit(0);
 		}
-		else if (isPlayerLose(startPlayer) == 1)
+		else if (isPlayerUnderMate(board, startPlayer) == 1)
 		{
 			if (startPlayer == WHITE)
 				printf("%s", MATE_WHITE);
@@ -266,6 +263,7 @@ int countKings()
 	}
 	return kingsCounter;
 }
+
 int checkNewBoardValidation(int color, char* Tool)
 {
 	//define counters
@@ -426,6 +424,7 @@ void set_disc(char* pos_input, char* color, char* type)
 	}
 	free(pos);
 }
+
 void remove_disc(char* input)
 {
 	//input is <x,y>
@@ -454,10 +453,19 @@ void GameState()
 	}
 }
 
+int boardInitializeOk()
+{
+	return 0;
+}
 int main()
 {
+	gameMode = 1;
+	minimax_depth = 1;
+	userColor = WHITE;
+	startPlayer = WHITE;
 	init_board(board);
 	print_board(board);
 	settingState();
 	return 0;
 }
+

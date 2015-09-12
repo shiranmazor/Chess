@@ -1,5 +1,7 @@
 #include "Chess.h"
 
+
+
 void freeMove(Move *move)
 {
 	if (move == NULL)
@@ -70,10 +72,8 @@ void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
 		MoveNode *last = getLastNodeInList(&movesList);
 		MoveNode **lastPtr = &last;
 		(*(lastPtr))->next = moveNode;
-		//*(lastPtr) = (*(lastPtr))->next;
 	}
 }
-
 
 int isValidPos(Pos *pos)
 {
@@ -81,6 +81,7 @@ int isValidPos(Pos *pos)
 		return 0;
 	return 1;
 }
+
 int isValidIndexes(int i, int j)
 {
 	if (i < 0 || i >= BOARD_SIZE || j < 0 || j >= BOARD_SIZE)
@@ -115,9 +116,9 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		upRight.x = pos.x + 1;
 		upRight.y = pos.y + 1;
 
-		if (isValidPos(&upRight) && getColor(board[upRight.x, upRight.y]) ==  getOpponnetColor(userColor))
+		if (isValidPos(&upRight) && getColor(board[upRight.x, upRight.y]) == getOpponentColor(userColor))
 		{
-			MoveNode * moveNode = createMoveNode(pos, upRight,1);
+			MoveNode * moveNode = createMoveNode(pos, upRight);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
@@ -125,9 +126,9 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		upLeft.x = pos.x - 1;
 		upLeft.y = pos.y + 1;
 
-		if (isValidPos(&upLeft) && getColor(board[upLeft.x, upLeft.y]) == getOpponnetColor(userColor))
+		if (isValidPos(&upLeft) && getColor(board[upLeft.x, upLeft.y]) == getOpponentColor(userColor))
 		{
-			MoveNode * moveNode = createMoveNode(pos, upLeft, 1);
+			MoveNode * moveNode = createMoveNode(pos, upLeft);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
@@ -137,7 +138,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 		if (isValidPos(&upCenter) && board[upCenter.x, upCenter.y] == EMPTY)
 		{
-			MoveNode * moveNode = createMoveNode(pos, upCenter, 0);
+			MoveNode * moveNode = createMoveNode(pos, upCenter);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 	}
@@ -148,9 +149,9 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		downRight.x = pos.x + 1;
 		downRight.y = pos.y - 1;
 
-		if (isValidPos(&downRight) && getColor(board[downRight.x, downRight.y]) == getOpponnetColor(userColor))
+		if (isValidPos(&downRight) && getColor(board[downRight.x, downRight.y]) == getOpponentColor(userColor))
 		{
-			MoveNode * moveNode = createMoveNode(pos, downRight, 1);
+			MoveNode * moveNode = createMoveNode(pos, downRight);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
@@ -158,9 +159,9 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 		downLeft.x = pos.x - 1;
 		downLeft.y = pos.y - 1;
 
-		if (isValidPos(&downLeft) && getColor(board[downLeft.x, downLeft.y]) == getOpponnetColor(userColor))
+		if (isValidPos(&downLeft) && getColor(board[downLeft.x, downLeft.y]) == getOpponentColor(userColor))
 		{
-			MoveNode * moveNode = createMoveNode(pos, downLeft, 1);
+			MoveNode * moveNode = createMoveNode(pos, downLeft);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
@@ -170,7 +171,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 		if (isValidPos(&downCenter) && board[downCenter.x, downCenter.y] == EMPTY)
 		{
-			MoveNode * moveNode = createMoveNode(pos, downCenter, 0);
+			MoveNode * moveNode = createMoveNode(pos, downCenter);
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
@@ -339,7 +340,7 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 				if (getColor(nextToolOnTheSamePath) == playerColor)
 					break;
 
-				MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
+				MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
 				addMoveNodeToList(&movesList, moveNode);
 
 				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) 
@@ -367,7 +368,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 {
 	MoveNode * movesList = NULL;
 	Pos** adj = malloc(8 * sizeof(Pos*));
-	getgAdjPositions(pos, adj);
+	getAdjPositions(pos, adj);
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -377,7 +378,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 			if (getColor(nextToolOnTheSamePath) == playerColor)
 				break;
 
-			MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
+			MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
 			addMoveNodeToList(&movesList, moveNode);			
 		}
 	}
@@ -449,7 +450,7 @@ MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 			if (getColor(nextToolOnTheSamePath) == playerColor)
 				break;
 
-			MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
+			MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
 			addMoveNodeToList(&movesList, moveNode);
 		}
 	}
@@ -587,6 +588,34 @@ Pos * formatPos(char* pos_input)
 	return pos;
 }
 
+int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	int isMate = 1;
+	char boardCopy[BOARD_SIZE][BOARD_SIZE];
+	MoveNode * moves = getMoves(board, playerColor);
+	MoveNode* movesPointer = moves;
+	if (isPlayerUnderCheck(board, playerColor) == 0)
+		return 0;
+
+	if (moves == NULL)
+		return 1;
+
+	while (movesPointer != NULL)
+	{
+		performMoveMinimax(board, boardCopy, movesPointer->move);
+		if (isPlayerUnderCheck(boardCopy, playerColor) == 0)
+		{
+			isMate = 0;
+			break;
+		}
+		movesPointer = movesPointer->next;
+	}
+	freeMoves(moves, NULL);
+	return isMate;
+
+	return 0;
+}
+
 char* getStringFormatMove(Move move)
 {
 	char* res = (char *)malloc(sizeof(char)* 1024);
@@ -648,32 +677,8 @@ void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOA
 	}
 }
 
-int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
-{
-	if (isPlayerUnderCheck(board,playerColor) == 0)
-		return 0;
-	int isMate = 1;
-	char boardCopy[BOARD_SIZE][BOARD_SIZE];
-	MoveNode * moves = getMoves(board, playerColor);
-	if (moves == NULL)
-		return 1;
-	MoveNode* movesPointer = moves;
-	while (movesPointer != NULL)
-	{
-		performMoveMinimax(board, boardCopy, movesPointer->move);
-		if (isPlayerUnderCheck(boardCopy, playerColor) == 0)
-		{
-			isMate = 0;
-			break;
-		}
-		movesPointer = movesPointer->next;
-	}
-	freeMoves(moves, NULL);
-	return isMate;
-	
-	return 0;
-}
-int checkForATie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+
+int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheck(board,playerColor) == 0)
 		return 1;
@@ -687,7 +692,6 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 	char Player = newBoard[curr->x][curr->y];
 	copyBoard(board, newBoard);
 
-
 	newBoard[curr->x][curr->y] = EMPTY;
 	newBoard[nextPos->x][nextPos->y] = Player;
 
@@ -698,6 +702,10 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 		checkAndPerformPromotion(newBoard, nextPos, BLACK);
 }
 
+void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
+{
+
+}
 
 int isPlayerStuck(int playerColor)
 {
@@ -1034,7 +1042,7 @@ int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *
 				return isThreat;
 			}
 		}
-		//check diagonals:
+
 		i = kingPos->x;
 		j = kingPos->y;
 		while (i >0 && j < 7)//scan up left
@@ -1211,7 +1219,7 @@ int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *
 		}
 		i = kingPos->x;
 		j = kingPos->y;
-		while (i < 7 && j > 0)//scan down right
+		while (i < 7 && j > 0)
 		{
 			if (board[i + 1][j - 1] == EMPTY)
 			{
@@ -1304,7 +1312,6 @@ Pos* getKingPos(int playerColor)
 
 		}
 	}
-	//there is not king
 	free(pos);
 	return NULL;
 }
@@ -1355,7 +1362,6 @@ int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *
 			return 1;
 		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == BLACK_K)
 			return 1;
-		//right  and left , up and down
 		else if (isValidIndexes(i + 1, j) && board[i + 1][j] == BLACK_K)
 			return 1;
 		else if (isValidIndexes(i - 1, j) && board[i - 1][j] == BLACK_K)
@@ -1376,7 +1382,6 @@ int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *
 			return 1;
 		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == WHITE_K)
 			return 1;
-		//right  and left , up and down
 		else if (isValidIndexes(i + 1, j) && board[i + 1][j] == WHITE_K)
 			return 1;
 		else if (isValidIndexes(i - 1, j) && board[i - 1][j] == WHITE_K)
@@ -1407,3 +1412,6 @@ int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	return 0;
 		
 }
+
+
+

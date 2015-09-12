@@ -143,3 +143,4 @@ int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor)
 		return result;
 	}
 }
+

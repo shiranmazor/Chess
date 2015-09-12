@@ -1,6 +1,5 @@
 #include "ChessHelp.h"
 
-//global variables
 int objectsInMemory = 0;
 
 void *myMalloc(size_t size) {
@@ -209,12 +208,8 @@ void reduceSpaces(char *str)
 {
 	char *dest = str;
 
-	/* While we're not at the end of the string, loop... */
 	while (*str != '\0')
 	{
-		/* Loop while the current character is a space, AND the next
-		* character is a space
-		*/
 		while (*str == ' ' && *(str + 1) == ' ')
 			str++;
 		*dest++ = *str++;
@@ -222,7 +217,4 @@ void reduceSpaces(char *str)
 
 	*dest = '\0';
 }
-
-
-
 
