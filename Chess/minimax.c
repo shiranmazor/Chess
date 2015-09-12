@@ -26,7 +26,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 			{
 				int newRes = 0;
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
-				performMoveMinimax(board, newBoard, *(movesPointer->move));
+				performMoveMinimax(board, newBoard, movesPointer->move);
 				boardCounter++;
 				//print_board(board);
 				//print_board(newBoard);
@@ -62,7 +62,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 			{
 				int newRes = 0;
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
-				performMoveMinimax(board, newBoard, *(movesPointer->move));
+				performMoveMinimax(board, newBoard, movesPointer->move);
 				boardCounter++;
 				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 1, boardCounter);
 				if (alpha >= beta)

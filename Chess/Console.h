@@ -5,6 +5,8 @@
 void settingState();
 void executeSettingCmd(char* input);
 void GameState();
+void GameTwoPlayers(int user1Color, int user2Color);
+void GameUserVsComputer(int computerColor);
 
 int boardInitializeOk();
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);

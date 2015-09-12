@@ -231,7 +231,7 @@ void executeSettingCmd(char* input)
 		{
 			printf("%s", WROND_BOARD_INITIALIZATION);
 		}//check for a tie or lose for the first player and print messsage
-		else if (checkForTie(startPlayer) == 1 )
+		else if (checkForTie(board,startPlayer) == 1)
 		{
 			printf("%s", TIE);
 			exit(0);
@@ -441,7 +441,17 @@ void remove_disc(char* input)
 
 void GameState()
 {
+	int resComputer = 0;
+	int resUser1 = 0;
+	int resUser2 = 0;
+	if (gameMode == 1)//player vs player
+	{
 
+	}
+	else if (gameMode == 2)
+	{
+
+	}
 }
 
 int main()

@@ -27,13 +27,13 @@
 
 #define BOARD_SIZE 8
 
-//global variables:
+
 char board[BOARD_SIZE][BOARD_SIZE];
-int gameMode = 1;//1- two players, 2- playey vs AI(computer)
-int minimax_depth = 1; //default = 1, regular between 1-4, best (-1)
-int userColor = WHITE;//relevent only in player vs AI
+int gameMode = 1;
+int minimax_depth = 1; 
+int userColor = WHITE;
 int startPlayer = WHITE;
-//game structs:
+
 typedef struct Pos Pos;
 typedef struct PosNode PosNode;
 typedef struct MoveNode MoveNode;
@@ -46,7 +46,6 @@ struct PosNode
 
 struct Pos
 {
-	//char x;
 	int x;
 	int y;
 };
@@ -66,7 +65,7 @@ struct Move
 };
 
 
-// board initialization
+
 #define ENTER_SETTINGS "Enter game settings:\n" 
 #define WRONG_GAME_MODE "Wrong game mode\n"
 #define TWO_PLAYERS_GAME_MODE "Running game in 2 players mode\n"
@@ -90,7 +89,7 @@ struct Move
 #define print_message(message) (printf("%s", message));
 
 
-//functions declarations:
+
 
 void freeMove(Move *move);
 void freeMoveWithoutDest(MoveNode *moveNode);
@@ -102,7 +101,7 @@ Pos * formatPos(char* pos_input);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
-void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move move);
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move *move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
@@ -116,7 +115,6 @@ Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
 
-//check validation help functions:
 int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);

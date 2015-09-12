@@ -61,10 +61,9 @@ MoveNode * getLastNodeInList(MoveNode * list)
 
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
 {
-	if (!*(movesList)) //empty list
+	if (!*(movesList)) 
 	{
 		*(movesList) = moveNode;
-		//*(last) = *(movesList);
 	}
 	else
 	{
@@ -75,7 +74,7 @@ void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode)
 	}
 }
 
-//returns false if pos is outside the board
+
 int isValidPos(Pos *pos)
 {
 	if (pos->x >= BOARD_SIZE || pos->x < 0 || pos->y >= BOARD_SIZE || pos->y < 0)
@@ -112,8 +111,6 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 	if (userColor == WHITE)
 	{
-		//white - up
-
 		Pos upRight;
 		upRight.x = pos.x + 1;
 		upRight.y = pos.y + 1;
@@ -182,7 +179,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	return movesList;
 }
 
-//returns all valid diagonial adjacent positions
+
 void getDiagAdjPositions(Pos pos, Pos** adj)
 {
 	//down:
@@ -209,7 +206,7 @@ void getDiagAdjPositions(Pos pos, Pos** adj)
 	}
 }
 
-//returns all valid straight adjacent positions
+
 void getStraightAdjPositions(Pos pos, Pos** adj)
 {
 	//down:
@@ -238,7 +235,7 @@ void getStraightAdjPositions(Pos pos, Pos** adj)
 	}
 }
 
-//returns all valid adjacent positions
+
 void getAdjPositions(Pos pos, Pos** adj)
 {
 	//down:
@@ -277,10 +274,9 @@ void getAdjPositions(Pos pos, Pos** adj)
 			adj[i] = NULL;;
 		}
 	}
-	//return adj;
 }
 
-//returns all valid kinght next positions
+
 void getKnightPositions(Pos pos, Pos** adj)
 {
 	//up left:
@@ -346,7 +342,7 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 				MoveNode *moveNode = createMoveNode(pos, *(adj[i]), 0);
 				addMoveNodeToList(&movesList, moveNode);
 
-				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) //we can eat it, but that's it for this direction
+				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) 
 					break;
 
 				int xDiff = nextPosOnSameDirection.x - pos.x;
@@ -355,7 +351,7 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 				nextPosOnSameDirection.x = nextPosOnSameDirection.x + xDiff;
 				nextPosOnSameDirection.y = nextPosOnSameDirection.y + yDiff;
 
-				if (!isValidPos(&nextPosOnSameDirection)) //we reached end of board
+				if (!isValidPos(&nextPosOnSameDirection)) 
 					break;
 
 				
@@ -431,7 +427,7 @@ MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 				nextPosOnSameDirection.x = nextPosOnSameDirection.x + xDiff;
 				nextPosOnSameDirection.y = nextPosOnSameDirection.y + yDiff;
 
-				if (!isValidPos(&nextPosOnSameDirection)) //we reached end of board
+				if (!isValidPos(&nextPosOnSameDirection)) 
 					break;
 			}
 		}
@@ -459,7 +455,7 @@ MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 	}
 }
 
-//return all user moves
+
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	MoveNode *firstMoveNode = NULL;
@@ -664,7 +660,7 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	MoveNode* movesPointer = moves;
 	while (movesPointer != NULL)
 	{
-		performMoveMinimax(board, boardCopy, *(movesPointer->move));
+		performMoveMinimax(board, boardCopy, movesPointer->move);
 		if (isPlayerUnderCheck(boardCopy, playerColor) == 0)
 		{
 			isMate = 0;
@@ -683,13 +679,14 @@ int checkForATie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		return 1;
 	return 0;
 }
-/*perform move assuming it's valid in order to check the newBoard*/
-void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move move)
+
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move *move)
 {
-	copyBoard(board, newBoard);
-	Pos* curr = move.currPos;
-	Pos* nextPos = move.dest->pos;
+	Pos* curr = move->currPos;
+	Pos* nextPos = move->dest->pos;
 	char Player = newBoard[curr->x][curr->y];
+	copyBoard(board, newBoard);
+
 
 	newBoard[curr->x][curr->y] = EMPTY;
 	newBoard[nextPos->x][nextPos->y] = Player;
@@ -701,7 +698,7 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 		checkAndPerformPromotion(newBoard, nextPos, BLACK);
 }
 
-/*check if player color has at least one valid move, return 1 if not*/
+
 int isPlayerStuck(int playerColor)
 {
 	MoveNode *moveList = getMoves(board, playerColor);
@@ -711,7 +708,7 @@ int isPlayerStuck(int playerColor)
 		return 0;
 }
 
-/*check if the opponent rook is threating the king*/
+
 int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
@@ -829,7 +826,6 @@ int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 	
 }
 
-/*check if the opponent bishop is threating the king*/
 int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	
@@ -979,7 +975,7 @@ int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos 
 	return 0;
 }
 
-/*check if the opponent queen is threating the king - combination of rook and bishop*/
+
 int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
@@ -1234,8 +1230,8 @@ int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *
 	return 0;
 }
 
-/*check if the opponent knight is threating the king*/
-int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
+
+int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
@@ -1280,7 +1276,7 @@ int checkKnightThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos 
 	return 0;
 }
 
-/*find the king position on the board*/
+
 Pos* getKingPos(int playerColor)
 {
 	Pos* pos = malloc(sizeof(Pos));
@@ -1313,7 +1309,7 @@ Pos* getKingPos(int playerColor)
 	return NULL;
 }
 
-/*check if the opponent Pwan is threating the king*/
+
 int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
@@ -1344,14 +1340,13 @@ int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 
 }
 
-/*check if the opponent King is threating the king*/
-int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos)
+
+int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *kingPos)
 {
 	int i = kingPos->x;
 	int j = kingPos->y;
 	if (oponnentColor == BLACK)
 	{
-		//diagonals
 		if (isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == BLACK_K)
 			return 1;
 		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == BLACK_K)
@@ -1394,12 +1389,12 @@ int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 	return 0;
 }
 
-/*check all options of threats on the player King, if there is no king return 1*/
+
 int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	Pos *kingPos = getKingPos(playerColor);
-	
 	int opponentColor = getOpponentColor(playerColor);
+
 	if (checkRookThreat(board, opponentColor, kingPos) == 1 || checkBishopThreat(board,opponentColor, kingPos) == 1 ||
 		checkKingThreat(board,opponentColor, kingPos) == 1
 		|| checkKnightThreat(board, opponentColor, kingPos) == 1 || checkPawnThreat(board,opponentColor, kingPos) == 1 ||
