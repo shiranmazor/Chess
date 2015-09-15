@@ -10,10 +10,6 @@
 #include <stdlib.h>
 
 #define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
-#define malloc(x) myMalloc(x)
-#define free(x) myFree(x)
-#define calloc(x,y) myCalloc(x,y)
-#define realloc(x,y) myRealloc(x,y)
 
 
 int getIntValue(char c);

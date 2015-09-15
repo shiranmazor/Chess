@@ -107,6 +107,7 @@ char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move* move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
+MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor);
 void addMoveNodeToList(MoveNode **movesList, MoveNode * moveNode);
 MoveNode *createMoveNode(Pos pos, Pos destPos);
 MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerColor);

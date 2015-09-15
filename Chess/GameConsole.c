@@ -48,6 +48,12 @@ void clear_board()
 void init_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
 	int i, j;
+	
+	for (int f = 0; f < BOARD_SIZE; f++)
+	{
+		for (int s = 0; s < BOARD_SIZE; s++)
+			board[f][s] = EMPTY;
+	}
 
 	//init first and last line with - j=0, and 7
 	//with bishp,rook,knight, queen, kingr
@@ -457,6 +463,91 @@ int boardInitializeOk()
 {
 	return 0;
 }
+
+void getMovesUnitTests()
+{
+	MoveNode * movesList = getMoves(board, 0);
+	//markMoves(board, movesList);
+//	print_board(board);
+
+	
+
+	movesList = getMoves(board, 1);
+
+/*	for (int i = 0; i < 8; i++)
+	{
+		assert(movesList->move->currPos->x == i);
+		assert(movesList->move->currPos->y == 1);
+		assert(movesList->move->dest->pos->x == i);
+		assert(movesList->move->dest->pos->y == 2);
+		movesList = movesList->next;
+	}
+	assert(movesList == NULL);
+	*/
+	char board[BOARD_SIZE][BOARD_SIZE];
+	for (int f = 0; f < BOARD_SIZE; f++)
+	{
+		for (int s = 0; s < BOARD_SIZE; s++)
+			board[f][s] = EMPTY;
+	}
+
+	board[4][4] = WHITE_R;
+	
+	movesList = getMoves(board, WHITE);
+
+	/*
+		move <4,4> to <4,3>
+		move <4,4> to <4,2>
+		move <4,4> to <4,1>
+		move <4,4> to <4,0>
+		move <4,4> to <3,4>
+		move <4,4> to <2,4>
+		move <4,4> to <1,4>
+		move <4,4> to <0,4>
+		move <4,4> to <5,4>
+		move <4,4> to <6,4>
+		move <4,4> to <7,4>
+		move <4,4> to <4,5>
+		move <4,4> to <4,6>
+		move <4,4> to <4,7>
+	*/
+
+	board[4][4] = WHITE_B;
+	movesList = getMoves(board, WHITE);
+	//printMoves(movesList);
+
+	board[4][4] = WHITE_K;
+	movesList = getMoves(board, WHITE);
+	//printMoves(movesList);
+	markMoves(board,movesList);
+	//print_board(board);
+
+	board[4][4] = WHITE_N;
+	movesList = getMoves(board, WHITE);
+	printMoves(movesList);
+	markMoves(board, movesList);
+	print_board(board);
+
+
+
+}
+void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)
+{
+	while (movesList != NULL)
+	{
+		board[movesList->move->dest->pos->x][movesList->move->dest->pos->y] = 'X';
+		movesList = movesList->next;
+	}
+}
+
+void printMoves(MoveNode *movesList)
+{
+	while (movesList != NULL)
+	{
+		printf("move <%d,%d> to <%d,%d>\n", movesList->move->currPos->x, movesList->move->currPos->y, movesList->move->dest->pos->x, movesList->move->dest->pos->y);
+		movesList = movesList->next;
+	}
+}
 int main()
 {
 	gameMode = 1;
@@ -465,6 +556,7 @@ int main()
 	startPlayer = WHITE;
 	init_board(board);
 	print_board(board);
+	getMovesUnitTests();
 	settingState();
 	return 0;
 }

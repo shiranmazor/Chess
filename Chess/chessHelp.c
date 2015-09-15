@@ -29,6 +29,11 @@ void *myRealloc(void  *memory, size_t newSize) {
 	return ptr;
 }
 
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
+
 int getIntValue(char c)
 {
 	return c - 'a';
