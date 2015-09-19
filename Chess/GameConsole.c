@@ -1,5 +1,5 @@
 #include "Console.h"
-
+#include "fileHandle.h"
 
 void print_line()
 {
@@ -516,21 +516,20 @@ void getMovesUnitTests()
 	movesList = getMoves(board, WHITE);
 	//printMoves(movesList);
 
-	board[4][4] = WHITE_K;
-	movesList = getMoves(board, WHITE);
+	//board[4][4] = WHITE_K;
+	//movesList = getMoves(board, WHITE);
 	//printMoves(movesList);
-	markMoves(board,movesList);
+	//markMoves(board,movesList);
 	//print_board(board);
-
-	board[4][4] = WHITE_N;
-	movesList = getMoves(board, WHITE);
+	init_board(board);
+	board[1][1] = BLACK_N;
+	movesList = getMoves(board, BLACK);
 	printMoves(movesList);
 	markMoves(board, movesList);
 	print_board(board);
 
-
-
 }
+
 void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)
 {
 	while (movesList != NULL)
@@ -556,8 +555,20 @@ int main()
 	startPlayer = WHITE;
 	init_board(board);
 	print_board(board);
+	GameStatus gameState;
+	gameState.nextTurn = WHITE;
+	gameState.userColor = BLACK;
+	strcpy(gameState.difficulty, "BEST");
+	gameState.gameMode = 0;
+	memcpy(gameState.board, board, sizeof(board));
+	saveFile(gameState, 1);
+	GameStatus gs = readFile(1);
+	saveFile(gs, 2);
 	getMovesUnitTests();
 	settingState();
+	
+	
+
 	return 0;
 }
 

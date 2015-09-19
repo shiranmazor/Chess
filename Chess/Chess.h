@@ -1,5 +1,6 @@
 #ifndef CHESS_
 #define CHESS_
+#define BOARD_SIZE 8
 
 #ifndef CHESS_HELP_H
 #include "ChessHelp.h"
@@ -29,7 +30,7 @@
 
 #define EMPTY ' '
 
-#define BOARD_SIZE 8
+
 
 char board[BOARD_SIZE][BOARD_SIZE];
 int gameMode;
