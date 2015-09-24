@@ -669,7 +669,7 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
-int main()
+int main2()
 {
 	gameMode = 1;
 	minimax_depth = 1;

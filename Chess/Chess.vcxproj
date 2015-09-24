@@ -38,7 +38,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Users\niri\Documents\GitHub\Chess\Chess\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\niri\Documents\GitHub\Chess\Chess\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level1</WarningLevel>
@@ -48,6 +51,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,6 +81,7 @@
     <ClCompile Include="chessHelp.c" />
     <ClCompile Include="fileHandle.c" />
     <ClCompile Include="GameConsole.c" />
+    <ClCompile Include="gui.c" />
     <ClCompile Include="minimax.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

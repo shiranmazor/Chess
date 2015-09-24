@@ -50,5 +50,8 @@
     <ClCompile Include="GameConsole.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gui.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
