@@ -464,13 +464,12 @@ int boardInitializeOk()
 	return 0;
 }
 
+
 void getMovesUnitTests()
 {
 	MoveNode * movesList = getMoves(board, 0);
 	//markMoves(board, movesList);
-//	print_board(board);
-
-	
+	//print_board(board);
 
 	movesList = getMoves(board, 1);
 
@@ -484,12 +483,7 @@ void getMovesUnitTests()
 	}
 	assert(movesList == NULL);
 	*/
-	char board[BOARD_SIZE][BOARD_SIZE];
-	for (int f = 0; f < BOARD_SIZE; f++)
-	{
-		for (int s = 0; s < BOARD_SIZE; s++)
-			board[f][s] = EMPTY;
-	}
+	clear_board();
 
 	board[4][4] = WHITE_R;
 	
@@ -524,10 +518,138 @@ void getMovesUnitTests()
 	init_board(board);
 	board[1][1] = BLACK_N;
 	movesList = getMoves(board, BLACK);
-	printMoves(movesList);
+	//printMoves(movesList);
+	markMoves(board, movesList);
+	//print_board(board);
+
+
+	clear_board();
+
+	board[4][4] = WHITE_P;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	print_board(board);
+	movesList = getMoves(board, WHITE);
 	markMoves(board, movesList);
 	print_board(board);
+	clear_board();
 
+	board[4][4] = WHITE_B;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	board[2][2] = BLACK_Q;
+	print_board(board);
+	movesList = getMoves(board, WHITE);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = WHITE_K;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	board[3][3] = BLACK_B;
+	print_board(board);
+	movesList = getMoves(board, WHITE);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = WHITE_N;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	
+
+	print_board(board);
+	movesList = getMoves(board, WHITE);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = WHITE_Q;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	print_board(board);
+	movesList = getMoves(board, WHITE);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = WHITE_R;
+	board[5][5] = WHITE_P;
+	board[4][5] = WHITE_P;
+	print_board(board);
+	movesList = getMoves(board, WHITE);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	movesList = getMoves(board, BLACK);
+	assert(movesList == NULL);
+
+	clear_board();
+
+	board[4][4] = BLACK_P;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_B;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_K;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_N;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_Q;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_R;
+	board[5][5] = BLACK_P;
+	board[4][5] = BLACK_P;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
+
+	board[4][4] = BLACK_P;
+	board[4][3] = WHITE_N;
+	board[5][3] = WHITE_B;
+	print_board(board);
+	movesList = getMoves(board, BLACK);
+	markMoves(board, movesList);
+	print_board(board);
+	clear_board();
 }
 
 void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)

@@ -45,10 +45,10 @@ int saveFile(GameStatus gameState, int slotNumber)
 
 	char * userColorStr;
 	if (gameState.userColor == BLACK)
-		userColorStr = "BLACK";
+		userColorStr = "Black";
 	
 	if (gameState.userColor == WHITE)
-		userColorStr = "WHITE";
+		userColorStr = "White";
 	
 	fprintf(f, "\t<user_color>%s</user_color>\n", userColorStr);
 	fprintf(f, "%s", "\t<board>\n");
@@ -94,7 +94,7 @@ GameStatus readFile(int slotNumber)
 	char userColorStr[100];
 	fscanf(f, "\t<user_color>%[^<]</user_color>\n", userColorStr);
 	
-	gameState.userColor = strcmp(userColorStr, "BLACK") ? WHITE :  BLACK ;
+	gameState.userColor = strcmp(userColorStr, "Black") ? WHITE :  BLACK ;
 	
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{

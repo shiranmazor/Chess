@@ -417,7 +417,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 		{
 			char nextToolOnTheSamePath = board[adj[i]->x][adj[i]->y];
 			if (getColor(nextToolOnTheSamePath) == playerColor)
-				break;
+				continue;
 
 			MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
 			addMoveNodeToList(&movesList, moveNode);			
@@ -465,8 +465,6 @@ MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 				if (getColor(nextToolOnTheSamePath) == getOpponentColor(playerColor)) //we can eat it, but that's it for this direction
 					break;
 
-
-
 				nextPosOnSameDirection.x = nextPosOnSameDirection.x + xDiff;
 				nextPosOnSameDirection.y = nextPosOnSameDirection.y + yDiff;
 
@@ -490,7 +488,7 @@ MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 		{
 			char nextToolOnTheSamePath = board[adj[i]->x][adj[i]->y];
 			if (getColor(nextToolOnTheSamePath) == playerColor)
-				break;
+				continue;
 
 			MoveNode *moveNode = createMoveNode(pos, *(adj[i]));
 			addMoveNodeToList(&movesList, moveNode);
