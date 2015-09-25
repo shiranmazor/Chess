@@ -1,16 +1,36 @@
+#include "gui.h"
 #include "SDL.h"
 #define WIN_TITLE "Chess"
 #define WIN_HEIGHT 600
 #define WIN_WIDTH 800
 
-SDL_Surface* loadImage(char * filename, int x, int y, SDL_Surface * window)
+struct ImgButton
+{
+	SDL_Surface * surface;
+	int x;
+	int y;
+	char * filename;
+};
+
+int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
+{
+	if (clickedX > btn.x && clickedX < btn.x + btn.surface->w &&
+		clickedY > btn.y && clickedY < btn.y + btn.surface->h)
+	{
+		return 1;
+	}
+	return 0;
+
+}
+
+SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window)
 {
 	SDL_Rect imgrect;
-	
-	imgrect.x = x;
-	imgrect.y = y;
 
-	SDL_Surface* img = SDL_LoadBMP(filename);
+	imgrect.x = btn.x;
+	imgrect.y = btn.y;
+
+	SDL_Surface* img = SDL_LoadBMP(btn.filename);
 	//Apply image to screen
 	if (SDL_BlitSurface(img, NULL, window, &imgrect) != 0)
 	{
@@ -34,8 +54,8 @@ int main(int argc, char* args[])
 		printf("ERROR: unable to init SDL : %s\n", SDL_GetError());
 		return 1;
 	}
-	
-	SDL_WM_SetCaption("Chess","Chess");
+
+	SDL_WM_SetCaption("Chess", "Chess");
 	SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	SDL_Flip(win);
 
@@ -49,31 +69,67 @@ int main(int argc, char* args[])
 	SDL_Flip(win);
 
 	//add menu images
-	SDL_Surface* newGameImg = loadImage("images/NewGame.bmp", 315, 150, win);
-	SDL_Surface* loadGameImg = loadImage("images/LoadGame.bmp", 315, 230, win);
-	SDL_Surface* quitGameImg = loadImage("images/Quit.bmp", 315, 310, win);
-	/*SDL_Rect rect = { 100, 100, 500, 200 };
+	ImgButton newGameImg;
+	newGameImg.x = 315;
+	newGameImg.y = 150;
+	newGameImg.filename = "images/NewGame.bmp";
+	newGameImg.surface = loadImage(newGameImg, win);
 
-	SDL_FillRect(win, &rect, 122);
-	SDL_Flip(win);*/
+	ImgButton loadGameImg;
+	loadGameImg.x = 315;
+	loadGameImg.y = 230;
+	loadGameImg.filename = "images/LoadGame.bmp";
+	loadGameImg.surface = loadImage(loadGameImg, win);
+
+	ImgButton quitGameImg;
+	quitGameImg.x = 315;
+	quitGameImg.y = 310;
+	quitGameImg.filename = "images/Quit.bmp";
+	quitGameImg.surface = loadImage(quitGameImg, win);
 
 
-	SDL_Delay(2000);
-	
-	SDL_Event e;
-	while (SDL_PollEvent(&e) != 0)
+	//SDL_Delay(2000);
+	int shouldQuit = 0;
+
+	while (!shouldQuit)
 	{
-		if (e.type == SDL_QUIT)
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0)
 		{
+			if (e.type == SDL_QUIT)
+			{
+				shouldQuit = 1;
+				SDL_Quit();
+				exit(0);
+			}
+			else if (e.type == SDL_MOUSEBUTTONUP)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
 
-			SDL_Quit();
-			exit(0);
+				if (isButtonClicked(newGameImg, x, y))
+				{
+					//start new game
+					printf("s");
+				}
+				else if (isButtonClicked(loadGameImg, x, y))
+				{
+
+				}
+				else if (isButtonClicked(quitGameImg, x, y))
+				{
+					shouldQuit = 1;
+					SDL_Quit();
+					exit(0);
+					//todo free resources
+				}
+			}
 		}
 	}
 
-	SDL_FreeSurface(newGameImg);
-	SDL_FreeSurface(loadGameImg);
-	SDL_FreeSurface(quitGameImg);
+	//SDL_FreeSurface(newGameImg);
+	//SDL_FreeSurface(loadGameImg);
+	//SDL_FreeSurface(quitGameImg);
 	//Quit SDL
 	SDL_Quit();
 

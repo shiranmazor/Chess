@@ -74,6 +74,7 @@
     <ClInclude Include="ChessHelp.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="fileHandle.h" />
+    <ClInclude Include="gui.h" />
     <ClInclude Include="minimax.h" />
   </ItemGroup>
   <ItemGroup>
