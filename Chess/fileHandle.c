@@ -83,12 +83,14 @@ GameStatus readFile(int slotNumber)
 	FILE * f = fopen(fullFileName, "r");
 	free(fullFileName);
 
-	GameStatus gameState = { .nextTurn = 0, .gameMode = 0,  .userColor = 0};
+	GameStatus gameState = { .nextTurn = 0, .gameMode = 0,  .userColor = WHITE};
 	//fscanf(f)
 	
 	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\n<game>\n\t<next_turn>%d</next_turn>\n", &gameState.nextTurn);
 	fscanf(f, "\t<game_mode>%d</game_mode>\n", &gameState.gameMode);
 	char diff[100];
+	diff[0] = '1';
+	diff[1] = 0;
 	fscanf(f, "\t<difficulty>%[^<]</difficulty>\n", diff);
 	strcpy(gameState.difficulty, diff);
 	char userColorStr[100];

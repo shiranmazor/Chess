@@ -684,8 +684,8 @@ int main2()
 	gameState.gameMode = 0;
 	memcpy(gameState.board, board, sizeof(board));
 	saveFile(gameState, 1);
-	GameStatus gs = readFile(1);
-	saveFile(gs, 2);
+	GameStatus gs = readFile(3);
+	saveFile(gs, 4);
 	getMovesUnitTests();
 	settingState();
 	

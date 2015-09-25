@@ -1,5 +1,4 @@
 #include "gui.h"
-#include "SDL.h"
 #define WIN_TITLE "Chess"
 #define WIN_HEIGHT 600
 #define WIN_WIDTH 800
@@ -45,14 +44,15 @@ SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window)
 
 }
 
-int main(int argc, char* args[])
+SDL_Surface * init()
 {
 	//Start SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("ERROR: unable to init SDL : %s\n", SDL_GetError());
-		return 1;
+		exit(1);
+		return NULL;
 	}
 
 	SDL_WM_SetCaption("Chess", "Chess");
@@ -67,7 +67,15 @@ int main(int argc, char* args[])
 	Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
 	SDL_FillRect(win, &screenRect, clearColor);
 	SDL_Flip(win);
+	atexit(SDL_Quit);
+	return win;
 
+}
+
+
+int main(int argc, char* args[])
+{
+	SDL_Surface * win = init();
 	//add menu images
 	ImgButton newGameImg;
 	newGameImg.x = 315;
@@ -114,7 +122,7 @@ int main(int argc, char* args[])
 				}
 				else if (isButtonClicked(loadGameImg, x, y))
 				{
-
+					//load game
 				}
 				else if (isButtonClicked(quitGameImg, x, y))
 				{
@@ -125,12 +133,14 @@ int main(int argc, char* args[])
 				}
 			}
 		}
+		SDL_Delay(1);
 	}
 
 	//SDL_FreeSurface(newGameImg);
 	//SDL_FreeSurface(loadGameImg);
 	//SDL_FreeSurface(quitGameImg);
 	//Quit SDL
+	
 	SDL_Quit();
 
 	return 0;
