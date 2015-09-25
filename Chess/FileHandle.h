@@ -1,5 +1,6 @@
 #ifndef FILE_HANDLE_H
 #define FILE_HANDLE_H
+#include "Chess.h"
 
 #define SLOTS_NUM  7
 #define FILENAME "savedSlot"

@@ -69,12 +69,15 @@ SDL_Surface * init()
 	SDL_Flip(win);
 	atexit(SDL_Quit);
 	return win;
-
 }
 
 
 int main(int argc, char* args[])
 {
+	GameStatus gs = readFile(3);
+	saveFile(gs, 4);
+	getMovesUnitTests();
+
 	SDL_Surface * win = init();
 	//add menu images
 	ImgButton newGameImg;
@@ -117,8 +120,21 @@ int main(int argc, char* args[])
 
 				if (isButtonClicked(newGameImg, x, y))
 				{
+					
 					//start new game
-					printf("s");
+					SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+					SDL_Flip(win);
+
+					//set white background
+					SDL_Rect screenRect;
+					screenRect.x = screenRect.y = 0;
+					screenRect.w = WIN_WIDTH;
+					screenRect.h = WIN_HEIGHT;
+					Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
+					SDL_FillRect(win, &screenRect, clearColor);
+					SDL_Flip(win);
+
+
 				}
 				else if (isButtonClicked(loadGameImg, x, y))
 				{
