@@ -33,6 +33,9 @@
 
 
 char board[BOARD_SIZE][BOARD_SIZE];
+/*
+gamemode=1 - two players,2- player vs AI
+*/
 int gameMode;
 int minimax_depth;
 int userColor;
@@ -92,8 +95,6 @@ struct Move
 #define MATE_BLACK "Mate! black player wins the game\n"
 #define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define print_message(message) (printf("%s", message));
-
-
 
 
 void freeMove(Move *move);

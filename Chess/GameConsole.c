@@ -109,8 +109,8 @@ void settingState()
 			if (strcmp(input, "start") == 0)
 			{
 				//check if board is initialize:
-				int ok = boardInitializeOk();
-				if (ok == 0)
+				int kings = countKings();
+				if (kings != 2)
 				{
 					printf("%s", WROND_BOARD_INITIALIZATION);
 				}
@@ -442,23 +442,47 @@ void remove_disc(char* input)
 
 void GameState()
 {
+	
+	/*
 	int resComputer = 0;
 	int resUser1 = 0;
 	int resUser2 = 0;
+	*/	
+		
 	if (gameMode == 1)//player vs player
 	{
 
 	}
+
 	else if (gameMode == 2)
 	{
+		//player vs computer
+		int computerColor = BLACK;
+		if (userColor == BLACK)
+			computerColor == WHITE;
+		GameUserVsComputer(computerColor);
 
 	}
+	
 }
 
-int boardInitializeOk()
+void GameUserVsComputer(int computerColor)
 {
-	return 0;
+	int insideGameLoop = 1;
+	while (insideGameLoop)
+	{
+		char input[50];
+		if (nextPlayer == WHITE)
+			printf("%s", "WHITE player - enter your move:\n");
+		else
+			printf("%s", "BLACK player - enter your move:\n");
+
+		scanf("%s", input);
+		reduceSpaces(input);
+	}
+
 }
+
 
 
 void getMovesUnitTests()
@@ -665,7 +689,7 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
-int main2()
+int main()
 {
 	gameMode = 1;
 	minimax_depth = 1;
