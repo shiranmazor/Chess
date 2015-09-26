@@ -124,6 +124,7 @@ Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
 void performUserMove(Move *move);
+void printGameMoves(MoveNode *movesList);
 
 //legal moves:
 int isMoveLegal(Move *move, int useColor);

@@ -100,25 +100,40 @@ void settingState()
 	while (1)
 	{
 		printf("%s", ENTER_SETTINGS);
-		scanf("%s", input);
+		fgets(input, 50, stdin);
 		reduceSpaces(input);
+		strcpy(input, str_replace(input, "\n", ""));
 		if (strcmp(input, "quit") != 0 && strcmp(input, "start") != 0)
 			executeSettingCmd(input);
 		else
 		{
 			if (strcmp(input, "start") == 0)
 			{
-				//check if board is initialize:
-				int kings = countKings();
+				// check board init
+					int kings = countKings();
 				if (kings != 2)
 				{
 					printf("%s", WROND_BOARD_INITIALIZATION);
 				}
+				else if (checkForTie(board, nextPlayer) == 1)
+				{
+					printf("%s", TIE);
+					exit(0);
+				}
+				else if (isPlayerUnderMate(board, nextPlayer) == 1)
+				{
+					if (nextPlayer == WHITE)
+						printf("%s", MATE_WHITE);
+					else
+						printf("%s", MATE_BLACK);
+					exit(0);
+				}
 				else
 				{
-					//call game state on the board
-					GameState(board);
+					//moving to game state:
+					GameState();
 				}
+
 
 			}
 			else if (strcmp(input, "quit") == 0)
@@ -140,7 +155,7 @@ void executeSettingCmd(char* input)
 	{
 		//arr len in 2:
 		int num = atoi(arr[1]);
-		if (num != 1 || num != 2)
+		if (num != 1 && num != 2)
 		{
 			printf("%s", WRONG_GAME_MODE);
 		}
@@ -171,6 +186,10 @@ void executeSettingCmd(char* input)
 		else if (strstr(input, "best"))
 		{
 			minimax_depth = -1;
+		}
+		else
+		{
+			printf("%s", ILLEGAL_COMMAND);
 		}
 	}
 	else if (strstr(input, "user_color"))
@@ -209,8 +228,10 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "next_player"))
 	{
-		if (strcmp(arr[1], "black"))
+		if (strcmp(arr[1], "black") == 0)
 			nextPlayer = BLACK;
+		else
+			nextPlayer = WHITE;
 		//else white player is already defined as default
 	}
 	else if (strstr(input, "rm"))
@@ -258,6 +279,10 @@ void executeSettingCmd(char* input)
 		}
 		
 	}
+	else
+	{
+		printf("%s", ILLEGAL_COMMAND);
+	}
 }
 
 int countKings()
@@ -274,10 +299,11 @@ int countKings()
 	return kingsCounter;
 }
 
+/*return 1 in case board is valid*/
 int checkNewBoardValidation(int color, char* Tool)
 {
 	//define counters
-	int rooks, bishops, knights, queens, kings, pawn = 0;
+	int rooks =0, bishops=0, knights=0, queens=0, kings=0, pawn = 0;
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
 		for (int j = 0; j < BOARD_SIZE; j++)
@@ -527,10 +553,16 @@ int ComputerMove(int computerColor)
 	}
 	if (isPromote == 1)
 	{
-		printf("move <%d,%d> to <%d,%d> %s\n", computerMove->currPos->x, computerMove->currPos->y, computerMove->dest->pos->x, computerMove->dest->pos->y,"queen");
+		char* moveStr = getStringFormatMove(*computerMove);
+		printf("%s%s %s", "Computer: move ", moveStr, "queen");
+		free(moveStr);
 	}
 	else
-		printf("move <%d,%d> to <%d,%d>\n", computerMove->currPos->x, computerMove->currPos->y, computerMove->dest->pos->x, computerMove->dest->pos->y);
+	{
+		char* moveStr = getStringFormatMove(*computerMove);
+		printf("%s%s", "Computer: move ", moveStr);
+		free(moveStr);
+	}
 	print_board(board);
 	freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
@@ -572,8 +604,9 @@ int UserMove(int userColor)
 			printf("%s", "WHITE player - enter your move:\n");
 		else
 			printf("%s", "BLACK player - enter your move:\n");
-		scanf("%s", input);
+		fgets(input, 50, stdin);
 		reduceSpaces(input);
+		strcpy(input, str_replace(input, "\n", ""));
 		if (StartsWith(input, "move"))
 		{
 			Move *move = parseMoveCommand(input);//Invalid position or color on the board- move==NULL
@@ -614,7 +647,7 @@ int UserMove(int userColor)
 			MoveNode *moves = getMove(board, *pos, userColor);
 			if (moves != NULL)
 			{
-				printMoves(moves);
+				printGameMoves(moves);
 			}
 			free(arr);
 			freeMoves(moves, NULL);
@@ -653,7 +686,7 @@ int UserMove(int userColor)
 				}
 				movesPointer = movesPointer->next;
 			}
-			printMoves(highestMoves);
+			printGameMoves(highestMoves);
 		}
 		else if (StartsWith(input, "get_score"))
 		{
@@ -665,7 +698,7 @@ int UserMove(int userColor)
 			str_cut(input, 0, 12);
 			Move* move = parseMoveCommand(input);
 			int res = getMoveScore(move, d, userColor);
-			printf("%d", res);
+			printf("%d\n", res);
 
 		}
 		else if (StartsWith(input, "save"))
@@ -930,6 +963,16 @@ void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)
 	}
 }
 
+void printGameMoves(MoveNode *movesList)
+{
+	while (movesList != NULL)
+	{
+		char* moveStr = getStringFormatMove(*(movesList->move));
+		movesList = movesList->next;
+		printf("%s %s", "move", moveStr);
+		free(moveStr);
+	}
+}
 void printMoves(MoveNode *movesList)
 {
 	while (movesList != NULL)
@@ -949,7 +992,10 @@ int main()
 	init_board(board);
 	print_board(board);
 
+	//tests:
+	gameMode = 2;
 
+	/*
 	GameStatus gameState;
 	gameState.nextTurn = WHITE;
 	gameState.userColor = BLACK;
@@ -961,6 +1007,8 @@ int main()
 	GameStatus gs = readFileWithSlotNumber(3);
 	saveFileWithSlotNumber(gs, 4);
 	getMovesUnitTests();
+	*/
+	
 	settingState();
 	
 	

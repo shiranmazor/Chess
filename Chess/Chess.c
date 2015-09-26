@@ -769,6 +769,8 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 }
 int getColorByPos(int x, int y)
 {
+	if (board[x][y] == EMPTY)
+		return -1;
 	if (board[x][y] >= 'A' && board[x][y] <= 'Z')
 		return BLACK;
 	else
@@ -868,7 +870,8 @@ Move * parseMoveCommand(char *command)
 	return move;
 }
 
-//Todo:complete here
+
+
 /* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
 {
