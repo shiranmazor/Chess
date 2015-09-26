@@ -99,11 +99,7 @@ void settingState()
 	char input[50];
 	while (1)
 	{
-		if (printf("%s", ENTER_SETTINGS) < 0)
-		{
-			perror_message("settingState");
-			exit(0);
-		}
+		printf("%s", ENTER_SETTINGS);
 		scanf("%s", input);
 		reduceSpaces(input);
 		if (strcmp(input, "quit") != 0 && strcmp(input, "start") != 0)
@@ -206,7 +202,7 @@ void executeSettingCmd(char* input)
 	else if (strstr(input, "next_player"))
 	{
 		if (strcmp(arr[1], "black"))
-			startPlayer = BLACK;
+			nextPlayer = BLACK;
 		//else white player is already defined as default
 	}
 	else if (strstr(input, "rm"))
@@ -234,14 +230,14 @@ void executeSettingCmd(char* input)
 		{
 			printf("%s", WROND_BOARD_INITIALIZATION);
 		}
-		else if (checkForTie(board, startPlayer) == 1)
+		else if (checkForTie(board, nextPlayer) == 1)
 		{
 			printf("%s", TIE);
 			exit(0);
 		}
-		else if (isPlayerUnderMate(board, startPlayer) == 1)
+		else if (isPlayerUnderMate(board, nextPlayer) == 1)
 		{
-			if (startPlayer == WHITE)
+			if (nextPlayer == WHITE)
 				printf("%s", MATE_WHITE);
 			else
 				printf("%s", MATE_BLACK);
@@ -674,7 +670,7 @@ int main2()
 	gameMode = 1;
 	minimax_depth = 1;
 	userColor = WHITE;
-	startPlayer = WHITE;
+	nextPlayer = WHITE;
 	init_board(board);
 	print_board(board);
 	GameStatus gameState;

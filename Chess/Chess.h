@@ -36,7 +36,7 @@ char board[BOARD_SIZE][BOARD_SIZE];
 int gameMode;
 int minimax_depth;
 int userColor;
-int startPlayer;
+int nextPlayer;
 
 
 typedef struct Pos Pos;
