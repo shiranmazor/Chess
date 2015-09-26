@@ -11,6 +11,17 @@ struct ImgButton
 	char * filename;
 };
 
+//Panel contains multiple ImgButtons (up to 10)
+struct Panel
+{
+	SDL_Surface * surface;
+	int x;
+	int y;
+	
+	ImgButton buttonsArr[10];
+
+};
+
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 {
 	if (clickedX > btn.x && clickedX < btn.x + btn.surface->w &&
@@ -74,10 +85,6 @@ SDL_Surface * init()
 
 int main(int argc, char* args[])
 {
-	GameStatus gs = readFile(3);
-	saveFile(gs, 4);
-	getMovesUnitTests();
-
 	SDL_Surface * win = init();
 	//add menu images
 	ImgButton newGameImg;
