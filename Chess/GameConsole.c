@@ -482,21 +482,16 @@ void GameUserVsComputer(int computerColor)
 	int winningPlayerColor;
 	while (insideGameLoop)
 	{
-
 		//check if computer or user are playing:
 		if (nextPlayer == computerColor)
 		{
 			//play computer move
 			ComputerMove(computerColor);
-			nextPlayer = userColor;
 		}
 		else
 		{
 			//user move:
-
 			UserMove(userColor);
-			nextPlayer = computerColor;
-
 			
 		}
 		
@@ -511,7 +506,34 @@ void GameTwoPlayers()
 /*return the computer results after playing a move - 1-win, 0-not win yet*/
 int ComputerMove(int computerColor)
 {
+	//call minimax algorithm
+	Move* computerMove = NULL;
+	minimax(board, minimax_depth, computerColor, &computerMove,-9999,9999,1,0);
+	//perforam chosen  move
+	performUserMove(ComputerMove);
+	if (checkForTie(board, computerColor))
+	{
+		printf("%s", TIE);
+		exit(0);
+	}
+	if (isPlayerUnderMate(board, WHITE) == 1)
+	{
+		printf("%s", MATE_BLACK);
+		exit(0);
+	}
+	else if (isPlayerUnderMate(board, BLACK) == 1)
+	{
+		printf("%s", MATE_WHITE);
+		exit(0);
+	}
+	int opponentColor = (computerColor == BLACK) ? WHITE : BLACK;
+	if (isPlayerUnderCheck(board, opponentColor) == 1)
+	{
+		printf("%s", "Check!\n");
+	}
 
+	nextPlayer = (computerColor == WHITE) ? BLACK : WHITE;
+	return 0;
 }
 
 /*return the user result after performing  the move 1-win, 0-not win yet*/
@@ -663,6 +685,7 @@ int UserMove(int userColor)
 		printf("%s", "Check!\n");
 	}
 
+	nextPlayer = (userColor == WHITE) ? BLACK : WHITE;
 	return 0;
 }
 
