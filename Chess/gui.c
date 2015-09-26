@@ -104,7 +104,7 @@ SDL_Surface * init()
 }
 
 
-int main(int argc, char* args[])
+int main2(int argc, char* args[])
 {
 	SDL_Surface * win = init();
 	//add menu images
