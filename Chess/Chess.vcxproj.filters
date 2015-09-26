@@ -16,6 +16,9 @@
     <Filter Include="Pictures">
       <UniqueIdentifier>{8259f4e3-597d-41c4-8264-86d0e1d77160}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Images">
+      <UniqueIdentifier>{e088cb85-b912-4e9a-bc0b-ea2c2ff7dfbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h">
@@ -56,5 +59,16 @@
     <ClCompile Include="gui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\LoadGame.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\Quit.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\NewGame.bmp">
+      <Filter>Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
