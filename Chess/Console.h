@@ -5,16 +5,20 @@
 #include "Chess.h"
 #endif CHESS_
 
+//#ifndef MINIMAX_H
+#include "minimax.h"
+//#endif MINIMAX_H
 #include "ChessHelp.h"
-
-
 
 void settingState();
 void executeSettingCmd(char* input);
 void GameState();
-void GameTwoPlayers(int user1Color, int user2Color);
+void GameTwoPlayers();
 void GameUserVsComputer(int computerColor);
+int ComputerMove(int computerColor);
+int UserMove(int userColor);
 
+int getMoveScore(Move *move, int d, int userColor);
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 void print_line();
 void clear_board();

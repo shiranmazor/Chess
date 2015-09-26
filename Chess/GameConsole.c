@@ -192,6 +192,16 @@ void executeSettingCmd(char* input)
 	{
 		int filePathLen = strlen(arr[1]);
 		char* filePath = arr[1];
+		//check if file exist! Todo:
+		GameStatus gStatus = readFile(2);
+		//load game
+		gameMode = gStatus.gameMode;
+		strcpy(board, gStatus.board);
+		userColor = gStatus.userColor;
+		//minimax_depth = gStatus.difficulty;
+		nextPlayer = gStatus.nextTurn;
+		print_board(board);
+
 
 	}
 	else if (strstr(input, "clear"))
@@ -451,7 +461,7 @@ void GameState()
 		
 	if (gameMode == 1)//player vs player
 	{
-
+		GameTwoPlayers();
 	}
 
 	else if (gameMode == 2)
@@ -469,21 +479,210 @@ void GameState()
 void GameUserVsComputer(int computerColor)
 {
 	int insideGameLoop = 1;
+	int winningPlayerColor;
 	while (insideGameLoop)
 	{
-		char input[50];
-		if (nextPlayer == WHITE)
-			printf("%s", "WHITE player - enter your move:\n");
-		else
-			printf("%s", "BLACK player - enter your move:\n");
 
-		scanf("%s", input);
-		reduceSpaces(input);
+		//check if computer or user are playing:
+		if (nextPlayer == computerColor)
+		{
+			//play computer move
+			ComputerMove(computerColor);
+			nextPlayer = userColor;
+		}
+		else
+		{
+			//user move:
+
+			UserMove(userColor);
+			nextPlayer = computerColor;
+
+			
+		}
+		
 	}
 
 }
+void GameTwoPlayers()
+{
 
+}
 
+/*return the computer results after playing a move - 1-win, 0-not win yet*/
+int ComputerMove(int computerColor)
+{
+
+}
+
+/*return the user result after performing  the move 1-win, 0-not win yet*/
+int UserMove(int userColor)
+{
+	char input[50];
+	int MoveDone = 0;
+	while (MoveDone == 0)//didn't perform any move, continuing loop
+	{
+		if (userColor == WHITE)
+			printf("%s", "WHITE player - enter your move:\n");
+		else
+			printf("%s", "BLACK player - enter your move:\n");
+		scanf("%s", input);
+		reduceSpaces(input);
+		if (StartsWith(input, "move"))
+		{
+			Move *move = parseMoveCommand(input);//Invalid position or color on the board- move==NULL
+			if (move == NULL)
+				continue;
+			else
+			{
+				//check if the move is legal
+				if (isMoveLegal(move, userColor) == 0)
+				{
+					printf("%s", ILLEGAL_MOVE);
+					freeMove(move);
+					continue;
+				}
+				else
+				{
+					//perform move
+					performUserMove(move);
+					MoveDone = 1;
+					freeMove(move);
+				}
+			}
+		}
+		else if (StartsWith(input, "get_moves"))
+		{
+			char **arr = NULL;
+			int arr_len = split(input, ' ', &arr);
+			Pos* pos = formatPos(arr[1]);
+			if (pos == NULL)
+				continue;
+			if (getColorByPos(pos->x, pos->y) != userColor)
+			{
+				printf("%s", WRONG_POS_COLOR);
+				free(pos);
+				continue;
+			}
+			//else
+			MoveNode *moves = getMove(board, *pos, userColor);
+			if (moves != NULL)
+			{
+				printMoves(moves);
+			}
+			free(arr);
+			freeMoves(moves, NULL);
+		}
+		else if (StartsWith(input, "get_best_moves"))
+		{
+			char **arr = NULL;
+			int arr_len = split(input, ' ', &arr);
+			int d = atoi(arr[1]);
+			free(arr);
+			//get all move and check their score by minimax
+			MoveNode* highestMoves = NULL;
+			MoveNode* moves = getMoves(board, userColor);
+			if (moves == NULL)
+				continue;
+			MoveNode* movesPointer = moves;
+			int maxRes = 0;
+			while (movesPointer != NULL)
+			{
+				int res = getMoveScore(movesPointer->move, d, userColor);
+				if (res > maxRes)
+				{
+					if (highestMoves != NULL)
+					{
+						freeMoves(highestMoves, NULL);
+						highestMoves = NULL;
+					}
+					//replace all elements in the list
+					MoveNode * moveNode = createMoveNode(*(movesPointer->move->currPos), *(movesPointer->move->dest->pos));
+					addMoveNodeToList(&highestMoves, moveNode);
+				}
+				else if (res == maxRes)
+				{
+					MoveNode * moveNode = createMoveNode(*(movesPointer->move->currPos), *(movesPointer->move->dest->pos));
+					addMoveNodeToList(&highestMoves, moveNode);
+				}
+				movesPointer = movesPointer->next;
+			}
+			printMoves(highestMoves);
+		}
+		else if (StartsWith(input, "get_score"))
+		{
+			char **arr = NULL;
+			int arr_len = split(input, ' ', &arr);
+			int d = atoi(arr[1]);
+			free(arr);
+			//get_score d move <x,y> to <i,j> x
+			str_cut(input, 0, 12);
+			Move* move = parseMoveCommand(input);
+			int res = getMoveScore(move, d, userColor);
+			printf("%d", res);
+
+		}
+		else if (StartsWith(input, "save"))
+		{
+			//create gamseState struct:
+			GameStatus status;
+			strcpy(status.board, board);
+			status.userColor = userColor;
+			status.gameMode = gameMode;
+			status.nextTurn = nextPlayer;
+			//status.difficulty=minimax_depth;
+			//Todo Change!!
+			saveFile(status, 2);
+
+		}
+		else if (StartsWith(input, "quit"))
+		{
+			exit(0);
+		}
+	}
+	//outside move loop, move has compelted:
+	print_board(board);
+	//check mate or a tie
+	if (checkForTie(board, userColor))
+	{
+		printf("%s", TIE);
+		exit(0);
+	}
+	if (isPlayerUnderMate(board, WHITE) == 1)
+	{
+		printf("%s", MATE_BLACK);
+		exit(0);
+	}
+	else if (isPlayerUnderMate(board, BLACK) ==1)
+	{
+		printf("%s", MATE_WHITE);
+		exit(0);
+	}
+	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
+	if (isPlayerUnderCheck(board, opponentColor) == 1)
+	{
+		printf("%s", "Check!\n");
+	}
+
+	return 0;
+}
+
+int getMoveScore(Move *move, int d, int userColor)
+{
+	if (isMoveLegal(move, userColor) == 0)
+	{
+		printf("%s", ILLEGAL_MOVE);
+		return NULL;
+	}
+	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
+	char newBoard[BOARD_SIZE][BOARD_SIZE];
+	copyBoard(board, newBoard);
+	performMoveMinimax(board, newBoard, move);
+	//newBoard is changes - run minimax
+	Move* bestMove = NULL;
+	int res = minimax(newBoard, d - 1, opponentColor, &bestMove, -9999, 9999, 1, 0);
+	freeMove(bestMove);
+	return res;
+}
 
 void getMovesUnitTests()
 {
@@ -691,12 +890,16 @@ void printMoves(MoveNode *movesList)
 }
 int main()
 {
+	//first initializetion
 	gameMode = 1;
 	minimax_depth = 1;
 	userColor = WHITE;
 	nextPlayer = WHITE;
+	pawnPromotionTool = -1000;//queen
 	init_board(board);
 	print_board(board);
+
+
 	GameStatus gameState;
 	gameState.nextTurn = WHITE;
 	gameState.userColor = BLACK;

@@ -1,6 +1,5 @@
 
 #ifndef MINIMAX_H
-
 #define MINIMAX_H
 
 #ifndef CHESS_H

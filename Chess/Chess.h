@@ -40,6 +40,7 @@ int gameMode;
 int minimax_depth;
 int userColor;
 int nextPlayer;
+char pawnPromotionTool;
 
 
 typedef struct Pos Pos;
@@ -68,7 +69,6 @@ struct MoveNode
 struct Move
 {
 	Pos *currPos;
-	int eat;
 	PosNode *dest;
 };
 
@@ -83,6 +83,7 @@ struct Move
 #define WRONG_POSITION "Invalid position on the board\n"
 #define NO_PIECE "Setting this piece creates an invalid board\n"  
 #define WROND_BOARD_INITIALIZATION "Wrong board initialization\n"
+#define WRONG_POS_COLOR "The specified position does not contain your piece\n"
 
 #define ILLEGAL_COMMAND "Illegal command, please try again\n"
 #define ILLEGAL_MOVE "Illegal move\n"
@@ -104,9 +105,11 @@ void freeMoveNode(MoveNode *moveNode);
 int isValidPos(Pos *pos);
 int isValidIndexes(int i, int j);
 Pos * formatPos(char* pos_input);
+int getColorByPos(int x, int y);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
+Move * parseMoveCommand(char *command);
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move* move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor);
@@ -120,6 +123,16 @@ int isPlayerStuck(int playerColor);
 Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
+void performUserMove(Move *move);
+
+//legal moves:
+int isMoveLegal(Move *move, int useColor);
+int isPawnMoveLegal(Move *move, int useColor);
+int isRookMoveLegal(Move *move, int useColor);
+int isKnightMoveLegal(Move *move, int useColor);
+int isBishopMoveLegal(Move *move, int useColor);
+int isQueenMoveLegal(Move *move, int useColor);
+int isKingMoveLegal(Move *move, int useColor);
 
 int checkRookThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 int checkBishopThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);

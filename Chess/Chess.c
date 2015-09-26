@@ -737,6 +737,19 @@ int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		return 1;
 	return 0;
 }
+void performUserMove(Move *move)
+{
+	Pos* curr = move->currPos;
+	Pos* nextPos = move->dest->pos;
+	char Player = board[curr->x][curr->y];
+	board[nextPos->x][nextPos->y] = Player;
+	board[curr->x][curr->y] = EMPTY;
+	//check promotion in case of pawn:
+	if (Player == WHITE_P)
+		checkAndPerformPromotion(board, nextPos, WHITE);
+	else if (Player == BLACK_P)
+		checkAndPerformPromotion(board, nextPos, BLACK);
+}
 
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move *move)
 {
@@ -754,9 +767,355 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 	else if (Player == BLACK_P)
 		checkAndPerformPromotion(newBoard, nextPos, BLACK);
 }
+int getColorByPos(int x, int y)
+{
+	if (board[x][y] >= 'A' && board[x][y] <= 'Z')
+		return BLACK;
+	else
+		return WHITE;
+}
 
+/*
+This function assumes the command is a valid move command, parses it and return a move object
+move <x,y> to <i,j> x
+x- optional for promotion command if entered update pawnPromotionTool with specific tool
+otherwise pawnPromotionTool = queen value
+next player - the color of thr current player
+*/
+Move * parseMoveCommand(char *command)
+{
+	trimwhitespace(command);
+
+	//remove double spaces
+	char *toFree = NULL;
+	int cnt = 0;
+	while (strstr(command, "  "))
+	{
+		cnt++;
+		toFree = command;
+		command = str_replace(command, "  ", " ");
+		if (command != NULL && cnt>1)
+			free(toFree);
+	}
+
+	Move *move = (Move*)malloc(sizeof(Move));
+	char** arr = NULL;
+	int arrLen = split(command, ' ', &arr);
+	//default value
+	pawnPromotionTool = -1000;
+	if (arrLen == 5)//we got promotion
+	{
+		if (userColor == WHITE)
+		{
+			if (strcmp(arr[4], "queen") == 0)
+				pawnPromotionTool = WHITE_Q;
+			else if (strcmp(arr[4], "bishop") == 0)
+				pawnPromotionTool = WHITE_B;
+			else if (strcmp(arr[4], "rook") == 0)
+				pawnPromotionTool = WHITE_R;
+			else if (strcmp(arr[4], "knight") == 0)
+				pawnPromotionTool = WHITE_N;
+		}
+		else
+		{
+			if (strcmp(arr[4], "queen") == 0)
+				pawnPromotionTool = BLACK_Q;
+			else if (strcmp(arr[4], "bishop") == 0)
+				pawnPromotionTool = BLACK_B;
+			else if (strcmp(arr[4], "rook") == 0)
+				pawnPromotionTool = BLACK_R;
+			else if (strcmp(arr[4], "knight") == 0)
+				pawnPromotionTool = BLACK_N;
+		}
+		
+	}
+
+	move->currPos = formatPos(arr[1]);
+	if (!move->currPos)//position was invalid
+		return NULL;
+	//check if position <x,y> does not contain a piece of the user's color:
+	if (nextPlayer != getColorByPos(move->currPos->x, move->currPos->y))
+	{
+		printf("%s", WRONG_POS_COLOR);
+		return NULL;
+	}
+
+	char **destArr = NULL;
+	int destArrLen = split(arr[3], '>', &destArr);
+
+	PosNode *lastPos = NULL;
+	for (int i = 0; i < destArrLen - 1; i++)
+	{
+		PosNode *posToAdd = malloc(sizeof(PosNode));
+		posToAdd->pos = formatPos(destArr[i]);
+		if (posToAdd->pos == NULL)
+			return NULL;
+		posToAdd->next = NULL;
+
+		if (i == 0)
+		{
+			move->dest = posToAdd;
+			lastPos = move->dest;
+		}
+		else
+		{
+			lastPos->next = posToAdd;
+			lastPos = lastPos->next;
+		}
+	}
+	freeArray(arr, arrLen);
+	freeArray(destArr, destArrLen);
+	return move;
+}
+
+//Todo:complete here
+/* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
 {
+	if (playerColor == WHITE && currPawnPos->y == BOARD_SIZE -1)//need promote
+	{
+		if (pawnPromotionTool == -1000)//default to queent
+		{
+			board[currPawnPos->x][currPawnPos->y] = WHITE_Q;
+		}
+		else
+		{
+			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+		}
+	}
+	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
+	{
+		if (pawnPromotionTool == -1000)//default to queent
+		{
+			board[currPawnPos->x][currPawnPos->y] = BLACK;
+		}
+		else
+		{
+			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+		}
+	}
+}
+
+int isMoveLegal(Move *move, int useColor)
+{
+	char currType = board[move->currPos->x][move->currPos->y];
+	if (useColor == BLACK)
+	{
+		if (currType == BLACK_B)
+			return isBishopMoveLegal(move, useColor);
+		else if (currType == BLACK_N)
+			return isKnightMoveLegal(move, useColor);
+		else if (currType == BLACK_K)
+			return isKingMoveLegal(move, useColor);
+		else if (currType == BLACK_P)
+			return isPawnMoveLegal(move, useColor);
+		else if (currType == BLACK_Q)
+			return isQueenMoveLegal(move, useColor);
+		else if (currType == BLACK_R)
+			return isRookMoveLegal(move, useColor);
+	}
+	else
+	{
+		if (currType == WHITE_B)
+			return isBishopMoveLegal(move, useColor);
+		else if (currType == WHITE_N)
+			return isKnightMoveLegal(move, useColor);
+		else if (currType == WHITE_K)
+			return isKingMoveLegal(move, useColor);
+		else if (currType == WHITE_P)
+			return isPawnMoveLegal(move, useColor);
+		else if (currType == WHITE_Q)
+			return isQueenMoveLegal(move, useColor);
+		else if (currType == WHITE_R)
+			return isRookMoveLegal(move, useColor);
+
+	}
+}
+
+int isPawnMoveLegal(Move *move, int useColor)
+{
+	//move one step forward or eat diagonally
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	if (next->y != curr->y + 1)
+		return 0;
+	if (curr->x == next->x)//same colum do not eat
+	{
+		//check if not oocupied
+		if (board[next->x][next->y] != EMPTY)
+			return 0;
+		return 1;
+	}
+	else //eating move
+	{
+		if (board[next->x][next->y] == EMPTY)
+			return 0;
+		else if (next->x != curr->x - 1 || next->x != curr->x + 1)
+			return 0;
+		else
+		{
+			if (userColor == getColorByPos(next->x, next->y))
+				return 0;
+			else return 1;
+		}
+
+	}
+}
+int isRookMoveLegal(Move *move, int useColor)
+{
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	//cannot capture of it's own color
+	if (getColorByPos(next->x, next->y) == useColor)
+		return 0;
+	//check if the next is on the same column or line
+	if (curr->x != next->x && curr->y != next->y)
+		return 0;
+	if (curr->x == next->x)//move in column, up or down
+	{
+		int i = curr->x;
+		int start = min(curr->y, next->y);
+		int end = max(curr->y, next->y);
+		for (int j = start; j < end; j++)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	else if (curr->y == next->y)//move in line, right or left
+	{
+		int j= curr->y;
+		int start = min(curr->x, next->x);
+		int end = max(curr->x, next->x);
+		for (int i = start; i < end; i++)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	return 1;
+}
+int isKnightMoveLegal(Move *move, int useColor)
+{
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	//cannot capture of it's own color
+	if (getColorByPos(next->x, next->y) == useColor)
+		return 0;
+	//checking 8 places
+	int x = curr->x;
+	int y = curr->y;
+	if ((next->x == x - 2 && next->y == y + 1) || (next->x == x - 1 && next->y == y + 2) || (next->x == x + 2 && next->y == y + 1)
+		|| (next->x == x + 1 && next->y == y + 2) || (next->x == x - 2 && next->y == y - 1) ||
+		(next->x == x - 1 && next->y == y - 2) || (next->x == x + 2 && next->y == y - 1)
+		|| (next->x == x + 1 && next->y == y - 2))
+	{
+			return 1;
+	}
+
+}
+int isBishopMoveLegal(Move *move, int useColor)
+{
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	//cannot capture of it's own color
+	if (getColorByPos(next->x, next->y) == useColor)
+		return 0;
+	//move diagonally, cannot leap over other pieces
+	//check if on digaonal
+	//0-not, 1- left up, 2- left down,3-right up, 4- right down
+	int foundOnDiagonal = 0;
+	for (int k = 1; k < BOARD_SIZE; k++)
+	{
+		if (next->x == curr->x + k && next->y == curr->y + k)
+			foundOnDiagonal = 3;
+		else if (next->x == curr->x - k && next->y == curr->y + k)
+			foundOnDiagonal = 1;
+		else if (next->x == curr->x - k && next->y == curr->y - k)
+			foundOnDiagonal = 2;
+		else if (next->x == curr->x + k && next->y == curr->y - k)
+			foundOnDiagonal = 4;
+	}
+	if (foundOnDiagonal == 0)
+		return 0;
+	if (foundOnDiagonal == 1)
+	{
+		for (int i = curr->x-1, j = curr->y+1; i > next->x && j < next->y; i--, j++)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	else if (foundOnDiagonal == 2)
+	{
+		for (int i = curr->x - 1, j = curr->y - 1; i > next->x && j > next->y; i--, j--)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	else if (foundOnDiagonal == 3)
+	{
+		for (int i = curr->x + 1, j = curr->y + 1; i < next->x && j < next->y; i++, j++)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	else if (foundOnDiagonal == 4)
+	{
+		for (int i = curr->x + 1, j = curr->y - 1; i < next->x && j > next->y; i++, j--)
+		{
+			if (board[i][j] != EMPTY)
+				return 0;
+		}
+	}
+	return 1;
+}
+
+int isQueenMoveLegal(Move *move, int useColor)
+{
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	//cannot capture of it's own color
+	if (getColorByPos(next->x, next->y) == useColor)
+		return 0;
+	//check diagonal:
+	int foundOnDiagonal = 0;
+	for (int k = 1; k < BOARD_SIZE; k++)
+	{
+		if (next->x == curr->x + k && next->y == curr->y + k)
+			foundOnDiagonal = 1;
+		else if (next->x == curr->x - k && next->y == curr->y + k)
+			foundOnDiagonal = 1;
+		else if (next->x == curr->x - k && next->y == curr->y - k)
+			foundOnDiagonal = 1;
+		else if (next->x == curr->x + k && next->y == curr->y - k)
+			foundOnDiagonal = 1;
+	}
+	if (foundOnDiagonal = 1)
+		return 1;
+	else
+	{
+		if (curr->x == next->x || curr->y == next->y)
+			return 1;
+	}
+	return  0;
+}
+int isKingMoveLegal(Move *move, int useColor)
+{
+	Pos *curr = move->currPos;
+	Pos* next = move->dest->pos;
+	int x = curr->x;
+	int y = curr->y;
+
+	//cannot capture of it's own color
+	if (getColorByPos(next->x, next->y) == useColor)
+		return 0;
+	if ((next->x == x - 1 && next->y == y) || (next->x == x + 1 && next->y == y) ||
+		(next->x == x && next->y == y + 1) || (next->x == x && next->y == y-1))
+		return 1; 
+	return 0;
 
 }
 
