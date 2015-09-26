@@ -67,6 +67,7 @@ int saveFileWithFileName(GameStatus gameState, char * fullFileName)
 	fprintf(f, "%s", "</game>");
 
 	fclose(f);
+	return 0;
 }
 
 int saveFileWithSlotNumber(GameStatus gameState, int slotNumber)
@@ -88,7 +89,8 @@ GameStatus readFileWithFilename(char * filename)
 	if (f == NULL)
 	{
 		perror(WRONG_FILE_NAME);
-		return;
+		GameStatus gs;
+		return gs;
 	}
 
 	free(filename);
