@@ -193,16 +193,14 @@ void executeSettingCmd(char* input)
 		int filePathLen = strlen(arr[1]);
 		char* filePath = arr[1];
 		//check if file exist! Todo:
-		GameStatus gStatus = readFileWithSlotNumber(2);
+		GameStatus gStatus = readFileWithFilename(filePath);
 		//load game
 		gameMode = gStatus.gameMode;
 		strcpy(board, gStatus.board);
 		userColor = gStatus.userColor;
-		//minimax_depth = gStatus.difficulty;
+		minimax_depth = gStatus.difficulty;
 		nextPlayer = gStatus.nextTurn;
 		print_board(board);
-
-
 	}
 	else if (strstr(input, "clear"))
 	{
@@ -672,15 +670,18 @@ int UserMove(int userColor)
 		}
 		else if (StartsWith(input, "save"))
 		{
+			char **arr = NULL;
+			int arr_len = split(input, ' ', &arr);
+			char* filePath = arr[1];
 			//create gamseState struct:
 			GameStatus status;
 			strcpy(status.board, board);
 			status.userColor = userColor;
 			status.gameMode = gameMode;
 			status.nextTurn = nextPlayer;
-			//status.difficulty=minimax_depth;
-			//Todo Change!!
-			saveFileWithSlotNumber(status, 2);
+			status.difficulty=minimax_depth;
+			saveFileWithFileName(status, filePath);
+			free(arr);
 
 		}
 		else if (StartsWith(input, "quit"))

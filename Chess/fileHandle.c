@@ -3,11 +3,6 @@
 #include "string.h"
 #include "stdio.h"
 
-int isFile()
-{
-	return 0;
-}
-
 char * getFilenameBySlotNumber(int slotNumber)
 {
 	char slotStr[2];

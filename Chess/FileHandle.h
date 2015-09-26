@@ -20,7 +20,7 @@ GameStatus readFileWithSlotNumber(int slotNumber);
 GameStatus readFileWithFilename(char * filename);
 int saveFileWithFileName(GameStatus gameState, char * fullFileName);
 int saveFileWithSlotNumber(GameStatus gameState, int slotNumber);
-//int isFileExist();
+//int isFileExist(char * fullFileName);
 char * getFilenameBySlotNumber(int slotNumber);
 
 #endif FILE_HANDLE_H
