@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\computers\software project\git\Chess\Chess\lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\computers\software project\git\Chess\Chess\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\niri\Documents\GitHub\Chess\Chess\SDL-1.2.15\lib\x86;C:\computers\software project\git\Chess\Chess\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\niri\Documents\GitHub\Chess\Chess\SDL-1.2.15\include;C:\computers\software project\git\Chess\Chess\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -1,7 +1,5 @@
 #include "gui.h"
-#define WIN_TITLE "Chess"
-#define WIN_HEIGHT 600
-#define WIN_WIDTH 800
+
 
 struct ImgButton
 {
@@ -11,15 +9,14 @@ struct ImgButton
 	char * filename;
 };
 
-//Panel contains multiple ImgButtons (up to 10)
+//Panel contains multiple surfaces (up to 20)
 struct Panel
 {
 	SDL_Surface * surface;
 	int x;
 	int y;
 	
-	ImgButton buttonsArr[10];
-
+	SDL_Surface * buttonsArr[20];
 };
 
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
@@ -30,7 +27,6 @@ int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 		return 1;
 	}
 	return 0;
-
 }
 
 SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window)
@@ -52,7 +48,32 @@ SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window)
 	SDL_Flip(window);
 
 	return img;
+}
 
+ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
+{
+	ImgButton btn;
+	btn.x = x;
+	btn.y = y;
+	btn.filename = filename;
+
+	SDL_Rect imgrect;
+
+	imgrect.x = btn.x;
+	imgrect.y = btn.y;
+
+	btn.surface = SDL_LoadBMP(btn.filename);
+	//Apply image to screen
+	if (SDL_BlitSurface(btn.surface, NULL, window, &imgrect) != 0)
+	{
+		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+		SDL_FreeSurface(btn.surface);
+		exit(1);
+	}
+	//Update Screen
+	SDL_Flip(window);
+
+	return btn;
 }
 
 SDL_Surface * init()
@@ -87,26 +108,10 @@ int main2(int argc, char* args[])
 {
 	SDL_Surface * win = init();
 	//add menu images
-	ImgButton newGameImg;
-	newGameImg.x = 315;
-	newGameImg.y = 150;
-	newGameImg.filename = "images/NewGame.bmp";
-	newGameImg.surface = loadImage(newGameImg, win);
+	ImgButton newGameImg = createImgButton(315, 150, "images/NewGame.bmp", win);;
+	ImgButton loadGameImg = createImgButton(315, 230, "images/LoadGame.bmp", win);
+	ImgButton quitGameImg = createImgButton(315, 310, "images/Quit.bmp", win);
 
-	ImgButton loadGameImg;
-	loadGameImg.x = 315;
-	loadGameImg.y = 230;
-	loadGameImg.filename = "images/LoadGame.bmp";
-	loadGameImg.surface = loadImage(loadGameImg, win);
-
-	ImgButton quitGameImg;
-	quitGameImg.x = 315;
-	quitGameImg.y = 310;
-	quitGameImg.filename = "images/Quit.bmp";
-	quitGameImg.surface = loadImage(quitGameImg, win);
-
-
-	//SDL_Delay(2000);
 	int shouldQuit = 0;
 
 	while (!shouldQuit)
