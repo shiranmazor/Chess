@@ -903,10 +903,11 @@ int main()
 	GameStatus gameState;
 	gameState.nextTurn = WHITE;
 	gameState.userColor = BLACK;
-	strcpy(gameState.difficulty, "BEST");
+	gameState.difficulty = -1;
 	gameState.gameMode = 0;
 	memcpy(gameState.board, board, sizeof(board));
 	saveFile(gameState, 1);
+	GameStatus gs2 = readFile(1);
 	GameStatus gs = readFile(3);
 	saveFile(gs, 4);
 	getMovesUnitTests();

@@ -41,7 +41,13 @@ int saveFile(GameStatus gameState, int slotNumber)
 	fprintf(f, "%s", "<game>\n");
 	fprintf(f, "\t<next_turn>%s</next_turn>\n", gameState.nextTurn == WHITE ? "White" : "Black");
 	fprintf(f, "\t<game_mode>%d</game_mode>\n", gameState.gameMode);
-	fprintf(f, "\t<difficulty>%s</difficulty>\n", gameState.difficulty);
+	char difficulty[5];
+	if (gameState.difficulty == -1)
+		sprintf(difficulty, "%s", "BEST");
+	else
+		sprintf(difficulty, "%d", gameState.difficulty);
+
+	fprintf(f, "\t<difficulty>%s</difficulty>\n", difficulty);
 
 	char * userColorStr;
 	if (gameState.userColor == BLACK)
@@ -99,7 +105,7 @@ GameStatus readFile(int slotNumber)
 		fseek(f, currentOffset, SEEK_SET);
 		fscanf(f, "\t<difficulty></difficulty>\n");
 	}
-	strcpy(gameState.difficulty, diff);
+	gameState.difficulty =  atoi(diff);
 	char userColorStr[100];
 	currentOffset = ftell(f);
 	if (!fscanf(f, "\t<user_color>%[^<]</user_color>\n", userColorStr))

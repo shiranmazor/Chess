@@ -11,7 +11,7 @@ struct GameStatus
 {
 	int nextTurn;
 	int gameMode;
-	char difficulty[100]; 
+	int difficulty; 
 	int userColor; 
 	char board[BOARD_SIZE][BOARD_SIZE];
 };

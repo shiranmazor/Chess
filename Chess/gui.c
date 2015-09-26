@@ -29,26 +29,6 @@ int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 	return 0;
 }
 
-SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window)
-{
-	SDL_Rect imgrect;
-
-	imgrect.x = btn.x;
-	imgrect.y = btn.y;
-
-	SDL_Surface* img = SDL_LoadBMP(btn.filename);
-	//Apply image to screen
-	if (SDL_BlitSurface(img, NULL, window, &imgrect) != 0)
-	{
-		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
-		SDL_FreeSurface(img);
-		exit(1);
-	}
-	//Update Screen
-	SDL_Flip(window);
-
-	return img;
-}
 
 ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 {
