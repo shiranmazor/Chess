@@ -479,39 +479,88 @@ void GameState()
 void GameUserVsComputer(int computerColor)
 {
 	int insideGameLoop = 1;
-	int winningPlayerColor;
 	while (insideGameLoop)
 	{
-
 		//check if computer or user are playing:
 		if (nextPlayer == computerColor)
 		{
 			//play computer move
 			ComputerMove(computerColor);
-			nextPlayer = userColor;
 		}
 		else
 		{
 			//user move:
-
 			UserMove(userColor);
-			nextPlayer = computerColor;
-
-			
 		}
-		
-	}
 
+	}
 }
 void GameTwoPlayers()
 {
-
+	int insideGameLoop = 1;
+	while (insideGameLoop)
+	{
+		UserMove(nextPlayer);
+	}
 }
 
 /*return the computer results after playing a move - 1-win, 0-not win yet*/
 int ComputerMove(int computerColor)
 {
+	//call minimax algorithm
+	Move* computerMove = NULL;
+	int opponentColor = (computerColor == BLACK) ? WHITE : BLACK;
+	minimax(board, minimax_depth, computerColor, &computerMove, -9999, 9999, 1, 0);
+	//perforam chosen  move
+	performUserMove(computerMove);
+	//check if promotion has happend and print move
+	int isPromote = 0;
+	Pos *curr = computerMove->currPos;
+	Pos *next = computerMove->dest->pos;
+	if (board[curr->x][curr->y] == WHITE_P)
+	{
+		if (next->y == BOARD_SIZE - 1)
+			isPromote = 1;
+	}
+	else if (board[curr->x][curr->y] == BLACK_P)
+	{
+		if (next->y == 0)
+			isPromote = 1;
+	}
+	if (isPromote == 1)
+	{
+		printf("move <%d,%d> to <%d,%d> %s\n", computerMove->currPos->x, computerMove->currPos->y, computerMove->dest->pos->x, computerMove->dest->pos->y,"queen");
+	}
+	else
+		printf("move <%d,%d> to <%d,%d>\n", computerMove->currPos->x, computerMove->currPos->y, computerMove->dest->pos->x, computerMove->dest->pos->y);
+	print_board(board);
+	freeMove(computerMove);
+	if (isPlayerStuck(opponentColor))
+	{
+		if (checkForTie(board, computerColor))
+		{
+			printf("%s", TIE);
+			exit(0);
+		}
+		if (isPlayerUnderMate(board, WHITE) == 1)
+		{
+			printf("%s", MATE_BLACK);
+			exit(0);
+		}
+		else if (isPlayerUnderMate(board, BLACK) == 1)
+		{
+			printf("%s", MATE_WHITE);
+			exit(0);
+		}
+	}
+	
+	if (isPlayerUnderCheck(board, opponentColor) == 1)
+	{
+		printf("%s", "Check!\n");
+	}
 
+	nextPlayer = (computerColor == WHITE) ? BLACK : WHITE;
+	return 0;
 }
 
 /*return the user result after performing  the move 1-win, 0-not win yet*/
@@ -662,7 +711,7 @@ int UserMove(int userColor)
 	{
 		printf("%s", "Check!\n");
 	}
-
+	nextPlayer = opponentColor;
 	return 0;
 }
 
