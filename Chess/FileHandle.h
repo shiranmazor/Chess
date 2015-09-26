@@ -16,9 +16,11 @@ struct GameStatus
 	char board[BOARD_SIZE][BOARD_SIZE];
 };
 
-int saveFile(GameStatus gameState, int slotNumber);
-int isFileExist();
-GameStatus readFile(int slotNumber);
+GameStatus readFileWithSlotNumber(int slotNumber);
+GameStatus readFileWithFilename(char * filename);
+int saveFileWithFileName(GameStatus gameState, char * fullFileName);
+int saveFileWithSlotNumber(GameStatus gameState, int slotNumber);
+//int isFileExist();
 char * getFilenameBySlotNumber(int slotNumber);
 
 #endif FILE_HANDLE_H
