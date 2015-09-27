@@ -15,9 +15,48 @@ struct Panel
 	SDL_Surface * surface;
 	int x;
 	int y;
+	int width;
+	int height;
 	
-	SDL_Surface * buttonsArr[20];
+	Panel * panels[100];
+	ImgButton buttons[100];
+	int freeButtonSlot;
 };
+
+void addButtonToPanel(Panel * p, ImgButton btn)
+{	
+	ImgButton imgBtn = createImgButton(p->x + btn.x, p->y + btn.y, btn.filename, p->surface);
+	memcpy(&(p->buttons[p->freeButtonSlot]), &(imgBtn), sizeof(ImgButton));
+	p->freeButtonSlot++;
+
+}
+
+Panel createPanel(int x, int y, int width, int height, SDL_Surface * win, int color)
+{
+	Panel panel;
+	panel.x = x;
+	panel.y = y;
+	panel.width = width;
+	panel.height = height;
+	panel.surface = win;
+	panel.freeButtonSlot = 0;
+
+	SDL_Rect rect;
+	rect.x = panel.x;
+	rect.y = panel.y;
+	rect.w = width;
+	rect.h = height;
+
+	if (SDL_FillRect(win, &rect, color) != 0)
+	{
+		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+		//SDL_FreeSurface(btn.surface);
+		exit(1);
+	}
+	//Update Screen
+	SDL_Flip(win);
+	return panel;
+}
 
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 {
@@ -84,7 +123,7 @@ SDL_Surface * init()
 }
 
 
-int main2(int argc, char* args[])
+int main(int argc, char* args[])
 {
 	SDL_Surface * win = init();
 	//add menu images
@@ -126,6 +165,42 @@ int main2(int argc, char* args[])
 					SDL_FillRect(win, &screenRect, clearColor);
 					SDL_Flip(win);
 
+					Panel p = createPanel(WIN_WIDTH - 180, 0, 180, 600, win, SDL_MapRGB(win->format, 255, 255, 255));
+					ImgButton saveGameBtn;
+					saveGameBtn.x = p.width / 2 - 170 / 2;
+					saveGameBtn.y = 50;
+					saveGameBtn.filename = "images/SaveGame.bmp";
+					addButtonToPanel(&p, saveGameBtn);
+
+					ImgButton mainMenuBtn;
+					mainMenuBtn.x = p.width / 2 - 170 / 2;
+					mainMenuBtn.y = 100;
+					mainMenuBtn.filename = "images/MainMenu.bmp";
+					addButtonToPanel(&p, mainMenuBtn);
+
+					ImgButton quitGameBtn;
+					quitGameBtn.x = p.width / 2 - 170 / 2;
+					quitGameBtn.y = p.height - 100;
+					quitGameBtn.filename = "images/Quit.bmp";
+					addButtonToPanel(&p, quitGameBtn);
+
+					//vertical line - seperator
+					createPanel(p.x - 2, 0, 2, WIN_HEIGHT, win, SDL_MapRGB(win->format, 0, 0, 0));
+					
+					//draw game board
+					Panel gameBoard = createPanel(0, 0, 620, WIN_HEIGHT, win, SDL_MapRGB(win->format, 0, 0, 0));
+					ImgButton btn;
+					for (int i = 0; i < BOARD_SIZE; i++)
+					{
+						for (int j = 0; j < BOARD_SIZE; j++)
+						{
+							btn.x = j * 76;
+							btn.y = i * 76;
+							btn.filename = (j % 2 == 0 && i % 2 == 0) || (j % 2 == 1 && i % 2 == 1)  ? "images/lightRect.bmp" : "images/darkRect.bmp";
+							addButtonToPanel(&gameBoard, btn);
+						}
+					}
+					
 
 				}
 				else if (isButtonClicked(loadGameImg, x, y))

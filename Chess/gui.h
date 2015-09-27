@@ -7,9 +7,11 @@
 #define WIN_WIDTH 800
 
 typedef struct ImgButton ImgButton;
+typedef struct Panel Panel;
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY);
 SDL_Surface * init();
 SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window);
+ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window);
 
 int main(int argc, char* args[]);
 

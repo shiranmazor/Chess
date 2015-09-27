@@ -981,7 +981,7 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
-int main()
+int main2()
 {
 	//first initializetion
 	gameMode = 1;
