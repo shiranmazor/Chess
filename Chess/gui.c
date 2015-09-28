@@ -5,30 +5,57 @@
 #define realloc(x,y) myRealloc(x,y)
 
 //UI Tree:
-UINode* CreateNewTree(control* window, int childsNumber)
-{
-	UINode* root = (UINode*)malloc(sizeof(UINode));
-	root->control = window;
-	root->childsNumber = childsNumber;
-	root->children = malloc(sizeof(UINode*)* childsNumber);
-	root->father = NULL;
-	return root;
-}
-UINode* addNewControlToTree(UINode* father, int childsNumber, control* control)
+UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* father, void(*Action)(void*))
 {
 	UINode* node = (UINode*)malloc(sizeof(UINode));
-	node->control = control;
+	//control cast:
+	if (type == WINDOW)
+		node->control = (Window*)control;
+	else if (type == BUTTON)
+		node->control = (ImgButton*)control;
+	else if (type == PANEL)
+		node->control = (Panel*)control;
+	else if (type == LABEL)
+		node->control = (Label*)control;
+	node->type = type;
 	node->childsNumber = childsNumber;
 	node->children = malloc(sizeof(UINode*)* childsNumber);
-	node->father = father;
+	node->father = father;//NULL in case of root
+	node->Action = Action;//can be NULL for window
 	return node;
 }
+
 void addChildToFather(UINode* father, UINode* child)
 {
 	father->childsNumber++;
 	father->children = (UINode*)realloc(father->childsNumber, sizeof(UINode*));
 	father->children[father->childsNumber - 1] = child;
 
+}
+void freeUINode(UINode* root)
+{
+	if (root == NULL)
+		return;
+	free(root->control);
+	free(root->Action);
+	for (int i = 0; i< root->childsNumber; i++)
+	{
+		freeUINode(root->children[i]);
+	}
+	free(root->children);
+	free(root);
+}
+/*scan the tree in DFS left-to-right and present the controls*/
+void presentUITree(UINode* root)
+{
+	if (root == NULL)
+		return;
+	//present root:
+	SDL_Flip(root->control);
+	for (int i = 0; i<root->childsNumber; i++)
+	{
+		presentUITree(root->children[i]);
+	}
 }
 //events:
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
@@ -41,7 +68,7 @@ int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 	return 0;
 }
 
-control* CreateWindow(char* title, int with, int high, SDL_Rect* rect)
+UINode* CreateWindow(char* title, int with, int high)
 {
 	SDL_WM_SetCaption(title, title);
 	SDL_Surface* win = SDL_SetVideoMode(with, high, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
@@ -50,11 +77,14 @@ control* CreateWindow(char* title, int with, int high, SDL_Rect* rect)
 		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
 		return 1;
 	}
-	control *winControl = (control*)malloc(sizeof(control));
-	winControl->surface = win;
-	winControl->type = WINDOW;
-	winControl->Action = NULL;
-	winControl->rect = rect;
+	Window winObj;
+	winObj.height = WIN_HEIGHT;
+	winObj.width = WIN_WIDTH;
+	winObj.title = WIN_TITLE;
+	winObj.type = WINDOW;
+	winObj.surface = win;
+	
+	UINode *winControl = CreateAndAddUINode(&winObj, 0, WINDOW, NULL, NULL);
 	return winControl;
 }
 
@@ -84,6 +114,7 @@ ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 
 	return btn;
 }
+
 SDL_Surface *CreateMainWindow2()
 {
 	SDL_WM_SetCaption("Chess", "Chess");
@@ -119,7 +150,12 @@ void init()
 int main(int argc, char* args[])
 {
 	init();
-	root = NULL;
+	mainWindow = NULL;
+	settingWindow = NULL;
+	AISettingWindow = NULL;
+	gameWindow = NULL;
+
+	/*
 	SDL_Surface * win = CreateMainWindow();
 
 	//add menu images
@@ -130,60 +166,62 @@ int main(int argc, char* args[])
 
 	while (!shouldQuit)
 	{
-		SDL_Event e;
-		while (SDL_PollEvent(&e) != 0)
-		{
-			if (e.type == SDL_QUIT)
-			{
-				shouldQuit = 1;
-				SDL_Quit();
-				exit(0);
-			}
-			else if (e.type == SDL_MOUSEBUTTONUP)
-			{
-				int x, y;
-				SDL_GetMouseState(&x, &y);
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0)
+	{
+	if (e.type == SDL_QUIT)
+	{
+	shouldQuit = 1;
+	SDL_Quit();
+	exit(0);
+	}
+	else if (e.type == SDL_MOUSEBUTTONUP)
+	{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
 
-				if (isButtonClicked(newGameImg, x, y))
-				{
-					
-					//start new game
-					SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
-					SDL_Flip(win);
+	if (isButtonClicked(newGameImg, x, y))
+	{
 
-					//set white background
-					SDL_Rect screenRect;
-					screenRect.x = screenRect.y = 0;
-					screenRect.w = WIN_WIDTH;
-					screenRect.h = WIN_HEIGHT;
-					Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
-					SDL_FillRect(win, &screenRect, clearColor);
-					SDL_Flip(win);
+	//start new game
+	SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	SDL_Flip(win);
+
+	//set white background
+	SDL_Rect screenRect;
+	screenRect.x = screenRect.y = 0;
+	screenRect.w = WIN_WIDTH;
+	screenRect.h = WIN_HEIGHT;
+	Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
+	SDL_FillRect(win, &screenRect, clearColor);
+	SDL_Flip(win);
 
 
-				}
-				else if (isButtonClicked(loadGameImg, x, y))
-				{
-					//load game
-				}
-				else if (isButtonClicked(quitGameImg, x, y))
-				{
-					shouldQuit = 1;
-					SDL_Quit();
-					exit(0);
-					//todo free resources
-				}
-			}
-		}
-		SDL_Delay(1);
+	}
+	else if (isButtonClicked(loadGameImg, x, y))
+	{
+	//load game
+	}
+	else if (isButtonClicked(quitGameImg, x, y))
+	{
+	shouldQuit = 1;
+	SDL_Quit();
+	exit(0);
+	//todo free resources
+	}
+	}
+	}
+	SDL_Delay(1);
 	}
 
 	//SDL_FreeSurface(newGameImg);
 	//SDL_FreeSurface(loadGameImg);
 	//SDL_FreeSurface(quitGameImg);
 	//Quit SDL
-	
+
 	SDL_Quit();
 
+	*/
+	
 	return 0;
 }

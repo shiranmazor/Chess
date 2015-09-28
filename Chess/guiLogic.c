@@ -5,9 +5,10 @@
 #define calloc(x,y) myCalloc(x,y)
 #define realloc(x,y) myRealloc(x,y)
 
-SDL_Surface *CreateMainWindow()
+void CreateMainWindow()
 {
-	SDL_Surface* mainWindows = CreateWindow("Chess", WIN_WIDTH, WIN_HEIGHT, NULL)->surface;
+	/*
+	SDL_Surface* mainWindows =
 	SDL_Flip(mainWindows);
 	//set white background
 	SDL_Rect screenRect;
@@ -19,5 +20,7 @@ SDL_Surface *CreateMainWindow()
 	SDL_Flip(mainWindows);
 	atexit(SDL_Quit);
 	return mainWindows;
+	*/
+	
 }
 
