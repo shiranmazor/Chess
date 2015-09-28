@@ -969,34 +969,7 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
-<<<<<<< ours
 
-void testsetting1()
-=======
-int main2()
->>>>>>> theirs
-{
-	minimax_depth = 1;
-	userColor = WHITE;
-	nextPlayer = WHITE;
-	pawnPromotionTool = -1000;//queen
-	init_board(board);
-	print_board(board);
-	gameMode = 2;
-	nextPlayer = WHITE;
-	remove_disc("<b,2>");
-	remove_disc("<b,7>");
-	remove_disc("<c,2>");
-	set_disc("<b,3>", "white", "pawn");
-	set_disc("<c,3>", "black", "pawn");
-	set_disc("<g,4>", "white", "pawn");
-	print_board(board);
-	char cmd[] = "move <d,2> to <c,3>";
-	Move *move = parseMoveCommand(cmd);
-	int res = isMoveLegal(move, WHITE);
-	assert(res == 1);
-
-}
 
 void testMateTieCheck()
 {
