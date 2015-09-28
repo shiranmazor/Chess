@@ -19,6 +19,9 @@
     <Filter Include="Images">
       <UniqueIdentifier>{e088cb85-b912-4e9a-bc0b-ea2c2ff7dfbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Images\Players">
+      <UniqueIdentifier>{163f3cef-01ab-4704-b885-694008106d35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h">
@@ -37,6 +40,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,6 +65,9 @@
     <ClCompile Include="gui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="guiLogic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\LoadGame.bmp">
@@ -70,5 +79,91 @@
     <Image Include="images\NewGame.bmp">
       <Filter>Images</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_black_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_white_cell.bmp">
+      <Filter>Images\Players</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\init_board.bmp">
+      <Filter>Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chess.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

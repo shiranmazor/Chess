@@ -1,26 +1,36 @@
 #include "gui.h"
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
 
-//structures
-struct ImgButton
+//UI Tree:
+UINode* CreateNewTree(control* window, int childsNumber)
 {
-	SDL_Surface * surface;
-	int x;
-	int y;
-	char * filename;
-};
-
-//Panel contains multiple surfaces (up to 20)
-struct Panel
+	UINode* root = (UINode*)malloc(sizeof(UINode));
+	root->control = window;
+	root->childsNumber = childsNumber;
+	root->children = malloc(sizeof(UINode*)* childsNumber);
+	root->father = NULL;
+	return root;
+}
+UINode* addNewControlToTree(UINode* father, int childsNumber, control* control)
 {
-	SDL_Surface * surface;
-	int x;
-	int y;
-	
-	SDL_Surface * buttonsArr[20];
-};
+	UINode* node = (UINode*)malloc(sizeof(UINode));
+	node->control = control;
+	node->childsNumber = childsNumber;
+	node->children = malloc(sizeof(UINode*)* childsNumber);
+	node->father = father;
+	return node;
+}
+void addChildToFather(UINode* father, UINode* child)
+{
+	father->childsNumber++;
+	father->children = (UINode*)realloc(father->childsNumber, sizeof(UINode*));
+	father->children[father->childsNumber - 1] = child;
 
-
-
+}
+//events:
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 {
 	if (clickedX > btn.x && clickedX < btn.x + btn.surface->w &&
@@ -29,6 +39,23 @@ int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 		return 1;
 	}
 	return 0;
+}
+
+control* CreateWindow(char* title, int with, int high, SDL_Rect* rect)
+{
+	SDL_WM_SetCaption(title, title);
+	SDL_Surface* win = SDL_SetVideoMode(with, high, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	if (win == NULL) 
+	{
+		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
+		return 1;
+	}
+	control *winControl = (control*)malloc(sizeof(control));
+	winControl->surface = win;
+	winControl->type = WINDOW;
+	winControl->Action = NULL;
+	winControl->rect = rect;
+	return winControl;
 }
 
 
@@ -57,8 +84,25 @@ ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 
 	return btn;
 }
+SDL_Surface *CreateMainWindow2()
+{
+	SDL_WM_SetCaption("Chess", "Chess");
+	SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	SDL_Flip(win);
+	//set white background
+	SDL_Rect screenRect;
+	screenRect.x = screenRect.y = 0;
+	screenRect.w = WIN_WIDTH;
+	screenRect.h = WIN_HEIGHT;
+	Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
+	SDL_FillRect(win, &screenRect, clearColor);
+	SDL_Flip(win);
+	atexit(SDL_Quit);
 
-SDL_Surface * init()
+	return win;
+}
+
+void init()
 {
 	//Start SDL
 	SDL_Init(SDL_INIT_VIDEO);
@@ -69,31 +113,19 @@ SDL_Surface * init()
 		return NULL;
 	}
 
-	SDL_WM_SetCaption("Chess", "Chess");
-	SDL_Surface* win = SDL_SetVideoMode(WIN_WIDTH, WIN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	SDL_Flip(win);
-
-	//set white background
-	SDL_Rect screenRect;
-	screenRect.x = screenRect.y = 0;
-	screenRect.w = WIN_WIDTH;
-	screenRect.h = WIN_HEIGHT;
-	Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
-	SDL_FillRect(win, &screenRect, clearColor);
-	SDL_Flip(win);
-	atexit(SDL_Quit);
-	return win;
 }
 
 
-int main2(int argc, char* args[])
+int main(int argc, char* args[])
 {
-	SDL_Surface * win = init();
+	init();
+	root = NULL;
+	SDL_Surface * win = CreateMainWindow();
+
 	//add menu images
 	ImgButton newGameImg = createImgButton(315, 150, "images/NewGame.bmp", win);;
 	ImgButton loadGameImg = createImgButton(315, 230, "images/LoadGame.bmp", win);
 	ImgButton quitGameImg = createImgButton(315, 310, "images/Quit.bmp", win);
-
 	int shouldQuit = 0;
 
 	while (!shouldQuit)

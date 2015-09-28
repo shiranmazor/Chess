@@ -52,7 +52,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL.lib;SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,6 +76,7 @@
     <ClInclude Include="fileHandle.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="minimax.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chess.c" />
@@ -83,12 +84,43 @@
     <ClCompile Include="fileHandle.c" />
     <ClCompile Include="GameConsole.c" />
     <ClCompile Include="gui.c" />
+    <ClCompile Include="guiLogic.c" />
     <ClCompile Include="minimax.c" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\init_board.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_white_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_black_cell.bmp" />
+    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_white_cell.bmp" />
     <Image Include="images\LoadGame.bmp" />
     <Image Include="images\NewGame.bmp" />
     <Image Include="images\Quit.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chess.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
