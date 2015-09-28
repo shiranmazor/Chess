@@ -202,13 +202,21 @@ void executeSettingCmd(char* input)
 		else
 		{
 			if (strcmp(arr[1], "white") == 0)
+			{
 				userColor = WHITE;
+				computerColor = BLACK;
+			}
 			else if (strcmp(arr[1], "black") == 0)
+			{
 				userColor = BLACK;
+				computerColor = WHITE;
+			}
+				
 		}
 	}
 	else if (strstr(input, "load"))
 	{
+		clear_board();
 		int filePathLen = strlen(arr[1]);
 		char* filePath = arr[1];
 		//check if file exist! Todo:
@@ -219,6 +227,7 @@ void executeSettingCmd(char* input)
 		userColor = gStatus.userColor;
 		minimax_depth = gStatus.difficulty;
 		nextPlayer = gStatus.nextTurn;
+		//print_board(gStatus.board);
 		print_board(board);
 	}
 	else if (strstr(input, "clear"))
@@ -308,55 +317,35 @@ int checkNewBoardValidation(int color, char* Tool)
 	{
 		for (int j = 0; j < BOARD_SIZE; j++)
 		{
-			if (userColor == WHITE)
+			if (color == WHITE)
 			{
-				switch (board[i][j])
-				{
-				case WHITE_B:
+				if (board[i][j] == WHITE_B)
 					bishops++;
-					break;
-				case WHITE_K:
+				else if (board[i][j] == WHITE_K)
 					kings++;
-					break;
-				case WHITE_N:
+				else if (board[i][j] == WHITE_N)
 					knights++;
-					break;
-				case WHITE_P:
+				else if (board[i][j] == WHITE_P)
 					pawn++;
-				case WHITE_Q:
+				else if (board[i][j] == WHITE_Q)
 					queens++;
-					break;
-				case WHITE_R:
+				else if (board[i][j] == WHITE_R)
 					rooks++;
-					break;
-				default:
-					break;
-				}
 			}
 			else
 			{
-				switch (board[i][j])
-				{
-				case BLACK_B:
+				if( board[i][j] == BLACK_B)
 					bishops++;
-					break;
-				case BLACK_K:
+				else if (board[i][j] == BLACK_K)
 					kings++;
-					break;
-				case BLACK_N:
+				else if (board[i][j] == BLACK_N)
 					knights++;
-					break;
-				case BLACK_P:
+				else if (board[i][j] == BLACK_P)
 					pawn++;
-				case BLACK_Q:
+				else if (board[i][j] == BLACK_Q)
 					queens++;
-					break;
-				case BLACK_R:
+				else if (board[i][j] == BLACK_R)
 					rooks++;
-					break;
-				default:
-					break;
-				}
 			}
 			
 		}
@@ -475,14 +464,7 @@ void remove_disc(char* input)
 }
 
 void GameState()
-{
-	
-	/*
-	int resComputer = 0;
-	int resUser1 = 0;
-	int resUser2 = 0;
-	*/	
-		
+{	
 	if (gameMode == 1)//player vs player
 	{
 		GameTwoPlayers();
@@ -500,7 +482,7 @@ void GameState()
 	
 }
 
-void GameUserVsComputer(int computerColor)
+void GameUserVsComputer()
 {
 	int insideGameLoop = 1;
 	while (insideGameLoop)
@@ -509,7 +491,7 @@ void GameUserVsComputer(int computerColor)
 		if (nextPlayer == computerColor)
 		{
 			//play computer move
-			ComputerMove(computerColor);
+			ComputerMove();
 		}
 		else
 		{
@@ -529,12 +511,12 @@ void GameTwoPlayers()
 }
 
 /*return the computer results after playing a move - 1-win, 0-not win yet*/
-int ComputerMove(int computerColor)
+int ComputerMove()
 {
 	//call minimax algorithm
 	Move* computerMove = NULL;
 	int opponentColor = (computerColor == BLACK) ? WHITE : BLACK;
-	minimax(board, minimax_depth, computerColor, &computerMove, -9999, 9999, 1, 0);
+	minimax(board, minimax_depth, &computerMove, -9999, 9999, 1, 0,minimax_depth);
 	//perforam chosen  move
 	performUserMove(computerMove);
 	//check if promotion has happend and print move
@@ -567,19 +549,17 @@ int ComputerMove(int computerColor)
 	freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
 	{
-		if (checkForTie(board, computerColor))
+		if (checkForTie(board, opponentColor))
 		{
 			printf("%s", TIE);
 			exit(0);
 		}
-		if (isPlayerUnderMate(board, WHITE) == 1)
+		if (isPlayerUnderMate(board, opponentColor) == 1)
 		{
-			printf("%s", MATE_BLACK);
-			exit(0);
-		}
-		else if (isPlayerUnderMate(board, BLACK) == 1)
-		{
-			printf("%s", MATE_WHITE);
+			if (opponentColor == BLACK)
+				printf("%s", MATE_BLACK);
+			else
+				printf("%s", MATE_WHITE);
 			exit(0);
 		}
 	}
@@ -664,12 +644,13 @@ int UserMove(int userColor)
 			if (moves == NULL)
 				continue;
 			MoveNode* movesPointer = moves;
-			int maxRes = 0;
+			int maxRes = -10000;
 			while (movesPointer != NULL)
 			{
 				int res = getMoveScore(movesPointer->move, d, userColor);
 				if (res > maxRes)
 				{
+					maxRes = res;
 					if (highestMoves != NULL)
 					{
 						freeMoves(highestMoves, NULL);
@@ -698,6 +679,7 @@ int UserMove(int userColor)
 			str_cut(input, 0, 12);
 			Move* move = parseMoveCommand(input);
 			int res = getMoveScore(move, d, userColor);
+			if (res != -1000)
 			printf("%d\n", res);
 
 		}
@@ -724,23 +706,21 @@ int UserMove(int userColor)
 	}
 	//outside move loop, move has compelted:
 	print_board(board);
+	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
 	//check mate or a tie
-	if (checkForTie(board, userColor))
+	if (checkForTie(board, opponentColor))
 	{
 		printf("%s", TIE);
 		exit(0);
 	}
-	if (isPlayerUnderMate(board, WHITE) == 1)
+	if (isPlayerUnderMate(board, opponentColor) == 1)
 	{
-		printf("%s", MATE_BLACK);
+		if (opponentColor == BLACK)
+			printf("%s", MATE_BLACK);
+		else
+			printf("%s", MATE_WHITE);
 		exit(0);
 	}
-	else if (isPlayerUnderMate(board, BLACK) ==1)
-	{
-		printf("%s", MATE_WHITE);
-		exit(0);
-	}
-	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
 	if (isPlayerUnderCheck(board, opponentColor) == 1)
 	{
 		printf("%s", "Check!\n");
@@ -749,20 +729,28 @@ int UserMove(int userColor)
 	return 0;
 }
 
-int getMoveScore(Move *move, int d, int userColor)
+int getMoveScore(Move *move, int d, int playerColor)
 {
-	if (isMoveLegal(move, userColor) == 0)
-	{
-		printf("%s", ILLEGAL_MOVE);
-		return NULL;
-	}
-	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
+	int opponentColor = (playerColor == BLACK) ? WHITE : BLACK;
 	char newBoard[BOARD_SIZE][BOARD_SIZE];
-	copyBoard(board, newBoard);
 	performMoveMinimax(board, newBoard, move);
 	//newBoard is changes - run minimax
 	Move* bestMove = NULL;
-	int res = minimax(newBoard, d - 1, opponentColor, &bestMove, -9999, 9999, 1, 0);
+	int res;
+	if (d == 1)
+	{
+		//get newBoard score for the player:
+		res = score(newBoard, playerColor);
+	}
+	else
+	{
+		int oldUserColor = userColor;
+		int oldComputerColor = computerColor;
+		computerColor = playerColor;
+		userColor = opponentColor;
+		res = minimax(newBoard, d - 1, &bestMove, -9999, 9999, 0, 0, d - 1);
+	}
+	
 	freeMove(bestMove);
 	return res;
 }
@@ -830,10 +818,10 @@ void getMovesUnitTests()
 	board[4][4] = WHITE_P;
 	board[5][5] = WHITE_P;
 	board[4][5] = WHITE_P;
-	print_board(board);
+	//print_board(board);
 	movesList = getMoves(board, WHITE);
 	markMoves(board, movesList);
-	print_board(board);
+	//print_board(board);
 	clear_board();
 
 	board[4][4] = WHITE_B;
@@ -981,9 +969,174 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
+
+void testsetting1()
+{
+	minimax_depth = 1;
+	userColor = WHITE;
+	nextPlayer = WHITE;
+	pawnPromotionTool = -1000;//queen
+	init_board(board);
+	print_board(board);
+	gameMode = 2;
+	nextPlayer = WHITE;
+	remove_disc("<b,2>");
+	remove_disc("<b,7>");
+	remove_disc("<c,2>");
+	set_disc("<b,3>", "white", "pawn");
+	set_disc("<c,3>", "black", "pawn");
+	set_disc("<g,4>", "white", "pawn");
+	print_board(board);
+	char cmd[] = "move <d,2> to <c,3>";
+	Move *move = parseMoveCommand(cmd);
+	int res = isMoveLegal(move, WHITE);
+	assert(res == 1);
+
+}
+
+void testMateTieCheck()
+{
+	minimax_depth = 1;
+	userColor = WHITE;
+	nextPlayer = WHITE;
+	pawnPromotionTool = -1000;//queen
+	init_board(board);
+	print_board(board);
+	gameMode = 2;
+	nextPlayer = WHITE;
+	//check
+	clear_board();
+	nextPlayer = WHITE;
+	set_disc("<d,6>", "black", "king");
+	set_disc("<g,3>", "white", "bishop");
+	set_disc("<d,1>", "white", "king");
+	set_disc("<c,2>", "black", "knight");
+	set_disc("<a,1>", "white", "rook");
+	//print_board(board);
+	int res = isPlayerUnderCheck(board, BLACK);
+	assert(res == 1);
+	//mate:
+	set_disc("<d,5>", "black", "rook");
+	set_disc("<d,7>", "black", "pawn");
+	set_disc("<c,6>", "black", "bishop");
+	set_disc("<e,6>", "black", "rook");
+	//print_board(board);
+	res = isPlayerUnderMate(board, BLACK);
+	assert(res == 0);
+	print_board(board);
+	int res2 = res = isPlayerUnderMate(board, WHITE);
+	assert(res2 == 0);
+	set_disc("<e,6>", "black", "pawn");
+	set_disc("<e,5>", "black", "pawn");
+	set_disc("<c,4>", "white", "knight");
+	print_board(board);
+	res = isPlayerUnderMate(board, BLACK);
+	assert(res = 1);
+
+}
+
+void testMinimax_moves()
+{
+	clear_board();
+	init_board(board);
+	remove_disc("<b,2>");
+	remove_disc("<b,7>");
+	remove_disc("<c,2>");
+	set_disc("<b,3>", "white", "pawn");
+	set_disc("<c,3>", "black", "pawn");
+	set_disc("<h,4>", "white", "pawn");
+}
+void test_config_for_best_move1()
+{
+	//get_best_moves 4 = move <d,7> to <d,5>
+	clear_board();
+	set_disc("<d,1>", "white", "king");
+	set_disc("<e,1>", "white", "rook");
+	set_disc("<c,2>", "white", "pawn");
+	set_disc("<f,2>", "black", "queen");
+	set_disc("<g,2>", "white", "pawn");
+	set_disc("<c,3>", "white", "pawn");
+	set_disc("<e,3>", "black", "bishop");
+	set_disc("<h,3>", "white", "pawn");
+
+	set_disc("<d,5>", "black", "pawn");
+	set_disc("<f,5>", "black", "pawn");
+	set_disc("<c,5>", "black", "king");
+
+	set_disc("<e,6>", "black", "rook");
+	set_disc("<f,6>", "black", "pawn");
+	set_disc("<g,6>", "black", "pawn");
+	set_disc("<h,6>", "black", "pawn");
+
+	set_disc("<a,7>", "black", "pawn");
+	set_disc("<b,7>", "white", "queen");
+	set_disc("<d,7>", "white", "rook");
+	gameMode = 1;
+	nextPlayer = WHITE;
+	print_board(board);
+}
+
+void test_config_for_best_move2()
+{
+	//get_score 4 <e, 2> to <g, 1> = -12
+	/*
+	get_score 3 <e,2> to <g,1>
+	-9
+	get_score 2 <e,2> to <g,1>
+	-9
+	get_score 1 <e,2> to <g,1>
+	-6
+	*/
+	clear_board();
+	set_disc("<a,2>", "white", "pawn");
+	set_disc("<b,2>", "white", "pawn");
+	set_disc("<c,2>", "white", "pawn");
+	set_disc("<d,2>", "white", "pawn");
+	set_disc("<e,2>", "white", "knight");
+	set_disc("<h,2>", "white", "pawn");
+
+	set_disc("<a,1>", "white", "rook");
+	set_disc("<b,1>", "white", "knight");
+	set_disc("<c,1>", "white", "bishop");
+	set_disc("<d,1>", "white", "queen");
+	set_disc("<e,1>", "white", "king");
+	set_disc("<h,1>", "black", "queen");
+
+	set_disc("<c,4>", "white", "bishop");
+	set_disc("<f,4>", "white", "pawn");
+
+	set_disc("<g,6>", "black", "pawn");
+	set_disc("<h,6>", "black", "pawn");
+	set_disc("<a,7>", "black", "pawn");
+	set_disc("<b,7>", "black", "pawn");
+	set_disc("<c,7>", "black", "pawn");
+	set_disc("<d,7>", "black", "pawn");
+	set_disc("<f,7>", "black", "pawn");
+
+	set_disc("<a,8>", "black", "rook");
+	set_disc("<b,8>", "black", "knight");
+	set_disc("<c,8>", "black", "bishop");
+	set_disc("<e,8>", "black", "king");
+	set_disc("<f,8>", "black", "bishop");
+	set_disc("<g,8>", "black", "knight");
+	set_disc("<h,8>", "black", "rook");
+
+	gameMode = 1;
+	minimax_depth = 4;
+	nextPlayer = WHITE;
+	print_board(board);
+}
 int main()
 {
+
+	//tests:
+	//testsetting1();
+	//testMateTieCheck();
+	//clear_board();
+	//gameMode = 2;
+
 	//first initializetion
+	/*
 	gameMode = 1;
 	minimax_depth = 1;
 	userColor = WHITE;
@@ -991,28 +1144,11 @@ int main()
 	pawnPromotionTool = -1000;//queen
 	init_board(board);
 	print_board(board);
-
-	//tests:
-	gameMode = 2;
-
-	/*
-	GameStatus gameState;
-	gameState.nextTurn = WHITE;
-	gameState.userColor = BLACK;
-	gameState.difficulty = -1;
-	gameState.gameMode = 0;
-	memcpy(gameState.board, board, sizeof(board));
-	saveFileWithSlotNumber(gameState, 1);
-	GameStatus gs2 = readFileWithSlotNumber(1);
-	GameStatus gs = readFileWithSlotNumber(3);
-	saveFileWithSlotNumber(gs, 4);
-	getMovesUnitTests();
 	*/
-	
+	//testMinimax_moves();
+	//test_config_for_best_move1();
+	test_config_for_best_move2();
 	settingState();
-	
-	
-
 	return 0;
 }
 

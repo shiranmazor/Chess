@@ -1,12 +1,19 @@
 #include "minimax.h"
 
 //recursive function for return the scoring result of the best move
-int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Move** bestMove, 
-	int alpha, int beta, int isMax, int boardCounter)
+int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove, 
+	int alpha, int beta, int isMax, int boardCounter, int scoreDepth)
 {
 	//if depth  == -1 we are in best difficulty
-	//get user and
-	MoveNode* moves = getMoves(board, computerColor);
+	
+	//int opponentColor = (playerColor == WHITE) ? BLACK : WHITE;
+	MoveNode* moves;
+	int newRes;
+	int color = computerColor;
+	if (isMax == 0)
+		color = userColor;
+
+	moves = getMoves(board, color);
 
 	//check if no moves or depth is 0
 	if (moves == NULL || depth == 0 || boardCounter == 1000000)
@@ -14,58 +21,67 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 		//print_board(board);
 		int res = score(board, computerColor);
 		freeMoves(moves, NULL);
-		//return res*(-1);
+		/*
+		if (isMax == 0)
+		res = res * (-1);
+		*/
+
 		return res;
 	}
 	else//############ let's generate minimax tree!
 	{
 		if (isMax == 1)//player is the computer
 		{
+			newRes = -9999;
 			MoveNode* movesPointer = moves;
 			while (movesPointer != NULL)
 			{
-				int newRes = 0;
+				
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, newBoard, movesPointer->move);
 				boardCounter++;
 				//print_board(board);
 				//print_board(newBoard);
-				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 0, boardCounter);
-				
+				int temp = minimax(newBoard, depth - 1, bestMove, alpha, beta, 0, boardCounter, depth - 1);
+
+				newRes = max(newRes,temp);
 				//insert prunning:
 				if (newRes > alpha)
 				{
 					alpha = newRes;
-					if (depth == minimax_depth)//check if we are in first recursion
+					if (depth == minimax_depth || depth == scoreDepth)//check if we are in first recursion
 						*(bestMove) = movesPointer->move;
 
 				}
-				if (alpha > beta)
+				//if (alpha >= beta)
+				if (newRes >=beta)
 				{
 					freeMoves(moves, *(bestMove));
-					return beta; //pruning
+					return beta;//pruning
 				}
 				movesPointer = movesPointer->next;
 			}
-			/*
-			if (!*(bestMove) && depth == minimax_depth)//all the  moves are bad
-			*(bestMove) = moves->move;
-			*/
 
 			freeMoves(moves, *(bestMove));
-			return alpha;
+			return newRes;
 		}
 		else//player is the user:
 		{
+			newRes = 9999;
 			MoveNode* movesPointer = moves;
 			while (movesPointer != NULL)
 			{
-				int newRes = 0;
 				char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, newBoard, movesPointer->move);
+				
 				boardCounter++;
-				newRes = minimax(newBoard, depth - 1, computerColor, bestMove, alpha, beta, 1, boardCounter);
-				if (alpha >= beta)
+				int temp = minimax(newBoard, depth - 1, bestMove, alpha, beta, 1, boardCounter, depth - 1);
+				newRes = min(newRes, temp);
+				if (newRes < beta)
+					beta = newRes;
+
+				//if (alpha >= beta)
+				if (newRes <= alpha)
 				{
 					freeMoves(moves, *(bestMove));
 					return alpha;
@@ -75,7 +91,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor, Mo
 			}
 
 			freeMoves(moves, *(bestMove));
-			return beta;
+			return newRes;
 		}
 
 	}
@@ -91,6 +107,8 @@ int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor)
 	int result = 0;
 	int winning = 1000;
 	int loosing = -1000;
+	int playerCounter = 0;
+	int opponentCounter = 0;
 	
 	int pawnScore = 1, knightBishopScore = 3, rookScore = 5;
 	int queendScore = 9, kingScore = 400;
@@ -112,34 +130,85 @@ int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor)
 		{
 			for (int i = 0; i < BOARD_SIZE; i++)
 			{
-				if (PlayerColor == WHITE)
+				if (board[i][j] == WHITE_B || board[i][j] == WHITE_N)
 				{
-					if (board[i][j] == WHITE_B || board[i][j] == WHITE_N)
-						result = result + knightBishopScore;
-					else if (board[i][j] == WHITE_P)
-						result = result + pawnScore;
-					else if (board[i][j] == WHITE_R)
-						result = result + rookScore;
-					else if (board[i][j] == WHITE_Q)
-						result = result + queendScore;
-					else if (board[i][j] == WHITE_K)
-						result = result + kingScore;
+					if (PlayerColor == WHITE)
+						playerCounter = playerCounter + knightBishopScore;
+					else
+						opponentCounter = opponentCounter + knightBishopScore;
 				}
-				else//player is black
+				else if (board[i][j] == WHITE_P)
 				{
-					if (board[i][j] == BLACK_B || board[i][j] == BLACK_N)
-						result = result + knightBishopScore;
-					else if (board[i][j] == BLACK_P)
-						result = result + pawnScore;
-					else if (board[i][j] == BLACK_R)
-						result = result + rookScore;
-					else if (board[i][j] == BLACK_Q)
-						result = result + queendScore;
-					else if (board[i][j] == BLACK_K)
-						result = result + kingScore;
+					if (PlayerColor == WHITE)
+						playerCounter = playerCounter + pawnScore;
+					else
+						opponentCounter = opponentCounter + pawnScore;
+				}
+				else if (board[i][j] == WHITE_R)
+				{
+					if (PlayerColor == WHITE)
+						playerCounter = playerCounter + rookScore;
+					else
+						opponentCounter = opponentCounter + rookScore;
+				}
+				else if (board[i][j] == WHITE_Q)
+				{
+					if (PlayerColor == WHITE)
+						playerCounter = playerCounter + queendScore;
+					else
+						opponentCounter = opponentCounter + queendScore;
+				}
+				else if (board[i][j] == WHITE_K)
+				{
+					if (PlayerColor == WHITE)
+						playerCounter = playerCounter + kingScore;
+					else
+						opponentCounter = opponentCounter + kingScore;
+				}
+				else if (board[i][j] == BLACK_B || board[i][j] == BLACK_N)
+				{
+					if (PlayerColor == BLACK)
+						playerCounter = playerCounter + knightBishopScore;
+					else
+						opponentCounter = opponentCounter + knightBishopScore;
+				}
+				else if (board[i][j] == BLACK_P)
+				{
+					if (PlayerColor == BLACK)
+						playerCounter = playerCounter + pawnScore;
+					else
+						opponentCounter = opponentCounter + pawnScore;
+				}
+				else if (board[i][j] == BLACK_R)
+				{
+					if (PlayerColor == BLACK)
+						playerCounter = playerCounter + rookScore;
+					else
+						opponentCounter = opponentCounter + rookScore;
+				}
+				else if (board[i][j] == BLACK_Q)
+				{
+					if (PlayerColor == BLACK)
+						playerCounter = playerCounter + queendScore;
+					else
+						opponentCounter = opponentCounter + queendScore;
+				}
+				else if (board[i][j] == BLACK_K)
+				{
+					if (PlayerColor == BLACK)
+						playerCounter = playerCounter + kingScore;
+					else
+						opponentCounter = opponentCounter + kingScore;
 				}
 			}
 		}
+		//calculate the diff
+		if (playerCounter == 0)
+			result = loosing;
+		else if (opponentCounter == 0)
+			result = winning;
+		else
+			result= playerCounter- opponentCounter;
 		return result;
 	}
 }

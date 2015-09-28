@@ -640,6 +640,35 @@ Pos * formatPos(char* pos_input)
 
 	return pos;
 }
+void print_line2()
+{
+	int i;
+	printf("  |");
+	for (i = 1; i < BOARD_SIZE * 4; i++){
+		printf("-");
+	}
+	printf("|\n");
+}
+
+void print_board2(char board[BOARD_SIZE][BOARD_SIZE])
+{
+	int i, j;
+	print_line2();
+	for (j = BOARD_SIZE - 1; j >= 0; j--)
+	{
+		printf((j < 9 ? " %d" : "%d"), j + 1);
+		for (i = 0; i < BOARD_SIZE; i++){
+			printf("| %c ", board[i][j]);
+		}
+		printf("|\n");
+		print_line2();
+	}
+	printf("   ");
+	for (j = 0; j < BOARD_SIZE; j++){
+		printf(" %c  ", (char)('a' + j));
+	}
+	printf("\n");
+}
 
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
@@ -652,7 +681,6 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 
 	if (moves == NULL)
 		return 1;
-
 	while (movesPointer != NULL)
 	{
 		performMoveMinimax(board, boardCopy, movesPointer->move);
@@ -755,7 +783,7 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_
 {
 	Pos* curr = move->currPos;
 	Pos* nextPos = move->dest->pos;
-	char Player = newBoard[curr->x][curr->y];
+	char Player = board[curr->x][curr->y];
 	copyBoard(board, newBoard);
 
 	newBoard[curr->x][curr->y] = EMPTY;
@@ -899,40 +927,52 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 	}
 }
 
-int isMoveLegal(Move *move, int useColor)
+int isMoveLegal(Move *move, int userColor)
 {
+	int legal = 0;
 	char currType = board[move->currPos->x][move->currPos->y];
-	if (useColor == BLACK)
+	if (userColor == BLACK)
 	{
 		if (currType == BLACK_B)
-			return isBishopMoveLegal(move, useColor);
+			legal = isBishopMoveLegal(move, userColor);
 		else if (currType == BLACK_N)
-			return isKnightMoveLegal(move, useColor);
+			legal = isKnightMoveLegal(move, userColor);
 		else if (currType == BLACK_K)
-			return isKingMoveLegal(move, useColor);
+			legal = isKingMoveLegal(move, userColor);
 		else if (currType == BLACK_P)
-			return isPawnMoveLegal(move, useColor);
+			legal = isPawnMoveLegal(move, userColor);
 		else if (currType == BLACK_Q)
-			return isQueenMoveLegal(move, useColor);
+			legal = isQueenMoveLegal(move, userColor);
 		else if (currType == BLACK_R)
-			return isRookMoveLegal(move, useColor);
+			legal = isRookMoveLegal(move, userColor);
 	}
 	else
 	{
 		if (currType == WHITE_B)
-			return isBishopMoveLegal(move, useColor);
+			legal = isBishopMoveLegal(move, userColor);
 		else if (currType == WHITE_N)
-			return isKnightMoveLegal(move, useColor);
+			legal = isKnightMoveLegal(move, userColor);
 		else if (currType == WHITE_K)
-			return isKingMoveLegal(move, useColor);
+			legal = isKingMoveLegal(move, userColor);
 		else if (currType == WHITE_P)
-			return isPawnMoveLegal(move, useColor);
+			legal = isPawnMoveLegal(move, userColor);
 		else if (currType == WHITE_Q)
-			return isQueenMoveLegal(move, useColor);
+			legal = isQueenMoveLegal(move, userColor);
 		else if (currType == WHITE_R)
-			return isRookMoveLegal(move, useColor);
+			legal = isRookMoveLegal(move, userColor);
 
 	}
+	if (legal == 0)//no need to test check
+		return 0;
+	else
+	{
+		//a player cannot insert himself to check state
+		char boardCopy[BOARD_SIZE][BOARD_SIZE];
+		performMoveMinimax(board, boardCopy, move);
+		if (isPlayerUnderCheck(boardCopy, userColor) == 1)
+			legal = 0;
+	}
+	return legal;
 }
 
 int isPawnMoveLegal(Move *move, int useColor)
@@ -953,7 +993,7 @@ int isPawnMoveLegal(Move *move, int useColor)
 	{
 		if (board[next->x][next->y] == EMPTY)
 			return 0;
-		else if (next->x != curr->x - 1 || next->x != curr->x + 1)
+		else if (next->x != curr->x - 1 && next->x != curr->x + 1)
 			return 0;
 		else
 		{
@@ -1115,9 +1155,13 @@ int isKingMoveLegal(Move *move, int useColor)
 	//cannot capture of it's own color
 	if (getColorByPos(next->x, next->y) == useColor)
 		return 0;
+	
 	if ((next->x == x - 1 && next->y == y) || (next->x == x + 1 && next->y == y) ||
 		(next->x == x && next->y == y + 1) || (next->x == x && next->y == y-1))
 		return 1; 
+	if ((next->x == x - 1 && next->y == y+1) || (next->x == x + 1 && next->y == y+1) ||
+		(next->x == x-1 && next->y == y - 1) || (next->x == x+1 && next->y == y - 1))
+		return 1;
 	return 0;
 
 }

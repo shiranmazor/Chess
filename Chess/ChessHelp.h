@@ -11,7 +11,7 @@
 
 #define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define max(a,b) a > b ?a : b;
-#define min(a,b) a < b ?b : a;
+#define min(a,b) a < b ?a : b;
 
 
 int getIntValue(char c);

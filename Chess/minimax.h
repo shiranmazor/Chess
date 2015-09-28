@@ -10,8 +10,8 @@
 #include "ChessHelp.h"
 #endif CHESS_HELP_H
 
-int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, int computerColor,
-	Move** bestMove, int alpha, int beta, int isMax, int boardCounter);
+int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth,
+	Move** bestMove, int alpha, int beta, int isMax, int boardCounter, int scoreDepth);
 int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor);
 
 #endif MINIMAX_H

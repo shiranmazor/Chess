@@ -14,11 +14,11 @@ void settingState();
 void executeSettingCmd(char* input);
 void GameState();
 void GameTwoPlayers();
-void GameUserVsComputer(int computerColor);
-int ComputerMove(int computerColor);
+void GameUserVsComputer();
+int ComputerMove();
 int UserMove(int userColor);
 
-int getMoveScore(Move *move, int d, int userColor);
+int getMoveScore(Move *move, int d, int playerColor);
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 void print_line();
 void clear_board();

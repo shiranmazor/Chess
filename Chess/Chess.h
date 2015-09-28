@@ -40,6 +40,7 @@ int gameMode;
 int minimax_depth;
 int userColor;
 int nextPlayer;
+int computerColor;
 char pawnPromotionTool;
 
 
@@ -127,7 +128,7 @@ void performUserMove(Move *move);
 void printGameMoves(MoveNode *movesList);
 
 //legal moves:
-int isMoveLegal(Move *move, int useColor);
+int isMoveLegal(Move *move, int userColor);
 int isPawnMoveLegal(Move *move, int useColor);
 int isRookMoveLegal(Move *move, int useColor);
 int isKnightMoveLegal(Move *move, int useColor);
