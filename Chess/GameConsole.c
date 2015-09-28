@@ -969,8 +969,12 @@ void printMoves(MoveNode *movesList)
 		movesList = movesList->next;
 	}
 }
+<<<<<<< ours
 
 void testsetting1()
+=======
+int main2()
+>>>>>>> theirs
 {
 	minimax_depth = 1;
 	userColor = WHITE;
