@@ -564,6 +564,44 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		}
 	}
 
+	//check if player under check and then remove any moves that keeps the check status
+	if (isPlayerUnderCheck(board,playerColor))
+	{
+		MoveNode * moveNode = firstMoveNode;
+		MoveNode * prev = NULL;
+		while (moveNode != NULL)
+		{
+			char board2[BOARD_SIZE][BOARD_SIZE];
+			//copy board
+			for (int i = 0; i<10; i++)
+				memcpy(&board2[i], &board[i], sizeof(board[0]));
+
+			//perform move
+			Move * move = moveNode->move;
+			Pos* curr = move->currPos;
+			Pos* nextPos = move->dest->pos;
+			char Player = board2[curr->x][curr->y];
+			board2[nextPos->x][nextPos->y] = Player;
+			board2[curr->x][curr->y] = EMPTY;
+
+			if (isPlayerUnderCheck(board2, playerColor))
+			{
+				if (prev == NULL)
+				{
+					firstMoveNode = moveNode->next;
+				}
+				else
+				{
+					prev->next = moveNode->next;
+				}
+			}
+			else
+			{
+				prev = moveNode;
+			}
+			moveNode = moveNode->next;
+		}
+	}
 	return firstMoveNode;
 }
 
