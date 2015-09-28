@@ -3,6 +3,11 @@
 #include "string.h"
 #include "stdio.h"
 
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
+
 char * getFilenameBySlotNumber(int slotNumber)
 {
 	char slotStr[2];

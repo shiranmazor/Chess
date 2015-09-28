@@ -1,6 +1,6 @@
 #include "gui.h"
 
-
+//structures
 struct ImgButton
 {
 	SDL_Surface * surface;
@@ -18,6 +18,8 @@ struct Panel
 	
 	SDL_Surface * buttonsArr[20];
 };
+
+
 
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 {

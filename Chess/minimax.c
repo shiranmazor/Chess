@@ -1,5 +1,10 @@
 #include "minimax.h"
 
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
+
 //recursive function for return the scoring result of the best move
 int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove, 
 	int alpha, int beta, int isMax, int boardCounter, int scoreDepth)

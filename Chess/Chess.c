@@ -1,5 +1,10 @@
 #include "Chess.h"
 
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
+
 
 
 void freeMove(Move *move)

@@ -13,6 +13,12 @@
 #define max(a,b) a > b ?a : b;
 #define min(a,b) a < b ?a : b;
 
+int objectsInMemory;
+void *myMalloc(size_t size);
+void myFree(void  *memory);
+void *myCalloc(size_t  Count, size_t size);
+void *myRealloc(void  *memory, size_t newSize);
+
 
 int getIntValue(char c);
 char* replace(char *s, char ch, char *repl);

@@ -1,6 +1,12 @@
 #include "Console.h"
 #include "fileHandle.h"
 
+#define malloc(x) myMalloc(x)
+#define free(x) myFree(x)
+#define calloc(x,y) myCalloc(x,y)
+#define realloc(x,y) myRealloc(x,y)
+
+
 void print_line()
 {
 	int i;
@@ -1105,7 +1111,7 @@ void test_config_for_best_move2()
 }
 int main()
 {
-
+	objectsInMemory = 0;
 	//tests:
 	//testsetting1();
 	//testMateTieCheck();

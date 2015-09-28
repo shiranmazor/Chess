@@ -1,8 +1,8 @@
 #include "ChessHelp.h"
 
-int objectsInMemory = 0;
 
-void *myMalloc(size_t size) {
+void *myMalloc(size_t size)
+{
 	objectsInMemory++;
 	void * ptr = malloc(size);
 	return ptr;
