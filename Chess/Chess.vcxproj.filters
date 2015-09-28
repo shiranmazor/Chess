@@ -161,9 +161,4 @@
       <Filter>Images</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Chess.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
 </Project>

@@ -119,9 +119,6 @@
     <Image Include="images\NewGame.bmp" />
     <Image Include="images\Quit.bmp" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Chess.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
