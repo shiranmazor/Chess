@@ -160,5 +160,17 @@
     <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\init_board.bmp">
       <Filter>Images</Filter>
     </Image>
+    <Image Include="images\darkRect.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\lightRect.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\lightRect.png">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\darkRect.bmp">
+      <Filter>Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
