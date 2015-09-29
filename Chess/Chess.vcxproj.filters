@@ -22,6 +22,9 @@
     <Filter Include="Images\Players">
       <UniqueIdentifier>{163f3cef-01ab-4704-b885-694008106d35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Images\PlayersSelection">
+      <UniqueIdentifier>{dce0c0d8-d5b0-4c14-b462-c22f92f825a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h">
@@ -180,6 +183,24 @@
     </Image>
     <Image Include="images\saveGame.bmp">
       <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\next.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\nextPlayer.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\gameMode.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\boardSettings.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\cancel.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\title1.bmp">
+      <Filter>Images\PlayersSelection</Filter>
     </Image>
   </ItemGroup>
 </Project>

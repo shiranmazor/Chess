@@ -24,7 +24,7 @@ struct UINode* gameWindow;
 int shouldQuitMainEvents;
 int shouldQuitGameEvents;
 int shouldQuitsettingEvents;
-int shouldQuitAiSettingEvents;
+int shouldQuitSelectionEvents;
 //structures
 struct ImgButton
 {
@@ -41,6 +41,8 @@ struct Label
 	int x;
 	int y;
 	char type;
+	char* name;
+	char * filename;
 
 };
 
@@ -89,6 +91,7 @@ void addChildToFather(UINode* father, UINode* child);
 //dfs scanning and presenting the tree
 void presentUITree(UINode* root);
 void freeUINode(UINode* root);
+void freeControl(void*  control, char type);
 
 //create controls:
 UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect);
@@ -96,12 +99,15 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, 
 	void(*Action)(void*), UINode *father, int childsNumber, char* name);
 ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window);
+UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name);
+
 
 void init();
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY);
 SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window);
 void EventsLoopMainWindow();
 void EventsLoopGameWindow();
+void EventsLoopPlayerSelectionWindow();
 
 //gui logic: create all 4 specific windows, game  buttons
 void CreateMainWindow();
@@ -110,7 +116,8 @@ void startNewGame();
 void quitGame();
 void openSettingWindow();
 void openPlayerSelectionWindow();
-
+//return the button posotion on the board according to location on the window
+Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);
 
 

@@ -115,14 +115,20 @@
     <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_white_cell.bmp" />
     <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_black_cell.bmp" />
     <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_white_cell.bmp" />
+    <Image Include="images\boardSettings.bmp" />
+    <Image Include="images\cancel.bmp" />
     <Image Include="images\chesslogo.bmp" />
     <Image Include="images\darkRect.bmp" />
     <Image Include="images\darkRect.png" />
+    <Image Include="images\gameMode.bmp" />
     <Image Include="images\lightRect.bmp" />
     <Image Include="images\lightRect.png" />
     <Image Include="images\LoadGame.bmp" />
     <Image Include="images\mainMenu.bmp" />
     <Image Include="images\NewGame.bmp" />
+    <Image Include="images\next.bmp" />
+    <Image Include="images\nextPlayer.bmp" />
+    <Image Include="images\PlayersSelection\title1.bmp" />
     <Image Include="images\Quit.bmp" />
     <Image Include="images\saveGame.bmp" />
   </ItemGroup>

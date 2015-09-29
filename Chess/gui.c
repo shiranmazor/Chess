@@ -38,11 +38,37 @@ void addChildToFather(UINode* father, UINode* child)
 
 }
 
+void freeControl(void*  control, char type)
+{
+	if (type == WINDOW)
+	{
+		Window* win = (Window*)control;
+		SDL_FreeSurface(win->surface);
+	}
+	else if (type == LABEL)
+	{
+		Label* l = (Label*)control;
+		SDL_FreeSurface(l->surface);
+	}
+	else if (type == PANEL)
+	{
+		Panel* p = (Panel*)control;
+		SDL_FreeSurface(p->surface);
+	}
+	else if (type == BUTTON)
+	{
+		ImgButton* b = (ImgButton*)control;
+		SDL_FreeSurface(b->surface);
+	}
+	free(control);
+}
 void freeUINode(UINode* root)
 {
 	if (root == NULL)
 		return;
-	free(root->control);
+	//free surface
+	if (root->control != NULL)
+		freeControl(root->control, root->type);
 	for (int i = 0; i< root->childsNumber; i++)
 	{
 		freeUINode(root->children[i]);
@@ -167,6 +193,30 @@ UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
 	return buttonNode;
 }
+
+UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name)
+{
+	Label* label = (Label*)malloc(sizeof(Label));
+	label->x = x;
+	label->y = y;
+	label->filename = filename;
+	label->type = LABEL;
+	label->name = name;
+	
+	SDL_Rect imgrect;
+	imgrect.x = label->x;
+	imgrect.y = label->y;
+	label ->surface = SDL_LoadBMP(label->filename);
+	//apply image to screen
+	if (SDL_BlitSurface(label->surface, NULL, surface, &imgrect) != 0)
+	{
+		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+		SDL_FreeSurface(label->surface);
+		exit(1);
+	}
+	UINode *labelNode = CreateAndAddUINode(label, 0, LABEL, father, NULL);
+	return labelNode;
+}
 ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 {
 	ImgButton btn;
@@ -243,6 +293,28 @@ void EventsLoopMainWindow()
 	}
 	SDL_Quit();
 }
+void EventsLoopPlayerSelectionWindow()
+{
+	while (!shouldQuitSelectionEvents)
+	{
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0)
+		{
+			if (e.type == SDL_QUIT)
+			{
+				shouldQuitSelectionEvents = 1;
+				SDL_Quit();
+				exit(0);
+			}
+			else if (e.type == SDL_MOUSEBUTTONUP)
+			{
+			}
+
+		}
+		SDL_Delay(1);
+	}
+	SDL_Quit();
+}
 void EventsLoopGameWindow()
 {
 	while (!shouldQuitGameEvents)
@@ -294,7 +366,7 @@ int main(int argc, char* args[])
 	shouldQuitMainEvents = 0;
 	shouldQuitGameEvents = 0;
 	shouldQuitsettingEvents = 0;
-	shouldQuitAiSettingEvents = 0;
+	shouldQuitSelectionEvents = 0;
 	
 	CreateMainWindow();
 	presentUITree(mainWindow);
