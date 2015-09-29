@@ -173,13 +173,13 @@
       <Filter>Images</Filter>
     </Image>
     <Image Include="images\chesslogo.bmp">
-      <Filter>Images\Players</Filter>
+      <Filter>Images</Filter>
     </Image>
     <Image Include="images\mainMenu.bmp">
-      <Filter>Images\Players</Filter>
+      <Filter>Images</Filter>
     </Image>
     <Image Include="images\saveGame.bmp">
-      <Filter>Images\Players</Filter>
+      <Filter>Images</Filter>
     </Image>
   </ItemGroup>
 </Project>
