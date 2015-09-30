@@ -282,9 +282,12 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
 	int childsNumber, char* name)
 {
+	int parentX = getUINodeX(father);
+	int parentY = getUINodeY(father);
+	
 	ImgButton* btn = (ImgButton*)malloc(sizeof(ImgButton));
-	btn->x = x;
-	btn->y = y;
+	btn->x = parentX + x;
+	btn->y = parentY + y;
 	btn->filename = filename;
 	btn->type = BUTTON;
 	btn->name = name;
