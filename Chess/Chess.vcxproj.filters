@@ -202,5 +202,11 @@
     <Image Include="images\PlayersSelection\title1.bmp">
       <Filter>Images\PlayersSelection</Filter>
     </Image>
+    <Image Include="images\PlayersSelection\playComH.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\twoPlayersH.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
   </ItemGroup>
 </Project>

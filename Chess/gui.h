@@ -5,6 +5,7 @@
 #include "fileHandle.h"
 #include "ChessHelp.h"
 #include "Chess.h"
+#include "Console.h"
 
 
 #define WIN_HEIGHT 600
@@ -34,6 +35,7 @@ struct ImgButton
 	char * filename;
 	char type;
 	char* name;
+	SDL_Rect* rect;
 };
 struct Label
 {
@@ -43,7 +45,7 @@ struct Label
 	char type;
 	char* name;
 	char * filename;
-
+	SDL_Rect* rect;
 };
 
 //Panel contains multiple surfaces (up to 20)
@@ -56,6 +58,7 @@ struct Panel
 	SDL_Rect* rect;
 	int width;
 	int height;
+	char* name;
 };
 
 struct Window
@@ -92,14 +95,17 @@ void addChildToFather(UINode* father, UINode* child);
 void presentUITree(UINode* root);
 void freeUINode(UINode* root);
 void freeControl(void*  control, char type);
+UINode* getNodeByName(char* controlName, UINode* root);
+void replaceUINodeChild(UINode* father, UINode* newNode, char* controlNameToreplace);
 
 //create controls:
 UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect);
-UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber);
+UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber, char* name);
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, 
 	void(*Action)(void*), UINode *father, int childsNumber, char* name);
 ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window);
 UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name);
+
 
 
 void init();
@@ -115,7 +121,10 @@ void CreateMainWindow();
 void startNewGame();
 void quitGame();
 void openSettingWindow();
-void openPlayerSelectionWindow();
+void openPlayerSelectionWindow(void* sourceBottomName);
+void cancelPlayerSelection();
+void playerVsComputerMode();
+void twoPlayerMode();
 //return the button posotion on the board according to location on the window
 Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);

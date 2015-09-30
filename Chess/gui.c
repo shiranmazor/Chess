@@ -8,7 +8,6 @@
 UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* father, void(*Action)(void*))
 {
 	Window* win;
-	Window* win2;
 
 	UINode* node = (UINode*)malloc(sizeof(UINode));
 	//control cast:
@@ -38,6 +37,49 @@ void addChildToFather(UINode* father, UINode* child)
 
 }
 
+void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameToreplace)
+{
+	for (int i = 0; i < father->childsNumber; i++)
+	{
+		if (strcmp(getUINodeName(father->children[i]), controlNameToreplace) == 0)
+		{
+			freeUINode(father->children[i]);
+			father->children[i] = newNode;
+			break;
+		}
+	}
+}
+char* getUINodeName(UINode* node)
+{
+	if (node->type == LABEL)
+	{
+		Label* l = (Label*)node->control;
+		return l->name;
+	}
+	else if (node->type == PANEL)
+	{
+		Panel* p = (Panel*)node->control;
+		return p->name;
+	}
+	else if (node->type == BUTTON)
+	{
+		ImgButton* b = (ImgButton*)node->control;
+		return b->name;
+	}
+}
+UINode* getNodeByName(char* controlName, UINode* root)
+{
+	UINode* node = NULL;
+	if (strcmp(getUINodeName(root), controlName) == 0)
+		return root;
+	for (int i = 0; i < root->childsNumber; i++)
+	{
+		node = getNodeByName(controlName, root->children[i]);
+		if (node != NULL)
+			break;
+	}
+	return node;
+}
 void freeControl(void*  control, char type)
 {
 	if (type == WINDOW)
@@ -49,19 +91,25 @@ void freeControl(void*  control, char type)
 	{
 		Label* l = (Label*)control;
 		SDL_FreeSurface(l->surface);
+		if (l->rect != NULL)
+			free(l->rect);
 	}
 	else if (type == PANEL)
 	{
 		Panel* p = (Panel*)control;
 		SDL_FreeSurface(p->surface);
+
 	}
 	else if (type == BUTTON)
 	{
 		ImgButton* b = (ImgButton*)control;
 		SDL_FreeSurface(b->surface);
+		if (b->rect != NULL)
+			free(b->rect);
 	}
 	free(control);
 }
+
 void freeUINode(UINode* root)
 {
 	if (root == NULL)
@@ -98,12 +146,35 @@ void presentUITree(UINode* root)
 	else if (root->type == BUTTON)
 	{
 		ImgButton* control = (ImgButton*)root->control;
+		Panel *p;
+		if (root->father->type == PANEL)
+			p = (Panel*)root->father->control;
+		
+		//apply image to screen
+		if (SDL_BlitSurface(control->surface, NULL, p->surface, control->rect) != 0)
+		{
+			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+			SDL_FreeSurface(control->surface);
+			exit(1);
+		}
 		SDL_Flip(control->surface);
+		SDL_Flip(p->surface);
 	}
 	else if (root->type == LABEL)
 	{
 		Label* control = (Label*)root->control;
+		Panel *p;
+		if (root->father->type == PANEL)
+			p = (Panel*)root->father->control;
+		//apply image to screen
+		if (SDL_BlitSurface(control->surface, NULL, p->surface, control->rect) != 0)
+		{
+			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+			SDL_FreeSurface(control->surface);
+			exit(1);
+		}
 		SDL_Flip(control->surface);
+		SDL_Flip(p->surface);
 	}
 		
 	for (int i = 0; i<root->childsNumber; i++)
@@ -143,23 +214,24 @@ UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_R
 	winObj->title = title;
 	winObj->type = WINDOW;
 	winObj->surface = win;
-	
 	UINode *winControl = CreateAndAddUINode(winObj, childsNumber, WINDOW, NULL, NULL);
 	return winControl;
 }
-UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber)
+UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber, char* name)
 {
 	Panel *panel = (Panel*)malloc(sizeof(Panel));
 	panel->x = x;
 	panel->y = y;
 	panel->type = PANEL;
 	panel->surface = surface;
+	panel->name = name;
 
 	SDL_Rect rect;
 	rect.x = panel->x;
 	rect.y = panel->y;
 	rect.w = width;
 	rect.h = height;
+	panel->rect = &rect;
 	if (SDL_FillRect(surface, &rect, color) != 0)
 	{
 		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
@@ -169,7 +241,7 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 	return panelNode;
 }
 
-UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,
+UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
 	int childsNumber, char* name)
 {
 	ImgButton* btn = (ImgButton*)malloc(sizeof(ImgButton));
@@ -178,18 +250,13 @@ UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(
 	btn->filename = filename;
 	btn->type = BUTTON;
 	btn->name = name;
-	SDL_Rect imgrect;
-	imgrect.x = btn->x;
-	imgrect.y = btn->y;
+	SDL_Rect *imgrect = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	imgrect->x = btn->x;
+	imgrect->y = btn->y;
 
 	btn->surface = SDL_LoadBMP(btn->filename);
-	//apply image to screen
-	if (SDL_BlitSurface(btn->surface, NULL, surface, &imgrect) != 0)
-	{
-		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
-		SDL_FreeSurface(btn->surface);
-		exit(1);
-	}
+	btn->rect = imgrect;
+	
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
 	return buttonNode;
 }
@@ -202,18 +269,13 @@ UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode
 	label->filename = filename;
 	label->type = LABEL;
 	label->name = name;
+
 	
-	SDL_Rect imgrect;
-	imgrect.x = label->x;
-	imgrect.y = label->y;
+	SDL_Rect *imgrect = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	imgrect->x = label->x;
+	imgrect->y = label->y;
 	label ->surface = SDL_LoadBMP(label->filename);
-	//apply image to screen
-	if (SDL_BlitSurface(label->surface, NULL, surface, &imgrect) != 0)
-	{
-		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
-		SDL_FreeSurface(label->surface);
-		exit(1);
-	}
+	label->rect = imgrect;
 	UINode *labelNode = CreateAndAddUINode(label, 0, LABEL, father, NULL);
 	return labelNode;
 }
@@ -282,7 +344,9 @@ void EventsLoopMainWindow()
 					ImgButton* btn = (ImgButton*)buttonNodes[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
-						buttonNodes[i]->Action(NULL);
+						char* btnName = btn->name;
+						//in main windows all bottons functions recieve sourcebtnName
+						buttonNodes[i]->Action(btnName);
 						break;
 					}
 				}
@@ -308,6 +372,25 @@ void EventsLoopPlayerSelectionWindow()
 			}
 			else if (e.type == SDL_MOUSEBUTTONUP)
 			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				UINode** buttons = playerSelectionWindow->children[0]->children;
+				int bottunsNumber = playerSelectionWindow->children[0]->childsNumber;
+				for (int i = 0; i < bottunsNumber; i++)
+				{
+					if (buttons[i]->type != BUTTON)
+						continue;
+					ImgButton* btn = (ImgButton*)buttons[i]->control;
+					if (isButtonClicked(*btn, x, y))
+					{
+						char* btnName = btn->name;
+						//in main windows all bottons functions recieve sourcebtnName
+						if (buttons[i]->Action != NULL)
+						{
+							buttons[i]->Action(NULL);
+						}							
+					}
+				}
 			}
 
 		}
@@ -315,6 +398,7 @@ void EventsLoopPlayerSelectionWindow()
 	}
 	SDL_Quit();
 }
+
 void EventsLoopGameWindow()
 {
 	while (!shouldQuitGameEvents)
