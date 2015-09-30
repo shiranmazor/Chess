@@ -431,7 +431,9 @@ void EventsLoopMainWindow()
 				UINode** buttonNodes = mainWindow->children[0]->children;
 				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
 				{
-					ImgButton* btn = (ImgButton*)buttonNodes[i]->control;
+					if (mainWindow->children[0]->children[i]->type != BUTTON)
+						continue;
+					ImgButton* btn = (ImgButton*)mainWindow->children[0]->children[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
 						char* btnName = btn->name;
@@ -586,9 +588,6 @@ int main(int argc, char* args[])
 	CreateMainWindow();
 	presentUITree(mainWindow);
 	EventsLoopMainWindow();
-	
 
-	//main_old();
-	freeUINode(mainWindow);
 	return 0;
 }

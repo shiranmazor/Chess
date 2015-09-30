@@ -73,7 +73,28 @@ void CreateGameWindow()
 void loadGame()
 {
 	//add 7 buttons of numbers
+	//UINode* loadGameBtn = CreateButton(win->surface, 315, 230, "images/LoadGame.bmp", loadGame, mainPanel, 0, "loadGame");
+	Window* win = (Window*)mainWindow->control;
+	Panel* mainPanel = (Panel*)mainWindow->children[0]->control;
+	UINode* slotNumBtn = createLabel(win->surface, 500, 50, "images/slotNum.bmp", mainWindow->children[0], "slotNum");
+	UINode* slot1Btn = CreateButton(win->surface, 600, 100, "images/1.bmp", NULL, mainWindow->children[0], 0, "slot1");
+	UINode* slot2Btn = CreateButton(win->surface, 600, 150, "images/2.bmp", NULL, mainWindow->children[0], 0, "slot2");
+	UINode* slot3Btn = CreateButton(win->surface, 600, 200, "images/3.bmp", NULL, mainWindow->children[0], 0, "slot3");
+	UINode* slot4Btn = CreateButton(win->surface, 600, 250, "images/4.bmp", NULL, mainWindow->children[0], 0, "slot4");
+	UINode* slot5Btn = CreateButton(win->surface, 600, 300, "images/5.bmp", NULL, mainWindow->children[0], 0, "slot5");
+	UINode* slot6Btn = CreateButton(win->surface, 600, 350, "images/6.bmp", NULL, mainWindow->children[0], 0, "slot6");
+	UINode* slot7Btn = CreateButton(win->surface, 600, 400, "images/7.bmp", NULL, mainWindow->children[0], 0, "slot7");
 
+	addChildToFather(mainWindow->children[0], slotNumBtn);
+	addChildToFather(mainWindow->children[0], slot1Btn);
+	addChildToFather(mainWindow->children[0], slot2Btn);
+	addChildToFather(mainWindow->children[0], slot3Btn);
+	addChildToFather(mainWindow->children[0], slot4Btn);
+	addChildToFather(mainWindow->children[0], slot5Btn);
+	addChildToFather(mainWindow->children[0], slot6Btn);
+	addChildToFather(mainWindow->children[0], slot7Btn);
+
+	presentUITree(mainWindow);
 
 }
 /*create gameWindow and present it*/

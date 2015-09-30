@@ -244,5 +244,23 @@
     <Image Include="images\tools\black_queen.bmp">
       <Filter>Images\tools</Filter>
     </Image>
+    <Image Include="images\1.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\2.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\3.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\4.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\5.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\6.bmp">
+      <Filter>Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
