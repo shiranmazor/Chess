@@ -28,6 +28,21 @@ void CreateMainWindow()
 	
 }
 
+void addBoardToPanel(UINode* gamePanel, Window *win)
+{
+	//adding board cells:
+	UINode* gameBtn;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			char* filename = (j % 2 == 0 && i % 2 == 0) || (j % 2 == 1 && i % 2 == 1) ? "images/lightRect.bmp" : "images/darkRect.bmp";
+			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, NULL, gamePanel, 0, "boardBtn");
+			addChildToFather(gamePanel, gameBtn);
+		}
+	}
+}
+
 void CreateGameWindow()
 {
 	//set white background
@@ -52,19 +67,7 @@ void CreateGameWindow()
 	addChildToFather(leftPanel, saveGameBtn);
 	addChildToFather(leftPanel, mainMenuBtn);
 	addChildToFather(leftPanel, quitBtn);
-
-	//adding board cells:
-	UINode* gameBtn;
-	for (int i = 0; i < BOARD_SIZE; i++)
-	{
-		for (int j = 0; j < BOARD_SIZE; j++)
-		{
-			char* filename = (j % 2 == 0 && i % 2 == 0) || (j % 2 == 1 && i % 2 == 1) ? "images/lightRect.bmp" : "images/darkRect.bmp";
-			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, NULL, gamePanel, 0, "boardBtn");
-			addChildToFather(gamePanel, gameBtn);
-			
-		}
-	}
+	addBoardToPanel(gamePanel, win);
 
 }
 /*create gameWindow and present it*/
@@ -188,6 +191,18 @@ void openBoardSettingWindow()
 	//Panel* p = (Panel*)leftPanel->control;
 	//UINode* saveGameBtn = CreateButton(win->surface, 620, 50, "images/saveGame.bmp", NULL, leftPanel, 0, "saveGame");
 	//UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
+
+	UINode *boardPanel = CreatePanel(win->surface, 0, 0, 576, 576, 0, boardSettingsWindow, 0, "Board Panel");
+	addChildToFather(boardSettingsWindow, boardPanel);
+	addBoardToPanel(boardPanel, win);
+
+	UINode *menuPanel = CreatePanel(win->surface, 580, 0, WIN_WIDTH - 572, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), boardSettingsWindow, 0, "Menu Panel");
+	addChildToFather(boardSettingsWindow, menuPanel);
+
+//	createImgButton()
+
+	presentUITree(boardSettingsWindow);
+	EventsLoopboardSettingWindow();
 
 
 }

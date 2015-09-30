@@ -312,7 +312,7 @@ UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode
 	SDL_Rect *imgrect = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	imgrect->x = label->x;
 	imgrect->y = label->y;
-	label ->surface = SDL_LoadBMP(label->filename);
+	label->surface = SDL_LoadBMP(label->filename);
 	label->rect = imgrect;
 	UINode *labelNode = CreateAndAddUINode(label, 0, LABEL, father, NULL);
 	return labelNode;
@@ -354,6 +354,32 @@ void init()
 		return NULL;
 	}
 
+}
+
+void EventsLoopboardSettingWindow()
+{
+	while (!shouldQuitBoardSeEvents)
+	{
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0 && !shouldQuitBoardSeEvents)
+		{
+			if (e.type == SDL_QUIT)
+			{
+				shouldQuitBoardSeEvents = 1;
+				SDL_Quit();
+				exit(0);
+			}
+			else if (e.type == SDL_MOUSEBUTTONUP)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+
+
+			}
+		}
+		SDL_Delay(1);
+	}
+	SDL_Quit();
 }
 
 void EventsLoopMainWindow()

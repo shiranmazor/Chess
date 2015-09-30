@@ -23,6 +23,7 @@ struct UINode* boardSettingsWindow;
 struct UINode* gameWindow;
 
 int shouldQuitMainEvents;
+int shouldQuitBoardSeEvents;
 int shouldQuitGameEvents;
 int shouldQuitsettingEvents;
 int shouldQuitSelectionEvents;
