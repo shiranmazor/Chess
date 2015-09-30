@@ -77,6 +77,55 @@ void startNewGame()
 
 	shouldQuitMainEvents = 1;	
 }
+void chooseBlackColor()
+{
+	nextPlayer = BLACK;
+	UINode* father = getNodeByName("AISettingPanel", settingWindow);
+	//check if comp players button is marked and change him to unmark
+	UINode* markNodeBtn = getNodeByName("whiteMark", settingWindow);
+	if (markNodeBtn != NULL)
+	{
+		Window* win = (Window*)settingWindow->control;
+		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
+		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/white.bmp", chooseWhiteColor, markNodeBtn->father, 0, "white");
+		replaceUINodeChild(father, regularBtn, "whiteMark");
+	}
+	//update the bottom to be in highlight color
+	UINode* buttonNode = getNodeByName("black", settingWindow);
+	//change the node with new control and load him
+	Window* win = (Window*)settingWindow->control;
+	ImgButton* oldBtn = (ImgButton*)buttonNode->control;
+	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/blackMark.bmp", NULL, buttonNode->father, 0, "blackMark");
+	replaceUINodeChild(father, coloredBtnNode, "black");
+	presentUITree(settingWindow);
+}
+void chooseWhiteColor()
+{
+	Window* win;
+	ImgButton* oldBtn;
+	nextPlayer = WHITE;
+	UINode* coloredBtnNode;
+	UINode* father = getNodeByName("AISettingPanel", settingWindow);
+	//check if comp players button is marked and change him to unmark
+	UINode* markNodeBtn = getNodeByName("blackMark", settingWindow);
+	if (markNodeBtn != NULL)
+	{
+		Window* win = (Window*)settingWindow->control;
+		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
+		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/black.bmp", chooseBlackColor, markNodeBtn->father, 0, "black");
+		replaceUINodeChild(father, regularBtn, "blackMark");
+	}
+	//update the bottom to be in highlight color
+	UINode* buttonNode = getNodeByName("white", settingWindow);
+	if (buttonNode == NULL)
+		return;
+	//change the node with new control and load him
+	win = (Window*)settingWindow->control;
+	oldBtn = (ImgButton*)buttonNode->control;
+	coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/whiteMark.bmp", NULL, buttonNode->father, 0, "whiteMark");
+	replaceUINodeChild(father, coloredBtnNode, "white");
+	presentUITree(settingWindow);
+}
 void openSettingWindow()
 {
 	//create setting window
@@ -87,13 +136,24 @@ void openSettingWindow()
 	Window* win = (Window*)settingWindow->control;
 	UINode* settingPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), settingWindow, 0, "AISettingPanel");
 
-	UINode* userColorLabel = createLabel(win->surface, 50, 150, "images/AISettings/userColor.bmp", settingPanel, "gameMode");
-	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/AISettings/title1.bmp", settingPanel, "title1");
-	UINode* depthLabel = createLabel(win->surface, 50, 250, "images/AISettings/gameDepth.bmp", settingPanel, "nextPlayer");
+	UINode* userColorLabel = createLabel(win->surface, 50, 150, "images/AISettings/userColor.bmp", settingPanel, "userColorLabel");
+	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/AISettings/title.bmp", settingPanel, "titleLabel");
+	UINode* depthLabel = createLabel(win->surface, 50, 250, "images/AISettings/gameDepth.bmp", settingPanel, "depthLabel");
+
+	UINode* whiteBtn = CreateButton(win->surface, 250, 250, "images/AISettings/white.bmp", chooseWhiteColor, settingPanel, 0, "white");
+	UINode* blackBtn = CreateButton(win->surface, 500, 250, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
+	UINode* depth1 = CreateButton(win->surface, 250, 250, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
+	UINode* depth2 = CreateButton(win->surface, 350, 150, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
+	UINode* depth3 = CreateButton(win->surface, 450, 150, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
+	UINode* depth4 = CreateButton(win->surface, 550, 150, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
+	UINode* depthBest = CreateButton(win->surface, 650, 150, "images/AISettings/black.bmp", chooseBlackColor, settingPanel, 0, "black");
 
 	addChildToFather(settingWindow, settingPanel);
 	addChildToFather(settingPanel, userColorLabel);
 	addChildToFather(settingPanel, depthLabel);
+	addChildToFather(settingPanel, titleLabel);
+	addChildToFather(settingPanel, whiteBtn);
+	addChildToFather(settingPanel, blackBtn);
 
 	//add user color label, white and black button
 	presentUITree(settingWindow);

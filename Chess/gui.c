@@ -49,6 +49,44 @@ void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameTorepla
 		}
 	}
 }
+int  getUINodeX(UINode* node)
+{
+
+	if (node->type == LABEL)
+	{
+		Label* l = (Label*)node->control;
+		return l->x;
+	}
+	else if (node->type == PANEL)
+	{
+		Panel* p = (Panel*)node->control;
+		return p->x;
+	}
+	else if (node->type == BUTTON)
+	{
+		ImgButton* b = (ImgButton*)node->control;
+		return b->x;
+	}
+}
+int getUINodeY(UINode* node)
+{
+
+	if (node->type == LABEL)
+	{
+		Label* l = (Label*)node->control;
+		return l->y;
+	}
+	else if (node->type == PANEL)
+	{
+		Panel* p = (Panel*)node->control;
+		return p->y;
+	}
+	else if (node->type == BUTTON)
+	{
+		ImgButton* b = (ImgButton*)node->control;
+		return b->y;
+	}
+}
 char* getUINodeName(UINode* node)
 {
 	if (node->type == LABEL)

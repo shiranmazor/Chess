@@ -97,6 +97,8 @@ void freeUINode(UINode* root);
 void freeControl(void*  control, char type);
 UINode* getNodeByName(char* controlName, UINode* root);
 void replaceUINodeChild(UINode* father, UINode* newNode, char* controlNameToreplace);
+int getUINodeY(UINode* node);
+int  getUINodeX(UINode* node);
 
 //create controls:
 UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect);
@@ -133,6 +135,8 @@ void openBoardSettingWindow();
 //return the button posotion on the board according to location on the window
 Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);
+void chooseWhiteColor();
+void chooseBlackColor();
 
 
 #endif GUI_H
