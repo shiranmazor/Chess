@@ -192,14 +192,28 @@ void openBoardSettingWindow()
 	//UINode* saveGameBtn = CreateButton(win->surface, 620, 50, "images/saveGame.bmp", NULL, leftPanel, 0, "saveGame");
 	//UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
 
-	UINode *boardPanel = CreatePanel(win->surface, 0, 0, 576, 576, 0, boardSettingsWindow, 0, "Board Panel");
+	UINode *boardPanel = CreatePanel(win->surface, 0, 0, 608, 608, 0, boardSettingsWindow, 0, "Board Panel");
 	addChildToFather(boardSettingsWindow, boardPanel);
 	addBoardToPanel(boardPanel, win);
 
-	UINode *menuPanel = CreatePanel(win->surface, 580, 0, WIN_WIDTH - 572, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), boardSettingsWindow, 0, "Menu Panel");
+	UINode *menuPanel = CreatePanel(win->surface, 610, 0, WIN_WIDTH - 572, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), boardSettingsWindow, 0, "Menu Panel");
 	addChildToFather(boardSettingsWindow, menuPanel);
 
-//	createImgButton()
+	
+	addChildToFather(menuPanel, CreateButton(win, 0, 0, "images/tools/black_bishop.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46, 0, "images/tools/black_queen.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 *2, 0, "images/tools/black_king.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 0, "images/tools/black_pawn.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 0, 46, "images/tools/black_rook.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46, 46, "images/tools/black_knight.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 2, 46, "images/tools/white_bishop.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 46, "images/tools/white_queen.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 0, 92, "images/tools/white_king.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 1, 92, "images/tools/white_pawn.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 2, 92, "images/tools/white_rook.bmp", NULL, menuPanel, 0, "Bishop"));
+	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 92, "images/tools/white_knight.bmp", NULL, menuPanel, 0, "Bishop"));
+	
+
 
 	presentUITree(boardSettingsWindow);
 	EventsLoopboardSettingWindow();

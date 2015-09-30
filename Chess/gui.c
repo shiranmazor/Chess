@@ -279,12 +279,29 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 	return panelNode;
 }
 
+Window * getRoot(UINode * node)
+{
+	UINode * root = node;
+	while (root->father != NULL)
+		root = root->father;
+
+	return (Window *) root->control;
+}
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
 	int childsNumber, char* name)
 {
+	Window * win = getRoot(father);
+
+	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	return createButtonWithColor(surface, x, y, filename, Action, father, childsNumber, name, white);
+}
+
+UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
+	int childsNumber, char* name, Uint32 color)
+{
 	int parentX = getUINodeX(father);
 	int parentY = getUINodeY(father);
-	
+
 	ImgButton* btn = (ImgButton*)malloc(sizeof(ImgButton));
 	btn->x = parentX + x;
 	btn->y = parentY + y;
@@ -295,9 +312,15 @@ UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(
 	imgrect->x = btn->x;
 	imgrect->y = btn->y;
 
+	
+
 	btn->surface = SDL_LoadBMP(btn->filename);
 	btn->rect = imgrect;
-	
+	btn->surface->format->Amask = 0xFF000000;
+	btn->surface->format->Ashift = 24;
+	Window * win = getRoot(father);
+	SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, SDL_MapRGB(win->surface->format, 0, 255, 0));
+
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
 	return buttonNode;
 }
