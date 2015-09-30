@@ -399,6 +399,48 @@ void EventsLoopPlayerSelectionWindow()
 	SDL_Quit();
 }
 
+void EventsLoopSettingWindow()
+{
+	while (!shouldQuitsettingEvents)
+	{
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0)
+		{
+			if (e.type == SDL_QUIT)
+			{
+				shouldQuitsettingEvents = 1;
+				SDL_Quit();
+				exit(0);
+			}
+			else if (e.type == SDL_MOUSEBUTTONUP)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				UINode** buttons = settingWindow->children[0]->children;
+				int bottunsNumber = settingWindow->children[0]->childsNumber;
+				for (int i = 0; i < bottunsNumber; i++)
+				{
+					if (buttons[i]->type != BUTTON)
+						continue;
+					ImgButton* btn = (ImgButton*)buttons[i]->control;
+					if (isButtonClicked(*btn, x, y))
+					{
+						char* btnName = btn->name;
+						//in main windows all bottons functions recieve sourcebtnName
+						if (buttons[i]->Action != NULL)
+						{
+							buttons[i]->Action(NULL);
+						}
+					}
+				}
+			}
+
+		}
+		SDL_Delay(1);
+	}
+	SDL_Quit();
+}
+
 void EventsLoopGameWindow()
 {
 	while (!shouldQuitGameEvents)

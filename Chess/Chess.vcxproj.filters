@@ -25,6 +25,9 @@
     <Filter Include="Images\PlayersSelection">
       <UniqueIdentifier>{dce0c0d8-d5b0-4c14-b462-c22f92f825a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Images\AISettings">
+      <UniqueIdentifier>{63077d9d-94c5-40af-8dfb-498af4cdc1c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h">
@@ -213,6 +216,42 @@
     </Image>
     <Image Include="images\PlayersSelection\whiteMark.bmp">
       <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\AISettings\1.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\1m.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\2.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\2m.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\3.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\3m.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\4.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\4m.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\best.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\bestm.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\gameDepth.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\userColor.bmp">
+      <Filter>Images\AISettings</Filter>
     </Image>
   </ItemGroup>
 </Project>

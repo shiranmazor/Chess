@@ -114,6 +114,7 @@ SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window);
 void EventsLoopMainWindow();
 void EventsLoopGameWindow();
 void EventsLoopPlayerSelectionWindow();
+void EventsLoopSettingWindow();
 
 //gui logic: create all 4 specific windows, game  buttons
 void CreateMainWindow();
@@ -127,6 +128,8 @@ void playerVsComputerMode();
 void twoPlayerMode();
 void chooseNextWhite();
 void chooseNextBlack();
+void NextButtomClicked();
+void openBoardSettingWindow();
 //return the button posotion on the board according to location on the window
 Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);

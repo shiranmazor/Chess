@@ -80,12 +80,63 @@ void startNewGame()
 void openSettingWindow()
 {
 	//create setting window
+	shouldQuitSelectionEvents = 1;
+	shouldQuitsettingEvents = 0;
+	//clean resources
+	settingWindow = CreateWindow("Chess Game AI Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	Window* win = (Window*)settingWindow->control;
+	UINode* settingPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), settingWindow, 0, "AISettingPanel");
+
+	UINode* userColorLabel = createLabel(win->surface, 50, 150, "images/AISettings/userColor.bmp", settingPanel, "gameMode");
+	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/AISettings/title1.bmp", settingPanel, "title1");
+	UINode* depthLabel = createLabel(win->surface, 50, 250, "images/AISettings/gameDepth.bmp", settingPanel, "nextPlayer");
+
+	addChildToFather(settingWindow, settingPanel);
+	addChildToFather(settingPanel, userColorLabel);
+	addChildToFather(settingPanel, depthLabel);
+
+	//add user color label, white and black button
+	presentUITree(settingWindow);
+	EventsLoopSettingWindow();
+
+
+
+}
+void NextButtomClicked()
+{
+	shouldQuitSelectionEvents = 1;
+	free(playerSelectionWindow);
+	if (gameMode == 2)//player vs computer
+	{
+		openSettingWindow();
+	}
+	else
+	{
+		startNewGame();
+	}
+}
+
+void openBoardSettingWindow()
+{
+	shouldQuitMainEvents = 1;
+	shouldQuitSelectionEvents = 1;
+	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	Window* win = (Window*)boardSettingsWindow->control;
+
+	//UINode* leftPanel = CreatePanel(win->surface, 600, 0, 200, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), gameWindow, 0, "leftPanel");
+
+	//Panel* p = (Panel*)leftPanel->control;
+	//UINode* saveGameBtn = CreateButton(win->surface, 620, 50, "images/saveGame.bmp", NULL, leftPanel, 0, "saveGame");
+	//UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
+
+
 }
 void cancelPlayerSelection()
 {
 	//return to main window
 
 	clear_board();
+	nextPlayer = WHITE;
 	shouldQuitSelectionEvents = 1;
 	//clean resources
 	freeUINode(playerSelectionWindow);
@@ -225,8 +276,8 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/PlayersSelection/title1.bmp", selectPanel, "title1");
 	UINode* nextPlayerLabel = createLabel(win->surface, 50, 250, "images/PlayersSelection/nextPlayer.bmp", selectPanel, "nextPlayer");
 	UINode* cancelBtn = CreateButton(win->surface, 150, 400, "images/PlayersSelection/cancel.bmp", cancelPlayerSelection, selectPanel, 0, "Cancel");
-	UINode* BoardSettingsBtn = CreateButton(win->surface, 352, 400, "images/PlayersSelection/boardSettings.bmp", NULL, selectPanel, 0, "boardSet");
-	UINode* NextBtn = CreateButton(win->surface, 633, 400, "images/PlayersSelection/next.bmp", NULL, selectPanel, 0, "next");
+	UINode* BoardSettingsBtn = CreateButton(win->surface, 352, 400, "images/PlayersSelection/boardSettings.bmp", openBoardSettingWindow, selectPanel, 0, "boardSet");
+	UINode* NextBtn = CreateButton(win->surface, 633, 400, "images/PlayersSelection/next.bmp", NextButtomClicked, selectPanel, 0, "next");
 
 	UINode* twoPlayersBtn = CreateButton(win->surface, 250, 150, "images/PlayersSelection/twoPlayers.bmp", twoPlayerMode, selectPanel, 0, "twoPlayers");
 	UINode* compPlayersBtn = CreateButton(win->surface, 500, 150, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, selectPanel, 0, "compPlayers");
