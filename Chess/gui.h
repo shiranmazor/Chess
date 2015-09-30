@@ -132,11 +132,17 @@ void chooseNextWhite();
 void chooseNextBlack();
 void NextButtomClicked();
 void openBoardSettingWindow();
+void chooseDepth1();
+void chooseDepth2();
+void chooseDepth3();
+void chooseDepth4();
+void chooseDepthBest();
 //return the button posotion on the board according to location on the window
 Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);
 void chooseWhiteColor();
 void chooseBlackColor();
+void returnFunc();
 
 
 #endif GUI_H
