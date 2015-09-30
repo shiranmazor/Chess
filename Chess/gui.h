@@ -146,6 +146,7 @@ int main(int argc, char* args[]);
 void chooseWhiteColor();
 void chooseBlackColor();
 void returnFunc();
+void loadGame();
 
 
 #endif GUI_H

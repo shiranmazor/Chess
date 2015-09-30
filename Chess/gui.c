@@ -316,10 +316,10 @@ UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filen
 
 	btn->surface = SDL_LoadBMP(btn->filename);
 	btn->rect = imgrect;
-	btn->surface->format->Amask = 0xFF000000;
-	btn->surface->format->Ashift = 24;
+	//btn->surface->format->Amask = 0xFF000000;
+	//btn->surface->format->Ashift = 24;
 	Window * win = getRoot(father);
-	SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, SDL_MapRGB(win->surface->format, 0, 255, 0));
+	//SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, SDL_MapRGB(win->surface->format, 0, 255, 0));
 
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
 	return buttonNode;

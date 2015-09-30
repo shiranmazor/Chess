@@ -15,7 +15,7 @@ void CreateMainWindow()
 	Uint32 clearColor = SDL_MapRGB(win->surface->format, 255, 255, 255);
 	UINode* mainPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, clearColor, mainWindow, 0,"mainPanel");
 	UINode* newGameBtn = CreateButton(win->surface, 315, 150, "images/NewGame.bmp",openPlayerSelectionWindow, mainPanel, 0, "newGame");
-	UINode* loadGameBtn = CreateButton(win->surface, 315, 230, "images/LoadGame.bmp", NULL, mainPanel, 0,"loadGame");
+	UINode* loadGameBtn = CreateButton(win->surface, 315, 230, "images/LoadGame.bmp", loadGame, mainPanel, 0,"loadGame");
 	UINode* quitGameBtn = CreateButton(win->surface, 315, 310, "images/Quit.bmp", quitGame, mainPanel, 0, "quit");
 	UINode* logoBtn = CreateButton(win->surface, 100, 50, "images/chesslogo.bmp", NULL, mainPanel, 0,"logo");
 
@@ -68,6 +68,12 @@ void CreateGameWindow()
 	addChildToFather(leftPanel, mainMenuBtn);
 	addChildToFather(leftPanel, quitBtn);
 	addBoardToPanel(gamePanel, win);
+
+}
+void loadGame()
+{
+	//add 7 buttons of numbers
+
 
 }
 /*create gameWindow and present it*/
@@ -649,9 +655,9 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	UINode* gameModeLabel = createLabel(win->surface, 50, 150, "images/PlayersSelection/gameMode.bmp", selectPanel, "gameMode");
 	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/PlayersSelection/title1.bmp", selectPanel, "title1");
 	UINode* nextPlayerLabel = createLabel(win->surface, 50, 250, "images/PlayersSelection/nextPlayer.bmp", selectPanel, "nextPlayer");
-	UINode* cancelBtn = CreateButton(win->surface, 150, 400, "images/PlayersSelection/cancel.bmp", cancelPlayerSelection, selectPanel, 0, "Cancel");
-	UINode* BoardSettingsBtn = CreateButton(win->surface, 352, 400, "images/PlayersSelection/boardSettings.bmp", openBoardSettingWindow, selectPanel, 0, "boardSet");
-	UINode* NextBtn = CreateButton(win->surface, 633, 400, "images/PlayersSelection/next.bmp", NextButtomClicked, selectPanel, 0, "next");
+	UINode* cancelBtn = CreateButton(win->surface, 50, 400, "images/PlayersSelection/cancel.bmp", cancelPlayerSelection, selectPanel, 0, "Cancel");
+	UINode* BoardSettingsBtn = CreateButton(win->surface, 300, 400, "images/PlayersSelection/boardSettings.bmp", openBoardSettingWindow, selectPanel, 0, "boardSet");
+	UINode* NextBtn = CreateButton(win->surface, 550, 400, "images/PlayersSelection/next.bmp", NextButtomClicked, selectPanel, 0, "next");
 
 	UINode* twoPlayersBtn = CreateButton(win->surface, 250, 150, "images/PlayersSelection/twoPlayers.bmp", twoPlayerMode, selectPanel, 0, "twoPlayers");
 	UINode* compPlayersBtn = CreateButton(win->surface, 500, 150, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, selectPanel, 0, "compPlayers");
