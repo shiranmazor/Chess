@@ -211,5 +211,35 @@
     <Image Include="images\tools\white_rook.bmp">
       <Filter>Images\tools</Filter>
     </Image>
+    <Image Include="images\PlayersSelection\gameMode.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\black.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\boardSettings.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\cancel.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\next.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\nextPlayer.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\playComp.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\twoplay.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\twoPlayers.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\white.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
   </ItemGroup>
 </Project>
