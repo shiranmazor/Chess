@@ -128,9 +128,11 @@
     <Image Include="images\NewGame.bmp" />
     <Image Include="images\next.bmp" />
     <Image Include="images\nextPlayer.bmp" />
+    <Image Include="images\PlayersSelection\blackMark.bmp" />
     <Image Include="images\PlayersSelection\playComH.bmp" />
     <Image Include="images\PlayersSelection\title1.bmp" />
     <Image Include="images\PlayersSelection\twoPlayersH.bmp" />
+    <Image Include="images\PlayersSelection\whiteMark.bmp" />
     <Image Include="images\Quit.bmp" />
     <Image Include="images\saveGame.bmp" />
   </ItemGroup>

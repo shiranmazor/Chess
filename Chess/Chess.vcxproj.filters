@@ -208,5 +208,11 @@
     <Image Include="images\PlayersSelection\twoPlayersH.bmp">
       <Filter>Images\PlayersSelection</Filter>
     </Image>
+    <Image Include="images\PlayersSelection\blackMark.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
+    <Image Include="images\PlayersSelection\whiteMark.bmp">
+      <Filter>Images\PlayersSelection</Filter>
+    </Image>
   </ItemGroup>
 </Project>

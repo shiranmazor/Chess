@@ -143,6 +143,57 @@ void playerVsComputerMode()
 	replaceUINodeChild(father, coloredBtnNode, "compPlayers");
 	presentUITree(playerSelectionWindow);
 }
+
+void chooseNextWhite()
+{
+	Window* win;
+	ImgButton* oldBtn;
+	nextPlayer = WHITE;
+	UINode* coloredBtnNode;
+	UINode* father = getNodeByName("selectPanel", playerSelectionWindow);
+	//check if comp players button is marked and change him to unmark
+	UINode* markNodeBtn = getNodeByName("blackMark", playerSelectionWindow);
+	if (markNodeBtn != NULL)
+	{
+		Window* win = (Window*)playerSelectionWindow->control;
+		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
+		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/black.bmp", chooseNextBlack, markNodeBtn->father, 0, "black");
+		replaceUINodeChild(father, regularBtn, "blackMark");
+	}
+	//update the bottom to be in highlight color
+	UINode* buttonNode = getNodeByName("white", playerSelectionWindow);
+	if (buttonNode == NULL)
+		return;
+	//change the node with new control and load him
+	win = (Window*)playerSelectionWindow->control;
+	oldBtn = (ImgButton*)buttonNode->control;
+	coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/whiteMark.bmp", NULL, buttonNode->father, 0, "whiteMark");
+	replaceUINodeChild(father, coloredBtnNode, "white");
+	presentUITree(playerSelectionWindow);
+ 
+}
+void chooseNextBlack()
+{
+	nextPlayer = BLACK;
+	UINode* father = getNodeByName("selectPanel", playerSelectionWindow);
+	//check if comp players button is marked and change him to unmark
+	UINode* markNodeBtn = getNodeByName("whiteMark", playerSelectionWindow);
+	if (markNodeBtn != NULL)
+	{
+		Window* win = (Window*)playerSelectionWindow->control;
+		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
+		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/white.bmp", chooseNextWhite, markNodeBtn->father, 0, "white");
+		replaceUINodeChild(father, regularBtn, "whiteMark");
+	}
+	//update the bottom to be in highlight color
+	UINode* buttonNode = getNodeByName("black", playerSelectionWindow);
+	//change the node with new control and load him
+	Window* win = (Window*)playerSelectionWindow->control;
+	ImgButton* oldBtn = (ImgButton*)buttonNode->control;
+	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/blackMark.bmp", NULL, buttonNode->father, 0, "blackMark");
+	replaceUINodeChild(father, coloredBtnNode, "black");
+	presentUITree(playerSelectionWindow);
+}
 void openPlayerSelectionWindow(void* sourceBottomName)
 {
 	//clear mainWindow tree
@@ -179,11 +230,11 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 
 	UINode* twoPlayersBtn = CreateButton(win->surface, 250, 150, "images/PlayersSelection/twoPlayers.bmp", twoPlayerMode, selectPanel, 0, "twoPlayers");
 	UINode* compPlayersBtn = CreateButton(win->surface, 500, 150, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, selectPanel, 0, "compPlayers");
-	UINode* whiteBtn = CreateButton(win->surface, 250, 250, "images/PlayersSelection/white.bmp", NULL, selectPanel, 0, "white");
-	UINode* blackBtn = CreateButton(win->surface, 350, 250, "images/PlayersSelection/black.bmp", NULL, selectPanel, 0, "black");
+	UINode* whiteBtn = CreateButton(win->surface, 250, 250, "images/PlayersSelection/whiteMark.bmp", chooseNextWhite, selectPanel, 0, "whiteMark");
+	UINode* blackBtn = CreateButton(win->surface, 500, 250, "images/PlayersSelection/black.bmp", chooseNextBlack, selectPanel, 0, "black");
 
 	//labels:
-	UINode* defaultColLabel = createLabel(win->surface, 450, 245, "images/PlayersSelection/default.bmp", selectPanel, "whitetext");
+	//UINode* defaultColLabel = createLabel(win->surface, 450, 245, "images/PlayersSelection/whitet.bmp", selectPanel, "colorLabel");
 
 	addChildToFather(playerSelectionWindow, selectPanel);
 	addChildToFather(selectPanel, titleLabel);
@@ -194,7 +245,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	addChildToFather(selectPanel, nextPlayerLabel);
 	addChildToFather(selectPanel, whiteBtn);
 	addChildToFather(selectPanel, blackBtn);
-	addChildToFather(selectPanel, defaultColLabel);
+	//addChildToFather(selectPanel, defaultColLabel);
 	addChildToFather(selectPanel, cancelBtn);
 	addChildToFather(selectPanel, BoardSettingsBtn);
 	addChildToFather(selectPanel, NextBtn);
@@ -202,8 +253,6 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	presentUITree(playerSelectionWindow);
 	EventsLoopPlayerSelectionWindow();
 }
-
-
 
 void quitGame()
 {

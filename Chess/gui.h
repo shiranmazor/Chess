@@ -125,6 +125,8 @@ void openPlayerSelectionWindow(void* sourceBottomName);
 void cancelPlayerSelection();
 void playerVsComputerMode();
 void twoPlayerMode();
+void chooseNextWhite();
+void chooseNextBlack();
 //return the button posotion on the board according to location on the window
 Pos* getButtonPosition(int x, int y);//j=x/76, i=y/76
 int main(int argc, char* args[]);
