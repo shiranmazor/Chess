@@ -241,5 +241,8 @@
     <Image Include="images\PlayersSelection\white.bmp">
       <Filter>Images\PlayersSelection</Filter>
     </Image>
+    <Image Include="images\tools\black_queen.bmp">
+      <Filter>Images\tools</Filter>
+    </Image>
   </ItemGroup>
 </Project>
