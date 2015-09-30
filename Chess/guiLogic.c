@@ -494,12 +494,6 @@ void openBoardSettingWindow()
 	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)boardSettingsWindow->control;
 
-	//UINode* leftPanel = CreatePanel(win->surface, 600, 0, 200, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), gameWindow, 0, "leftPanel");
-
-	//Panel* p = (Panel*)leftPanel->control;
-	//UINode* saveGameBtn = CreateButton(win->surface, 620, 50, "images/saveGame.bmp", NULL, leftPanel, 0, "saveGame");
-	//UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
-
 	UINode *boardPanel = CreatePanel(win->surface, 0, 0, 608, 608, 0, boardSettingsWindow, 0, "Board Panel");
 	addChildToFather(boardSettingsWindow, boardPanel);
 	addBoardToPanel(boardPanel, win);
