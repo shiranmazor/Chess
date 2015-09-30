@@ -136,6 +136,7 @@
     <Image Include="images\tools\black_king.bmp" />
     <Image Include="images\tools\black_knight.bmp" />
     <Image Include="images\tools\black_pawn.bmp" />
+    <Image Include="images\tools\black_queen.bmp" />
     <Image Include="images\tools\black_rook.bmp" />
     <Image Include="images\tools\white_bishop.bmp" />
     <Image Include="images\tools\white_king.bmp" />
