@@ -347,7 +347,6 @@ void EventsLoopMainWindow()
 						char* btnName = btn->name;
 						//in main windows all bottons functions recieve sourcebtnName
 						buttonNodes[i]->Action(btnName);
-						break;
 					}
 				}
 

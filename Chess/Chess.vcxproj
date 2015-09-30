@@ -89,32 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\init_board.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_bishop_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_king_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_knight_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_pawn_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_queen_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\black_rook_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_bishop_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_king_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_knight_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_pawn_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_queen_white_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_black_cell.bmp" />
-    <Image Include="..\..\..\..\..\..\Users\shiran\Desktop\project\images\players\white_rook_white_cell.bmp" />
     <Image Include="images\AISettings\1.bmp" />
     <Image Include="images\AISettings\1m.bmp" />
     <Image Include="images\AISettings\2.bmp" />
@@ -147,6 +121,18 @@
     <Image Include="images\PlayersSelection\whiteMark.bmp" />
     <Image Include="images\Quit.bmp" />
     <Image Include="images\saveGame.bmp" />
+    <Image Include="images\tools\black_bishop.bmp" />
+    <Image Include="images\tools\black_gueen.bmp" />
+    <Image Include="images\tools\black_king.bmp" />
+    <Image Include="images\tools\black_knight.bmp" />
+    <Image Include="images\tools\black_pawn.bmp" />
+    <Image Include="images\tools\black_rook.bmp" />
+    <Image Include="images\tools\white_bishop.bmp" />
+    <Image Include="images\tools\white_king.bmp" />
+    <Image Include="images\tools\white_knight.bmp" />
+    <Image Include="images\tools\white_pawn.bmp" />
+    <Image Include="images\tools\white_queen.bmp" />
+    <Image Include="images\tools\white_rook.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

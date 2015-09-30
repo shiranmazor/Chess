@@ -248,6 +248,7 @@ void chooseNextBlack()
 void openPlayerSelectionWindow(void* sourceBottomName)
 {
 	//clear mainWindow tree
+	shouldQuitMainEvents = 1;
 	freeUINode(mainWindow);
 	char* sourceBtnName = (char*)sourceBottomName;
 	//init or load the game configuration
