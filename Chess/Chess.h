@@ -107,6 +107,7 @@ int isValidPos(Pos *pos);
 int isValidIndexes(int i, int j);
 Pos * formatPos(char* pos_input);
 int getColorByPos(int x, int y);
+int getColor(char tool);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);

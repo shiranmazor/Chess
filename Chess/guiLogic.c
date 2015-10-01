@@ -43,8 +43,8 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 			//char btnName1[11];
 			//sprintf(btnName1, "cube_%d:%d", i, j);
 			//char * btnName = "1234567891011";
-			
-			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, doNothing, gamePanel, 0, "cube");
+			Panel * p = (Panel *) gamePanel->control;
+			gameBtn = CreateButton(win->surface,  j * 76, p->height - i * 76 - 76, filename, doNothing, gamePanel, 0, "cube");
 			addChildToFather(gamePanel, gameBtn);
 		}
 	}
@@ -560,7 +560,7 @@ void setChosenToolToWhiteRook()
 
 void setChosenToolToBlackKnight()
 {
-	lastChosenTool = BLACK_K;
+	lastChosenTool = BLACK_N;
 }
 
 void setChosenToolToWhiteKnight()
@@ -568,8 +568,14 @@ void setChosenToolToWhiteKnight()
 	lastChosenTool = WHITE_N;
 }
 
+void setChosenToolToTrash()
+{
+	lastChosenTool = -1;
+}
+
 void openBoardSettingWindow()
 {
+
 	shouldQuitMainEvents = 1;
 	shouldQuitSelectionEvents = 1;
 	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
@@ -595,7 +601,10 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 1, 92, "images/tools/white_pawn.bmp", setChosenToolToWhitePawn, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 92, "images/tools/white_rook.bmp", setChosenToolToWhiteRook, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 92, "images/tools/white_knight.bmp", setChosenToolToWhiteKnight, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
 	
+	init_board(board);
+	drawBoard(board);
 	presentUITree(boardSettingsWindow);
 	EventsLoopboardSettingWindow();
 
