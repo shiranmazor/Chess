@@ -22,6 +22,8 @@ struct UINode* playerSelectionWindow;
 struct UINode* boardSettingsWindow;
 struct UINode* gameWindow;
 
+char lastChosenTool;
+
 int shouldQuitMainEvents;
 int shouldQuitBoardSeEvents;
 int shouldQuitGameEvents;
