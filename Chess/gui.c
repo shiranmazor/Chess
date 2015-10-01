@@ -187,16 +187,16 @@ void presentUITree(UINode* root)
 		Panel *p;
 		if (root->father->type == PANEL)
 			p = (Panel*)root->father->control;
-		
+		Window * win = getRoot(root);
 		//apply image to screen
-		if (SDL_BlitSurface(control->surface, NULL, p->surface, control->rect) != 0)
+		if (SDL_BlitSurface(control->surface, NULL, win->surface, control->rect) != 0)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
 			exit(1);
 		}
 		SDL_Flip(control->surface);
-		SDL_Flip(p->surface);
+		SDL_Flip(win->surface);
 	}
 	else if (root->type == LABEL)
 	{
@@ -312,14 +312,12 @@ UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filen
 	imgrect->x = btn->x;
 	imgrect->y = btn->y;
 
-	
-
 	btn->surface = SDL_LoadBMP(btn->filename);
 	btn->rect = imgrect;
-	//btn->surface->format->Amask = 0xFF000000;
+	btn->surface->format->Amask = 0xFF000000;
 	//btn->surface->format->Ashift = 24;
 	Window * win = getRoot(father);
-	//SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, SDL_MapRGB(win->surface->format, 0, 255, 0));
+	SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, color);
 
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
 	return buttonNode;
@@ -382,6 +380,107 @@ void init()
 
 }
 
+void toolClicked()
+{
+}
+
+void triggerClickEvent(UINode * root, int clickedX, int clickedY)
+{
+	if (root == NULL)
+		return; 
+
+	for (int k = 0; k < root->childsNumber; k++)
+	{
+		
+		if (root->children[k]->type == BUTTON)
+		{
+			
+			ImgButton * btn = (ImgButton *)root->children[k]->control;
+			if (isButtonClicked(*btn, clickedX, clickedY))
+			{
+				//root->children[i]->Action(NULL);
+				root->children[k]->Action(NULL);
+				char* btnName = btn->name;
+				//in main windows all bottons functions recieve sourcebtnName
+				if (strcmp("cube", btnName) == 0)
+				{
+					int i = clickedX / 76;
+					int j = clickedY / 76;
+					int newX = i * 76 + 13;
+					int newY = j * 76 + 13;
+
+					Window * win = (Window *)boardSettingsWindow->control;
+
+					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+
+					UINode * panel = boardSettingsWindow->children[0];
+					char * filename;
+					switch (lastChosenTool)
+					{
+					case WHITE_K:
+						filename = "images/tools/white_king.bmp";
+						break;
+					case WHITE_B:
+						filename = "images/tools/white_bishop.bmp";
+						break;
+					case WHITE_P:
+						filename = "images/tools/white_pawn.bmp";
+						break;
+					case WHITE_N:
+						filename = "images/tools/white_knight.bmp";
+						break;
+					case WHITE_Q:
+						filename = "images/tools/white_queen.bmp";
+						break;
+					case WHITE_R:
+						filename = "images/tools/white_rook.bmp";
+						break;
+					case BLACK_K:
+						filename = "images/tools/black_king.bmp";
+						break;
+					case BLACK_B:
+						filename = "images/tools/black_bishop.bmp";
+						break;
+					case BLACK_P:
+						filename = "images/tools/black_pawn.bmp";
+						break;
+					case BLACK_N:
+						filename = "images/tools/black_knight.bmp";
+						break;
+					case BLACK_Q:
+						filename = "images/tools/black_queen.bmp";
+						break;
+					case BLACK_R:
+						filename = "images/tools/black_rook.bmp";
+						break;
+					default:
+						filename = NULL;
+					}
+
+					if (filename == NULL)
+						continue;
+
+					UINode * father = root->children[k];
+					if (father->childsNumber > 0)
+					{
+						//tool already exists, let's repalce it
+						free(father->children[0]);
+						father->children[0] = createButtonWithColor(win->surface, 13, 13, filename, toolClicked, root->children[k], 0, "aaaaaaaa", green);
+					}
+					else
+					{
+						//tool does not exist in this cube
+						addChildToFather(father, createButtonWithColor(win->surface, 13, 13, filename, toolClicked, root->children[k], 0, "aaaaaaaa", green));
+					}
+					board[i][j] = lastChosenTool;
+					
+					presentUITree(boardSettingsWindow);
+				}
+			}
+		}
+		triggerClickEvent(root->children[k], clickedX, clickedY);
+	}
+}
 void EventsLoopboardSettingWindow()
 {
 	while (!shouldQuitBoardSeEvents)
@@ -395,11 +494,93 @@ void EventsLoopboardSettingWindow()
 				SDL_Quit();
 				exit(0);
 			}
-			else if (e.type == SDL_MOUSEBUTTONUP)
+			else if (e.type == SDL_MOUSEBUTTONDOWN)
 			{
 				int x, y;
 				SDL_GetMouseState(&x, &y);
+				triggerClickEvent(boardSettingsWindow, x, y);
+				//check if buttons were clicked
+				//get all ImageButtons:
+				/*for (int j = 0; j < 2; j++)
+				{
+					UINode** buttonNodes = boardSettingsWindow->children[j]->children;
+					for (int i = 0; i < boardSettingsWindow->children[j]->childsNumber; i++)
+					{
+						ImgButton* btn = (ImgButton*)boardSettingsWindow->children[j]->children[i]->control;
+						if (isButtonClicked(*btn, x, y))
+						{
+							char* btnName = btn->name;
+							//in main windows all bottons functions recieve sourcebtnName
+							if (strcmp("cube", btnName) == 0)
+							{
+								int i = x / 76;
+								int j = y / 76;
+								int newX = i * 76 + 13;
+								int newY = j * 76 + 13;
 
+								
+								Window * win = (Window *)boardSettingsWindow->control;
+
+								Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+
+								UINode * panel = boardSettingsWindow->children[0];
+								char * filename;
+								switch (lastChosenTool)
+								{
+								case WHITE_K:
+									filename = "images/tools/white_king.bmp";
+									break;
+								case WHITE_B:
+									filename = "images/tools/white_bishop.bmp";
+									break;
+								case WHITE_P:
+									filename = "images/tools/white_pawn.bmp";
+									break;
+								case WHITE_N:
+									filename = "images/tools/white_knight.bmp";
+									break;
+								case WHITE_Q:
+									filename = "images/tools/white_queen.bmp";
+									break;
+								case WHITE_R:
+									filename = "images/tools/white_rook.bmp";
+									break;
+								case BLACK_K:
+									filename = "images/tools/black_king.bmp";
+									break;
+								case BLACK_B:
+									filename = "images/tools/black_bishop.bmp";
+									break;
+								case BLACK_P:
+									filename = "images/tools/black_pawn.bmp";
+									break;
+								case BLACK_N:
+									filename = "images/tools/black_knight.bmp";
+									break;
+								case BLACK_Q:
+									filename = "images/tools/black_queen.bmp";
+									break;
+								case BLACK_R:
+									filename = "images/tools/black_rook.bmp";
+									break;
+								default:
+									filename = NULL;
+								}
+
+								if (filename == NULL)
+									continue;
+								
+								
+								addChildToFather(panel, createButtonWithColor(win->surface, newX, newY, filename, doNothing, panel, 0, "aaaaaaaa", green));
+								presentUITree(boardSettingsWindow); 
+							}
+							else
+							{
+								boardSettingsWindow->children[j]->children[i]->Action(NULL);
+							}
+						}
+					}
+				}*/
 
 			}
 		}
@@ -431,9 +612,7 @@ void EventsLoopMainWindow()
 				UINode** buttonNodes = mainWindow->children[0]->children;
 				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
 				{
-					if (mainWindow->children[0]->children[i]->type != BUTTON)
-						continue;
-					ImgButton* btn = (ImgButton*)mainWindow->children[0]->children[i]->control;
+					ImgButton* btn = (ImgButton*)buttonNodes[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
 						char* btnName = btn->name;
@@ -588,6 +767,9 @@ int main(int argc, char* args[])
 	CreateMainWindow();
 	presentUITree(mainWindow);
 	EventsLoopMainWindow();
+	
 
+	//main_old();
+	freeUINode(mainWindow);
 	return 0;
 }

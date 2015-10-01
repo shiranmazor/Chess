@@ -27,6 +27,9 @@ void CreateMainWindow()
 	addChildToFather(mainPanel, logoBtn);
 	
 }
+void doNothing()
+{
+}
 
 void addBoardToPanel(UINode* gamePanel, Window *win)
 {
@@ -37,7 +40,11 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 		for (int j = 0; j < BOARD_SIZE; j++)
 		{
 			char* filename = (j % 2 == 0 && i % 2 == 0) || (j % 2 == 1 && i % 2 == 1) ? "images/lightRect.bmp" : "images/darkRect.bmp";
-			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, NULL, gamePanel, 0, "boardBtn");
+			//char btnName1[11];
+			//sprintf(btnName1, "cube_%d:%d", i, j);
+			//char * btnName = "1234567891011";
+			
+			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, doNothing, gamePanel, 0, "cube");
 			addChildToFather(gamePanel, gameBtn);
 		}
 	}
@@ -499,6 +506,68 @@ void NextButtomClicked()
 	}
 }
 
+
+
+void setChosenToolToBlackPawn()
+{
+	lastChosenTool = BLACK_P;
+}
+
+void setChosenToolToWhitePawn()
+{
+	lastChosenTool = WHITE_P;
+}
+
+void setChosenToolToBlackKing()
+{
+	lastChosenTool = BLACK_K;
+}
+
+void setChosenToolToWhiteKing()
+{
+	lastChosenTool = WHITE_K;
+}
+
+void setChosenToolToBlackQueen()
+{
+	lastChosenTool = BLACK_Q;
+}
+
+void setChosenToolToWhiteQueen()
+{
+	lastChosenTool = WHITE_Q;
+}
+
+void setChosenToolToBlackBishop()
+{
+	lastChosenTool = BLACK_B;
+}
+
+void setChosenToolToWhiteBishop()
+{
+	lastChosenTool = WHITE_B;
+}
+
+void setChosenToolToBlackRook()
+{
+	lastChosenTool = BLACK_R;
+}
+
+void setChosenToolToWhiteRook()
+{
+	lastChosenTool = WHITE_R;
+}
+
+void setChosenToolToBlackKnight()
+{
+	lastChosenTool = BLACK_K;
+}
+
+void setChosenToolToWhiteKnight()
+{
+	lastChosenTool = WHITE_N;
+}
+
 void openBoardSettingWindow()
 {
 	shouldQuitMainEvents = 1;
@@ -513,22 +582,20 @@ void openBoardSettingWindow()
 	UINode *menuPanel = CreatePanel(win->surface, 610, 0, WIN_WIDTH - 572, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), boardSettingsWindow, 0, "Menu Panel");
 	addChildToFather(boardSettingsWindow, menuPanel);
 
+	Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 0, 0, "images/tools/black_bishop.bmp", setChosenToolToBlackBishop, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46, 0, "images/tools/black_queen.bmp", setChosenToolToBlackQueen, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 0, "images/tools/black_king.bmp", setChosenToolToBlackKing, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 0, "images/tools/black_pawn.bmp", setChosenToolToBlackPawn, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 0, 46, "images/tools/black_rook.bmp", setChosenToolToBlackRook, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46, 46, "images/tools/black_knight.bmp", setChosenToolToBlackKnight, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 46, "images/tools/white_bishop.bmp", setChosenToolToWhiteBishop, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 46, "images/tools/white_queen.bmp", setChosenToolToWhiteQueen, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 0, 92, "images/tools/white_king.bmp", setChosenToolToWhiteKing, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 1, 92, "images/tools/white_pawn.bmp", setChosenToolToWhitePawn, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 92, "images/tools/white_rook.bmp", setChosenToolToWhiteRook, menuPanel, 0, "Bishop", green));
+	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 92, "images/tools/white_knight.bmp", setChosenToolToWhiteKnight, menuPanel, 0, "Bishop", green));
 	
-	addChildToFather(menuPanel, CreateButton(win, 0, 0, "images/tools/black_bishop.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46, 0, "images/tools/black_queen.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 *2, 0, "images/tools/black_king.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 0, "images/tools/black_pawn.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 0, 46, "images/tools/black_rook.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46, 46, "images/tools/black_knight.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 2, 46, "images/tools/white_bishop.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 46, "images/tools/white_queen.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 0, 92, "images/tools/white_king.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 1, 92, "images/tools/white_pawn.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 2, 92, "images/tools/white_rook.bmp", NULL, menuPanel, 0, "Bishop"));
-	addChildToFather(menuPanel, CreateButton(win, 46 * 3, 92, "images/tools/white_knight.bmp", NULL, menuPanel, 0, "Bishop"));
-	
-
-
 	presentUITree(boardSettingsWindow);
 	EventsLoopboardSettingWindow();
 
