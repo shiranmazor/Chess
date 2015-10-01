@@ -480,10 +480,10 @@ char * getToolName(char tool)
 	}
 	return name;
 }
-void drawBoard(char board[BOARD_SIZE][BOARD_SIZE])
+void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 {
-	UINode * panel = boardSettingsWindow->children[0];
-	Window * win = (Window * ) boardSettingsWindow->control;
+	UINode * panel = root->children[0];
+	Window * win = (Window * ) root->control;
 	Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
@@ -540,7 +540,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				if (strcmp("cube", btnName) == 0)
 				{
 					int i = clickedX / 76;
-					int j = clickedY / 76;
+					int j = BOARD_SIZE - (clickedY / 76) -1; //clickedY / 76 -; //p->height - i * 76 - 76
 					//int newX = i * 76 + 13;
 					//int newY = j * 76 + 13;
 
@@ -549,10 +549,11 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 
 					UINode * panel = boardSettingsWindow->children[0];
 					char * filename = getFilenameByTool(lastChosenTool);
-					if (filename == NULL)
+
+					if (lastChosenTool == NULL)
 						continue;
 
-					if (checkNewBoardValidation(getColor(lastChosenTool), getToolName(lastChosenTool)) == 0)
+					if (lastChosenTool != EMPTY && checkNewBoardValidation(getColor(lastChosenTool), getToolName(lastChosenTool)) == 0)
 					{
 						//invalid set 
 						continue;
@@ -560,7 +561,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					}
 
 					board[i][j] = lastChosenTool;
-					drawBoard(board);
+					drawBoard(board,boardSettingsWindow);
 					
 					presentUITree(boardSettingsWindow);
 				}

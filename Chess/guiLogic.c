@@ -59,22 +59,26 @@ void CreateGameWindow()
 	screenRect.h = WIN_HEIGHT;
 	gameWindow = CreateWindow("Chess New Game", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)gameWindow->control;
-	UINode* leftPanel = CreatePanel(win->surface, 600, 0, 200, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), gameWindow, 0,"leftPanel");
+	
+	UINode* gamePanel = CreatePanel(win->surface, 0, 0, 600, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 0, 0, 0), gameWindow, 0, "gamePanel");
+	addChildToFather(gameWindow, gamePanel);
+	addBoardToPanel(gamePanel, win);
 
+
+	UINode* leftPanel = CreatePanel(win->surface, 600, 0, 200, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), gameWindow, 0,"leftPanel");
+	addChildToFather(gameWindow, leftPanel);
 	Panel* p = (Panel*)leftPanel->control;
 	int x = p->width / 2 - 170 / 2;
 	UINode* saveGameBtn = CreateButton(win->surface,620, 50, "images/saveGame.bmp", NULL, leftPanel, 0,"saveGame");
 	UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
 	UINode* quitBtn = CreateButton(win->surface, 620, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
 
-	UINode* gamePanel = CreatePanel(win->surface, 0, 0, 600, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 0, 0, 0), gameWindow, 0,"gamePanel");
-	addChildToFather(gameWindow, leftPanel);
-	addChildToFather(gameWindow, gamePanel);
+
 
 	addChildToFather(leftPanel, saveGameBtn);
 	addChildToFather(leftPanel, mainMenuBtn);
 	addChildToFather(leftPanel, quitBtn);
-	addBoardToPanel(gamePanel, win);
+	
 
 }
 
@@ -119,8 +123,11 @@ void loadGame()
 /*create gameWindow and present it*/
 void startNewGame()
 {
+	
 	CreateGameWindow();
+	drawBoard(board, gameWindow);
 	presentUITree(gameWindow);
+	
 	//call Events loop for new game
 	EventsLoopGameWindow();
 
@@ -570,7 +577,7 @@ void setChosenToolToWhiteKnight()
 
 void setChosenToolToTrash()
 {
-	lastChosenTool = -1;
+	lastChosenTool = EMPTY;
 }
 
 void openBoardSettingWindow()
@@ -602,9 +609,10 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 92, "images/tools/white_rook.bmp", setChosenToolToWhiteRook, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 92, "images/tools/white_knight.bmp", setChosenToolToWhiteKnight, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
-	
+	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGame, menuPanel, 0, "next"));
+
 	init_board(board);
-	drawBoard(board);
+	drawBoard(board, boardSettingsWindow);
 	presentUITree(boardSettingsWindow);
 	EventsLoopboardSettingWindow();
 
