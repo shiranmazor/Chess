@@ -580,6 +580,18 @@ void setChosenToolToTrash()
 	lastChosenTool = EMPTY;
 }
 
+void startNewGameIfBoardValid()
+{
+	if (countKings() < 2)
+	{
+		//todo display error message
+	}
+	else
+	{
+		startNewGame();
+	}
+}
+
 void openBoardSettingWindow()
 {
 
@@ -609,7 +621,7 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 2, 92, "images/tools/white_rook.bmp", setChosenToolToWhiteRook, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 92, "images/tools/white_knight.bmp", setChosenToolToWhiteKnight, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
-	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGame, menuPanel, 0, "next"));
+	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGameIfBoardValid, menuPanel, 0, "next"));
 
 	init_board(board);
 	drawBoard(board, boardSettingsWindow);
