@@ -384,6 +384,52 @@ void toolClicked()
 {
 }
 
+char * getFilenameByTool(char  tool)
+{
+	char * filename;
+	switch (tool)
+	{
+	case WHITE_K:
+		filename = "images/tools/white_king.bmp";
+		break;
+	case WHITE_B:
+		filename = "images/tools/white_bishop.bmp";
+		break;
+	case WHITE_P:
+		filename = "images/tools/white_pawn.bmp";
+		break;
+	case WHITE_N:
+		filename = "images/tools/white_knight.bmp";
+		break;
+	case WHITE_Q:
+		filename = "images/tools/white_queen.bmp";
+		break;
+	case WHITE_R:
+		filename = "images/tools/white_rook.bmp";
+		break;
+	case BLACK_K:
+		filename = "images/tools/black_king.bmp";
+		break;
+	case BLACK_B:
+		filename = "images/tools/black_bishop.bmp";
+		break;
+	case BLACK_P:
+		filename = "images/tools/black_pawn.bmp";
+		break;
+	case BLACK_N:
+		filename = "images/tools/black_knight.bmp";
+		break;
+	case BLACK_Q:
+		filename = "images/tools/black_queen.bmp";
+		break;
+	case BLACK_R:
+		filename = "images/tools/black_rook.bmp";
+		break;
+	default:
+		filename = NULL;
+	}
+	return filename;
+}
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
@@ -406,57 +452,14 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				{
 					int i = clickedX / 76;
 					int j = clickedY / 76;
-					int newX = i * 76 + 13;
-					int newY = j * 76 + 13;
+					//int newX = i * 76 + 13;
+					//int newY = j * 76 + 13;
 
 					Window * win = (Window *)boardSettingsWindow->control;
-
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 
 					UINode * panel = boardSettingsWindow->children[0];
-					char * filename;
-					switch (lastChosenTool)
-					{
-					case WHITE_K:
-						filename = "images/tools/white_king.bmp";
-						break;
-					case WHITE_B:
-						filename = "images/tools/white_bishop.bmp";
-						break;
-					case WHITE_P:
-						filename = "images/tools/white_pawn.bmp";
-						break;
-					case WHITE_N:
-						filename = "images/tools/white_knight.bmp";
-						break;
-					case WHITE_Q:
-						filename = "images/tools/white_queen.bmp";
-						break;
-					case WHITE_R:
-						filename = "images/tools/white_rook.bmp";
-						break;
-					case BLACK_K:
-						filename = "images/tools/black_king.bmp";
-						break;
-					case BLACK_B:
-						filename = "images/tools/black_bishop.bmp";
-						break;
-					case BLACK_P:
-						filename = "images/tools/black_pawn.bmp";
-						break;
-					case BLACK_N:
-						filename = "images/tools/black_knight.bmp";
-						break;
-					case BLACK_Q:
-						filename = "images/tools/black_queen.bmp";
-						break;
-					case BLACK_R:
-						filename = "images/tools/black_rook.bmp";
-						break;
-					default:
-						filename = NULL;
-					}
-
+					char * filename = getFilenameByTool(lastChosenTool);
 					if (filename == NULL)
 						continue;
 
