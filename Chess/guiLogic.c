@@ -27,6 +27,9 @@ void CreateMainWindow()
 	addChildToFather(mainPanel, logoBtn);
 	
 }
+void doNothing()
+{
+}
 
 void addBoardToPanel(UINode* gamePanel, Window *win)
 {
@@ -41,7 +44,7 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 			//sprintf(btnName1, "cube_%d:%d", i, j);
 			//char * btnName = "1234567891011";
 			
-			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, NULL, gamePanel, 0, "cube");
+			gameBtn = CreateButton(win->surface, j * 76, i * 76, filename, doNothing, gamePanel, 0, "cube");
 			addChildToFather(gamePanel, gameBtn);
 		}
 	}
