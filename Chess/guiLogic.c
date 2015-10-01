@@ -70,6 +70,18 @@ void CreateGameWindow()
 	addBoardToPanel(gamePanel, win);
 
 }
+
+void loadGameFromSlot(char* sourceBtn)
+{
+	if (strcmp(sourceBtn, "slot1") == 0)
+	{
+
+	}
+	if (strcmp(sourceBtn, "slot2") == 0)
+	{
+
+	}
+}
 void loadGame()
 {
 	//add 7 buttons of numbers
