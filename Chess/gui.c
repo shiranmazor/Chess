@@ -185,9 +185,10 @@ void presentUITree(UINode* root)
 	{
 		ImgButton* control = (ImgButton*)root->control;
 		Panel *p;
+		Window * win;
 		if (root->father->type == PANEL)
 			p = (Panel*)root->father->control;
-		Window * win = getRoot(root);
+		win = getRoot(root);
 		//apply image to screen
 		if (SDL_BlitSurface(control->surface, NULL, win->surface, control->rect) != 0)
 		{
