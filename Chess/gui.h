@@ -30,6 +30,8 @@ int shouldQuitBoardSeEvents;
 int shouldQuitGameEvents;
 int shouldQuitsettingEvents;
 int shouldQuitSelectionEvents;
+Pos posToMoveFrom;
+
 //structures
 struct ImgButton
 {
