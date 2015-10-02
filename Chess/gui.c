@@ -481,6 +481,11 @@ char * getToolName(char tool)
 	}
 	return name;
 }
+
+void cleanBoardFromNextMoves(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
+{
+
+}
 void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 {
 	UINode * panel = root->children[0];
@@ -523,6 +528,11 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 	}
 }
 
+int isEmptyClicked = 0;
+void emptyClicked()
+{
+	isEmptyClicked = 1;
+}
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
@@ -542,12 +552,11 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					root->children[k]->Action(NULL);
 				char* btnName = btn->name;
 				//in main windows all bottons functions recieve sourcebtnName
+				int i = clickedX / 76;
+				int j = BOARD_SIZE - (clickedY / 76) - 1;
 
 				if (strcmp("cube", btnName) == 0)
 				{
-					int i = clickedX / 76;
-					int j = BOARD_SIZE - (clickedY / 76) -1; 
-
 					Window * win = getRoot(root); //(Window *)boardSettingsWindow->control;
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 					if (boardSettingsWindow != NULL && boardSettingsWindow->control != NULL && win == (Window *)boardSettingsWindow->control)
@@ -578,6 +587,26 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						pos.x = i;
 						pos.y = j;
 
+						if ((gameWindow->children[0]->children[j*BOARD_SIZE + i]->childsNumber) > 0)
+						{
+							ImgButton * btn2;
+							if (gameWindow->children[0]->children[j*BOARD_SIZE + i]->childsNumber > 1)
+							{
+								btn2 = (ImgButton *)gameWindow->children[0]->children[j*BOARD_SIZE + i]->children[1]->control;
+							}
+							else
+							{
+								btn2 = (ImgButton *)gameWindow->children[0]->children[j*BOARD_SIZE + i]->children[0]->control;
+							}
+							if (strcmp("empty", btn2->name) == 0)
+							{
+								//we will make perform move in a second, don't draw board
+								triggerClickEvent(root->children[k], clickedX, clickedY);
+								continue;
+							}
+						}
+						drawBoard(board,gameWindow);
+
 						if (getColor(board[i][j]) == nextPlayer)
 						{
 							MoveNode  * moveNode = getMove(board, pos, nextPlayer);
@@ -588,29 +617,44 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 
 								UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
 								addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
-
 								moveNode = moveNode->next;
 							}
 							freeMoveNode(moveNode);
+							posToMoveFrom.x = i;
+							posToMoveFrom.y = j;
 						}
 						presentUITree(gameWindow);
-						drawBoard(board, gameWindow);
-						
 
-						/*Move move;
-						Pos pos;
-						pos.x = i;
-						pos.y = j;
 						
-						move.currPos = &pos;
-						*/
 					}
+				}
+				if (strcmp("empty", btnName) == 0)
+				{
+					//perform move
+	
+					Move move;
+					Pos pos;
+					pos.x = i;
+					pos.y = j;
+
+					PosNode desPos;
+					desPos.pos = &pos;
+
+					move.dest = &desPos;
+			
+					move.currPos = &posToMoveFrom;
+					performUserMove(&move);
+					drawBoard(board, gameWindow);
+					presentUITree(gameWindow);
+					isEmptyClicked = 0;
+					
 				}
 			}
 		}
 		triggerClickEvent(root->children[k], clickedX, clickedY);
 	}
 }
+
 void EventsLoopboardSettingWindow()
 {
 	while (!shouldQuitBoardSeEvents)
