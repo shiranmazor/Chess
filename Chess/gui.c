@@ -496,19 +496,6 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 		for (int j = 0; j < BOARD_SIZE; j++)
 		{
 			UINode * father = panel->children[j*BOARD_SIZE + i];
-			/*if (getFilenameByTool(board[i][j]) == NULL)
-			{
-				if (father->childsNumber > 0)
-				{
-					//tool already exists, let's repalce it
-					for (int k = 0; k < father->childsNumber; k++)
-					{
-						freeUINode(father->children[k]);
-						father->childsNumber = 0;
-					}
-				}
-				continue;
-			}*/
 
 			if (father->childsNumber > 0)
 			{
@@ -516,8 +503,8 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 				for (int k = 0; k < father->childsNumber; k++)
 				{
 					freeUINode(father->children[k]);
-					father->childsNumber = 0;
 				}
+				father->childsNumber = 0;
 				//father->children[0] = createButtonWithColor(win->surface, 13, 13, getFilenameByTool(board[i][j]), toolClicked, father, 0, "aaaaaaaa", green);
 			}
 			if (getFilenameByTool(board[i][j]) != NULL)
@@ -651,7 +638,8 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 			}
 		}
-		triggerClickEvent(root->children[k], clickedX, clickedY);
+		if (k < root->childsNumber)
+			triggerClickEvent(root->children[k], clickedX, clickedY);
 	}
 }
 
