@@ -25,7 +25,7 @@ int saveFileWithFileName(GameStatus gameState, char * fullFileName)
 	free(fullFileName);
 	if (f == NULL)
 	{
-		print("%s",WRONG_FILE_NAME);
+		printf("%s",WRONG_FILE_NAME);
 		return 1;
 	}
 
