@@ -1109,18 +1109,12 @@ void test_config_for_best_move2()
 	nextPlayer = WHITE;
 	print_board(board);
 }
-int main2()
+void runConsole()
 {
 	objectsInMemory = 0;
 	isLastMovePromotePawn = 0;
-	//tests:
-	//testsetting1();
-	//testMateTieCheck();
-	//clear_board();
-	//gameMode = 2;
 
-	//first initializetion
-	
+	//first initializetion	
 	gameMode = 1;
 	minimax_depth = 1;
 	userColor = WHITE;
@@ -1129,10 +1123,7 @@ int main2()
 	init_board(board);
 	print_board(board);
 	
-	//testMinimax_moves();
-	//test_config_for_best_move1();
-	//test_config_for_best_move2();
 	settingState();
-	return 0;
+
 }
 

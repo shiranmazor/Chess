@@ -151,6 +151,7 @@ void chooseBlackColor();
 void returnFunc();
 void loadGame();
 void loadGameFromSlot(char* slotName);
+void RunGui();
 
 
 #endif GUI_H

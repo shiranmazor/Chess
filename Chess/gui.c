@@ -788,7 +788,7 @@ void EventsLoopGameWindow()
 	SDL_Quit();
 }
 
-int main(int argc, char* args[])
+void RunGui()
 {
 	init();
 	mainWindow = NULL;
@@ -806,8 +806,4 @@ int main(int argc, char* args[])
 	presentUITree(mainWindow);
 	EventsLoopMainWindow();
 	
-
-	//main_old();
-	freeUINode(mainWindow);
-	return 0;
 }

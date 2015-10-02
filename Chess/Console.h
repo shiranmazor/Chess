@@ -27,6 +27,7 @@ void remove_disc(char* input);
 void set_disc(char* pos_input, char* color, char* type);
 int checkNewBoardValidation(int color, char* Tool);
 int countKings();
+void runConsole();
 
 #endif CONSOLE_H
 
