@@ -268,18 +268,6 @@
     <Image Include="images\tools\empty.bmp">
       <Filter>Images</Filter>
     </Image>
-    <Image Include="images\7.bmp">
-      <Filter>Images</Filter>
-    </Image>
-    <Image Include="images\8.bmp">
-      <Filter>Images</Filter>
-    </Image>
-    <Image Include="images\9.bmp">
-      <Filter>Images</Filter>
-    </Image>
-    <Image Include="images\10.bmp">
-      <Filter>Images</Filter>
-    </Image>
     <Image Include="images\LoadGame.png">
       <Filter>Images</Filter>
     </Image>
@@ -290,6 +278,18 @@
       <Filter>Images</Filter>
     </Image>
     <Image Include="images\slotNum.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\7.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\8.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\9.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\10.bmp">
       <Filter>Images</Filter>
     </Image>
   </ItemGroup>
