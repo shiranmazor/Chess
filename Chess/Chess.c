@@ -1142,6 +1142,8 @@ int isRookMoveLegal(Move *move, int useColor)
 		int end = max(curr->y, next->y);
 		for (int j = start; j < end; j++)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
@@ -1153,6 +1155,8 @@ int isRookMoveLegal(Move *move, int useColor)
 		int end = max(curr->x, next->x);
 		for (int i = start; i < end; i++)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
@@ -1206,6 +1210,8 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x-1, j = curr->y+1; i > next->x && j < next->y; i--, j++)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
@@ -1214,6 +1220,8 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x - 1, j = curr->y - 1; i > next->x && j > next->y; i--, j--)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
@@ -1222,6 +1230,8 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x + 1, j = curr->y + 1; i < next->x && j < next->y; i++, j++)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
@@ -1230,6 +1240,8 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x + 1, j = curr->y - 1; i < next->x && j > next->y; i++, j--)
 		{
+			if (next->x == i && next->y == j)
+				break;
 			if (board[i][j] != EMPTY)
 				return 0;
 		}
