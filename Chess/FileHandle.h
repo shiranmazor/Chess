@@ -22,6 +22,7 @@ int saveFileWithFileName(GameStatus gameState, char * fullFileName);
 int saveFileWithSlotNumber(GameStatus gameState, int slotNumber);
 //int isFileExist(char * fullFileName);
 char * getFilenameBySlotNumber(int slotNumber);
+int fileExists(const char *fname);
 
 #endif FILE_HANDLE_H
 
