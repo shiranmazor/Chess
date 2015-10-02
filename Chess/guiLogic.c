@@ -67,19 +67,15 @@ void CreateGameWindow()
 
 	UINode* leftPanel = CreatePanel(win->surface, 600, 0, 200, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), gameWindow, 0,"leftPanel");
 	addChildToFather(gameWindow, leftPanel);
-	Panel* p = (Panel*)leftPanel->control;
-	int x = p->width / 2 - 170 / 2;
-	UINode* saveGameBtn = CreateButton(win->surface,620, 50, "images/saveGame.bmp", NULL, leftPanel, 0,"saveGame");
-	UINode* mainMenuBtn = CreateButton(win->surface, 620, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
-	UINode* quitBtn = CreateButton(win->surface, 620, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
-
-
+	//Panel* p = (Panel*)leftPanel->control;
+	//int x = p->width / 2 - 170 / 2;
+	UINode* saveGameBtn = CreateButton(win->surface,20, 50, "images/saveGame.bmp", NULL, leftPanel, 0,"saveGame");
+	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
+	UINode* quitBtn = CreateButton(win->surface, 20, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
 
 	addChildToFather(leftPanel, saveGameBtn);
 	addChildToFather(leftPanel, mainMenuBtn);
 	addChildToFather(leftPanel, quitBtn);
-	
-
 }
 
 void loadGameFromSlot(char* sourceBtn)
@@ -123,7 +119,6 @@ void loadGame()
 /*create gameWindow and present it*/
 void startNewGame()
 {
-	
 	CreateGameWindow();
 	drawBoard(board, gameWindow);
 	presentUITree(gameWindow);

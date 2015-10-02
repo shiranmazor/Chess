@@ -1109,7 +1109,7 @@ void test_config_for_best_move2()
 	nextPlayer = WHITE;
 	print_board(board);
 }
-int main()
+int main2()
 {
 	objectsInMemory = 0;
 	isLastMovePromotePawn = 0;
