@@ -37,17 +37,18 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 	{
 		if (isMax == 1)//player is the computer
 		{
-			newRes = -9999;
+			newRes = -10000;
 			MoveNode* movesPointer = moves;
 			while (movesPointer != NULL)
 			{
 				
-				char newBoard[BOARD_SIZE][BOARD_SIZE];
-				performMoveMinimax(board, newBoard, movesPointer->move);
+				//char newBoard[BOARD_SIZE][BOARD_SIZE];
+				performMoveMinimax(board, movesPointer->move);
 				boardCounter++;
 				//print_board(board);
 				//print_board(newBoard);
-				int temp = minimax(newBoard, depth - 1, bestMove, alpha, beta, 0, boardCounter, depth - 1);
+				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter, depth - 1);
+				UndoMove(board, movesPointer->move);
 
 				newRes = max(newRes,temp);
 				//insert prunning:
@@ -72,15 +73,16 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 		}
 		else//player is the user:
 		{
-			newRes = 9999;
+			newRes = 10000;
 			MoveNode* movesPointer = moves;
 			while (movesPointer != NULL)
 			{
-				char newBoard[BOARD_SIZE][BOARD_SIZE];
-				performMoveMinimax(board, newBoard, movesPointer->move);
+				//char newBoard[BOARD_SIZE][BOARD_SIZE];
+				performMoveMinimax(board, movesPointer->move);
 				
 				boardCounter++;
-				int temp = minimax(newBoard, depth - 1, bestMove, alpha, beta, 1, boardCounter, depth - 1);
+				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 1, boardCounter, depth - 1);
+				UndoMove(board, movesPointer->move);
 				newRes = min(newRes, temp);
 				if (newRes < beta)
 					beta = newRes;

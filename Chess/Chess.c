@@ -571,20 +571,8 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		MoveNode * prev = NULL;
 		while (moveNode != NULL)
 		{
-			char board2[BOARD_SIZE][BOARD_SIZE];
-			//copy board
-			for (int i = 0; i<10; i++)
-				memcpy(&board2[i], &board[i], sizeof(board[0]));
-
-			//perform move
-			Move * move = moveNode->move;
-			Pos* curr = move->currPos;
-			Pos* nextPos = move->dest->pos;
-			char Player = board2[curr->x][curr->y];
-			board2[nextPos->x][nextPos->y] = Player;
-			board2[curr->x][curr->y] = EMPTY;
-
-			if (isPlayerUnderCheck(board2, playerColor))
+			performMoveMinimax(board, moveNode->move);
+			if (isPlayerUnderCheck(board, playerColor))
 			{
 				if (prev == NULL)
 				{
@@ -599,6 +587,33 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 			{
 				prev = moveNode;
 			}
+			UndoMove(board, moveNode->move);
+			moveNode = moveNode->next;
+		}
+	}
+	else//board is not under check but checking 
+	{
+		MoveNode * moveNode = firstMoveNode;
+		MoveNode * prev = NULL;
+		while (moveNode != NULL)
+		{
+			performMoveMinimax(board, moveNode->move);
+			if (isPlayerUnderCheck(board, playerColor))
+			{
+				if (prev == NULL)
+				{
+					firstMoveNode = moveNode->next;
+				}
+				else
+				{
+					prev->next = moveNode->next;
+				}
+			}
+			else
+			{
+				prev = moveNode;
+			}
+			UndoMove(board, moveNode->move);
 			moveNode = moveNode->next;
 		}
 	}
@@ -726,12 +741,15 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		return 1;
 	while (movesPointer != NULL)
 	{
-		performMoveMinimax(board, boardCopy, movesPointer->move);
-		if (isPlayerUnderCheck(boardCopy, playerColor) == 0)
+		performMoveMinimax(board, movesPointer->move);
+		if (isPlayerUnderCheck(board, playerColor) == 0)
 		{
+			UndoMove(board, movesPointer->move);
 			isMate = 0;
 			break;
 		}
+		else
+			UndoMove(board, movesPointer->move);
 		movesPointer = movesPointer->next;
 	}
 	freeMoves(moves, NULL);
@@ -808,6 +826,32 @@ int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		return 1;
 	return 0;
 }
+/*undo move on board after perform  move minimax*/
+void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move)
+{
+	Pos* curr = move->currPos;
+	Pos* nextPos = move->dest->pos;
+	char Player = board[nextPos->x][nextPos->y];
+	
+	//check if last move did promote
+	if (isLastMovePromotePawn == 1)
+	{
+		int color = getColorByPos(nextPos->x, nextPos->y);
+		if (color == WHITE)
+			board[curr->x][curr->y] = WHITE_P;
+		else
+			board[curr->x][curr->y] = BLACK_P;
+	}
+	else
+		board[curr->x][curr->y] = Player;
+	//check if the move was eat
+	if (move->eat == 1)
+	{
+		board[nextPos->x][nextPos->y] = move->eatTool;
+	}
+	else
+		board[nextPos->x][nextPos->y] = EMPTY;
+}
 void performUserMove(Move *move)
 {
 	Pos* curr = move->currPos;
@@ -820,23 +864,38 @@ void performUserMove(Move *move)
 		checkAndPerformPromotion(board, nextPos, WHITE);
 	else if (Player == BLACK_P)
 		checkAndPerformPromotion(board, nextPos, BLACK);
+	else
+		isLastMovePromotePawn = 0;
 }
 
-void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE], Move *move)
+void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 {
 	Pos* curr = move->currPos;
 	Pos* nextPos = move->dest->pos;
 	char Player = board[curr->x][curr->y];
-	copyBoard(board, newBoard);
+	pawnPromotionTool = -1000;
+	//check if move is eating
+	if (board[nextPos->x][nextPos->y] != EMPTY)
+	{
+		move->eat = 1;
+		move->eatTool= board[nextPos->x][nextPos->y];
+	}
+	else
+	{
+		move->eat = 0;
+		move->eatTool = EMPTY;
+	}
 
-	newBoard[curr->x][curr->y] = EMPTY;
-	newBoard[nextPos->x][nextPos->y] = Player;
+	board[curr->x][curr->y] = EMPTY;
+	board[nextPos->x][nextPos->y] = Player;
 
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		checkAndPerformPromotion(newBoard, nextPos, WHITE);
+		checkAndPerformPromotion(board, nextPos, WHITE);
 	else if (Player == BLACK_P)
-		checkAndPerformPromotion(newBoard, nextPos, BLACK);
+		checkAndPerformPromotion(board, nextPos, BLACK);
+	else
+		isLastMovePromotePawn = 0;
 }
 int getColorByPos(int x, int y)
 {
@@ -846,6 +905,19 @@ int getColorByPos(int x, int y)
 		return BLACK;
 	else
 		return WHITE;
+}
+int countPlayers(char board[BOARD_SIZE][BOARD_SIZE])
+{
+	int playersCount = 0;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (board[i][j] != EMPTY)
+				playersCount++;
+		}
+	}
+	return playersCount;
 }
 
 /*
@@ -956,18 +1028,21 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 		{
 			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
 		}
+		isLastMovePromotePawn = 1;
 	}
 	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
 	{
 		if (pawnPromotionTool == -1000)//default to queent
 		{
-			board[currPawnPos->x][currPawnPos->y] = BLACK;
+			board[currPawnPos->x][currPawnPos->y] = BLACK_Q;
 		}
 		else
 		{
 			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
 		}
+		isLastMovePromotePawn = 1;
 	}
+	isLastMovePromotePawn = 0;
 }
 
 int isMoveLegal(Move *move, int userColor)
@@ -1011,9 +1086,12 @@ int isMoveLegal(Move *move, int userColor)
 	{
 		//a player cannot insert himself to check state
 		char boardCopy[BOARD_SIZE][BOARD_SIZE];
-		performMoveMinimax(board, boardCopy, move);
-		if (isPlayerUnderCheck(boardCopy, userColor) == 1)
+		performMoveMinimax(board, move);
+		if (isPlayerUnderCheck(board, userColor) == 1)
+		{
 			legal = 0;
+		}
+		UndoMove(board, move);
 	}
 	return legal;
 }
@@ -1899,7 +1977,10 @@ int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *
 
 int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
+	int stop;
 	Pos *kingPos = getKingPos(playerColor);
+	if (kingPos == NULL)
+		stop = 1;
 	int opponentColor = getOpponentColor(playerColor);
 
 	if (checkRookThreat(board, opponentColor, kingPos) == 1 || checkBishopThreat(board,opponentColor, kingPos) == 1 ||

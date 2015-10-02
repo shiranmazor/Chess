@@ -738,15 +738,14 @@ int UserMove(int userColor)
 int getMoveScore(Move *move, int d, int playerColor)
 {
 	int opponentColor = (playerColor == BLACK) ? WHITE : BLACK;
-	char newBoard[BOARD_SIZE][BOARD_SIZE];
-	performMoveMinimax(board, newBoard, move);
+	performMoveMinimax(board, move);
 	//newBoard is changes - run minimax
 	Move* bestMove = NULL;
 	int res;
 	if (d == 1)
 	{
 		//get newBoard score for the player:
-		res = score(newBoard, playerColor);
+		res = score(board, playerColor);
 	}
 	else
 	{
@@ -754,9 +753,9 @@ int getMoveScore(Move *move, int d, int playerColor)
 		int oldComputerColor = computerColor;
 		computerColor = playerColor;
 		userColor = opponentColor;
-		res = minimax(newBoard, d - 1, &bestMove, -9999, 9999, 0, 0, d - 1);
+		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0, d - 1);
 	}
-	
+	UndoMove(board, move);
 	freeMove(bestMove);
 	return res;
 }
@@ -1109,9 +1108,10 @@ void test_config_for_best_move2()
 	nextPlayer = WHITE;
 	print_board(board);
 }
-int main2()
+int main()
 {
 	objectsInMemory = 0;
+	isLastMovePromotePawn = 0;
 	//tests:
 	//testsetting1();
 	//testMateTieCheck();

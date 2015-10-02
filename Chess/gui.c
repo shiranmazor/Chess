@@ -756,7 +756,7 @@ void EventsLoopGameWindow()
 	SDL_Quit();
 }
 
-int main(int argc, char* args[])
+int main2(int argc, char* args[])
 {
 	init();
 	mainWindow = NULL;
