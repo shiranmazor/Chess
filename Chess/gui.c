@@ -638,7 +638,7 @@ void EventsLoopboardSettingWindow()
 
 void EventsLoopMainWindow()
 {
-	
+
 	while (!shouldQuitMainEvents)
 	{
 		SDL_Event e;
@@ -659,12 +659,17 @@ void EventsLoopMainWindow()
 				UINode** buttonNodes = mainWindow->children[0]->children;
 				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
 				{
-					ImgButton* btn = (ImgButton*)buttonNodes[i]->control;
+					if (mainWindow->children[0]->children[i]->type != 'b')
+						continue;
+					ImgButton* btn = (ImgButton*)mainWindow->children[0]->children[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
+						if (mainWindow->children[0]->children[i]->Action == NULL)
+							continue;
 						char* btnName = btn->name;
+
 						//in main windows all bottons functions recieve sourcebtnName
-						buttonNodes[i]->Action(btnName);
+						mainWindow->children[0]->children[i]->Action(btnName);
 					}
 				}
 
