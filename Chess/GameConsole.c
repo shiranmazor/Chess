@@ -227,14 +227,17 @@ void executeSettingCmd(char* input)
 		char* filePath = arr[1];
 		//check if file exist! Todo:
 		GameStatus gStatus = readFileWithFilename(filePath);
-		//load game
-		gameMode = gStatus.gameMode;
-		strcpy(board, gStatus.board);
-		userColor = gStatus.userColor;
-		minimax_depth = gStatus.difficulty;
-		nextPlayer = gStatus.nextTurn;
-		//print_board(gStatus.board);
-		print_board(board);
+		if (gStatus.nextTurn != -1)
+		{
+			//load game
+			gameMode = gStatus.gameMode;
+			strcpy(board, gStatus.board);
+			userColor = gStatus.userColor;
+			minimax_depth = gStatus.difficulty;
+			nextPlayer = gStatus.nextTurn;
+			print_board(board);
+		}
+		
 	}
 	else if (strstr(input, "clear"))
 	{
@@ -479,9 +482,7 @@ void GameState()
 	else if (gameMode == 2)
 	{
 		//player vs computer
-		int computerColor = BLACK;
-		if (userColor == BLACK)
-			computerColor == WHITE;
+		computerColor = (userColor == BLACK) ?WHITE:BLACK;
 		GameUserVsComputer(computerColor);
 
 	}
@@ -693,7 +694,6 @@ int UserMove(int userColor)
 		{
 			char **arr = NULL;
 			int arr_len = split(input, ' ', &arr);
-			char* filePath = arr[1];
 			//create gamseState struct:
 			GameStatus status;
 			strcpy(status.board, board);
@@ -701,7 +701,7 @@ int UserMove(int userColor)
 			status.gameMode = gameMode;
 			status.nextTurn = nextPlayer;
 			status.difficulty=minimax_depth;
-			saveFileWithFileName(status, filePath);
+			saveFileWithFileName(status, arr[1]);
 			free(arr);
 
 		}
@@ -1119,7 +1119,7 @@ int main()
 	//gameMode = 2;
 
 	//first initializetion
-	/*
+	
 	gameMode = 1;
 	minimax_depth = 1;
 	userColor = WHITE;
@@ -1127,10 +1127,10 @@ int main()
 	pawnPromotionTool = -1000;//queen
 	init_board(board);
 	print_board(board);
-	*/
+	
 	//testMinimax_moves();
 	//test_config_for_best_move1();
-	test_config_for_best_move2();
+	//test_config_for_best_move2();
 	settingState();
 	return 0;
 }

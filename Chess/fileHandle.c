@@ -91,17 +91,15 @@ int saveFileWithSlotNumber(GameStatus gameState, int slotNumber)
 GameStatus readFileWithFilename(char * filename)
 {
 	FILE * f = fopen(filename, "r");
+	GameStatus gameState = { .nextTurn = 0, .gameMode = 0, .userColor = WHITE };
 	if (f == NULL)
 	{
-		perror(WRONG_FILE_NAME);
-		GameStatus gs;
-		return gs;
+		printf("%s",WRONG_FILE_NAME);
+		gameState.nextTurn = -1;
+		return gameState;
 	}
 
 	free(filename);
-
-	GameStatus gameState = { .nextTurn = 0, .gameMode = 0, .userColor = WHITE };
-	//fscanf(f)
 
 	char nextTurn[100];
 	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\n<game>\n\t<next_turn>%[^<]</next_turn>\n", nextTurn);
