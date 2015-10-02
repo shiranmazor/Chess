@@ -917,8 +917,8 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	char* whiteBtnPath;
 	char* blackBtnPath;
 
-	char* twoplayersBtnPath;
-	char* playervsCompBtnPath;
+	char* twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
+	char* playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
 	char* whiteBtnName = "whiteMark";
 	char* blackBtnName = "black";
 	char* twoplayersBtnName = "twoPlayers";
