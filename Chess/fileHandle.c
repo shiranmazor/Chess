@@ -132,12 +132,12 @@ GameStatus readFileWithFilename(char * filename)
 		int rowIndex2 = 0;
 		char row[9];
 		fscanf(f, "\t\t<row_%d>%[^<]</row_%d>\n", &rowIndex, row, &rowIndex2);
-		for (int j = BOARD_SIZE; j > 0; j--)
+		for (int j = 0; j < BOARD_SIZE; j++)
 		{
-			if (row[BOARD_SIZE - j] == '_')
-				gameState.board[j - 1][rowIndex - 1] = EMPTY;
+			if (row[j] == '_')
+				gameState.board[j][rowIndex - 1] = EMPTY;
 			else
-				gameState.board[j - 1][rowIndex - 1] = row[BOARD_SIZE - j];
+				gameState.board[j][rowIndex - 1] = row[j];
 		}
 	}
 
