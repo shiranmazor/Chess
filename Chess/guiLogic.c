@@ -930,7 +930,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 		minimax_depth = 1;
 		nextPlayer = WHITE;
 		userColor = WHITE;
-		pawnPromotionTool = -1000;//queen
+		pawnPromotionTool = EMPTY;//queen
 		init_board(board);
 		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
 		blackBtnPath = "images/PlayersSelection/black.bmp";

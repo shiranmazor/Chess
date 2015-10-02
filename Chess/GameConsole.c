@@ -982,7 +982,7 @@ void testMateTieCheck()
 	minimax_depth = 1;
 	userColor = WHITE;
 	nextPlayer = WHITE;
-	pawnPromotionTool = -1000;//queen
+	pawnPromotionTool = EMPTY;//queen
 	init_board(board);
 	print_board(board);
 	gameMode = 2;
@@ -1119,7 +1119,7 @@ void runConsole()
 	minimax_depth = 1;
 	userColor = WHITE;
 	nextPlayer = WHITE;
-	pawnPromotionTool = -1000;//queen
+	pawnPromotionTool =EMPTY;//queen
 	init_board(board);
 	print_board(board);
 	

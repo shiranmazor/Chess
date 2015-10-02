@@ -7,4 +7,6 @@ int main(int argc, char* args[])
 		runConsole();
 	else if (strcmp(args[1], "gui") == 0)
 		RunGui();
+	else
+		runConsole();
 }

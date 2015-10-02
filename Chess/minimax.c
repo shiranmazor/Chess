@@ -11,15 +11,17 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 {
 	//if depth  == -1 we are in best difficulty
 	
-	//int opponentColor = (playerColor == WHITE) ? BLACK : WHITE;
 	MoveNode* moves;
+	int mate;
 	int newRes;
 	int color = computerColor;
 	if (isMax == 0)
 		color = userColor;
-
+	mate = isPlayerUnderMate(board, computerColor);
+	if (mate == 1)
+		return -1000;
 	moves = getMoves(board, color);
-
+	
 	//check if no moves or depth is 0
 	if (moves == NULL || depth == 0 || boardCounter == 1000000)
 	{
@@ -60,7 +62,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 
 				}
 				//if (alpha >= beta)
-				if (newRes >=beta)
+				if (newRes >=beta )
 				{
 					freeMoves(moves, *(bestMove));
 					return beta;//pruning

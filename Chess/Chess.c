@@ -613,6 +613,7 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 			{
 				prev = moveNode;
 			}
+			//print_board2(board);
 			UndoMove(board, moveNode->move);
 			moveNode = moveNode->next;
 		}
@@ -873,7 +874,7 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 	Pos* curr = move->currPos;
 	Pos* nextPos = move->dest->pos;
 	char Player = board[curr->x][curr->y];
-	pawnPromotionTool = -1000;
+	pawnPromotionTool = EMPTY;
 	//check if move is eating
 	if (board[nextPos->x][nextPos->y] != EMPTY)
 	{
@@ -947,7 +948,7 @@ Move * parseMoveCommand(char *command)
 	char** arr = NULL;
 	int arrLen = split(command, ' ', &arr);
 	//default value
-	pawnPromotionTool = -1000;
+	pawnPromotionTool = EMPTY;
 	if (arrLen == 5)//we got promotion
 	{
 		if (userColor == WHITE)
@@ -1018,9 +1019,10 @@ Move * parseMoveCommand(char *command)
 /* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
 void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
 {
+	isLastMovePromotePawn = 0;
 	if (playerColor == WHITE && currPawnPos->y == BOARD_SIZE -1)//need promote
 	{
-		if (pawnPromotionTool == -1000)//default to queent
+		if (pawnPromotionTool == EMPTY)//default to queent
 		{
 			board[currPawnPos->x][currPawnPos->y] = WHITE_Q;
 		}
@@ -1032,7 +1034,7 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 	}
 	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
 	{
-		if (pawnPromotionTool == -1000)//default to queent
+		if (pawnPromotionTool == EMPTY)//default to queent
 		{
 			board[currPawnPos->x][currPawnPos->y] = BLACK_Q;
 		}
@@ -1042,7 +1044,6 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 		}
 		isLastMovePromotePawn = 1;
 	}
-	isLastMovePromotePawn = 0;
 }
 
 int isMoveLegal(Move *move, int userColor)
@@ -1992,7 +1993,11 @@ int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	int stop;
 	Pos *kingPos = getKingPos(playerColor);
 	if (kingPos == NULL)
+	{
 		stop = 1;
+		return 0;
+	}
+		
 	int opponentColor = getOpponentColor(playerColor);
 
 	if (checkRookThreat(board, opponentColor, kingPos) == 1 || checkBishopThreat(board,opponentColor, kingPos) == 1 ||
