@@ -20,7 +20,7 @@ int fileExists(const char *fname)
 }
 char * getFilenameBySlotNumber(int slotNumber)
 {
-	char slotStr[2];
+	char slotStr[4];
 	sprintf(slotStr, "%d", slotNumber);
 
 	char * fullFileName = malloc(sizeof(char)*100);
