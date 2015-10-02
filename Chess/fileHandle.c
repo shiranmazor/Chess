@@ -55,7 +55,7 @@ int saveFileWithFileName(GameStatus gameState, char * fullFileName)
 	for (int i = BOARD_SIZE - 1; i >= 0; i--)
 	{
 		fprintf(f, "\t\t<row_%d>", i + 1);
-		for (int j = BOARD_SIZE - 1; j >= 0; j--)
+		for (int j = 0; j < BOARD_SIZE; j++)
 		{
 			if (gameState.board[j][i] == EMPTY)
 			{
