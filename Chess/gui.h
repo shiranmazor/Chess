@@ -14,7 +14,7 @@
 #define PANEL 'p'
 #define WINDOW 'w'
 #define LABEL 'l'
-#define gameSlots 10
+
 
 
 struct UINode* mainWindow;

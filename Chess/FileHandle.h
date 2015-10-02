@@ -3,6 +3,7 @@
 #include "Chess.h"
 
 #define SLOTS_NUM  7
+#define gameSlots SLOTS_NUM 
 #define FILENAME "savedSlot"
 #define FILEEXT ".xml"
 
