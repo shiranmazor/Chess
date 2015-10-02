@@ -78,40 +78,114 @@ void CreateGameWindow()
 	addChildToFather(leftPanel, quitBtn);
 }
 
-void loadGameFromSlot(char* sourceBtn)
+void loadGameFromSlot(char* slotName)
 {
-	if (strcmp(sourceBtn, "slot1") == 0)
-	{
+	int len = strlen(slotName);
+	int slotNum = atoi(slotName);
+	GameStatus gStatus = readFileWithSlotNumber(slotNum);
+	//load parameters to board
+	gameMode = gStatus.gameMode;
+	strcpy(board, gStatus.board);
+	userColor = gStatus.userColor;
+	minimax_depth = gStatus.difficulty;
+	nextPlayer = gStatus.nextTurn;
 
-	}
-	if (strcmp(sourceBtn, "slot2") == 0)
-	{
 
-	}
+
+	openPlayerSelectionWindow("loadGame");
+
+
+}
+char* getBtnName(int i)
+{
+	if (i == 1)
+		return "1";
+	if (i == 2)
+		return "2";
+	if (i == 3)
+		return "3";
+	if (i == 4)
+		return "4";
+	if (i == 5)
+		return "5";
+	if (i == 6)
+		return "6";
+	if (i == 7)
+		return "7";
+	if (i == 8)
+		return "8";
+	if (i == 9)
+		return "9";
+	if (i == 10)
+		return "10";
+
 }
 void loadGame()
 {
-	//add 7 buttons of numbers
+
 	//UINode* loadGameBtn = CreateButton(win->surface, 315, 230, "images/LoadGame.bmp", loadGame, mainPanel, 0, "loadGame");
+	int slotArr[gameSlots];//init to 1
+	//find all FILENAME files in the project dir
+	char filename[16];
+	for (int k = 0; k < gameSlots; k++)
+	{
+		int num = k + 1;
+		sprintf(filename, "%s%d.xml", FILENAME, num);
+		if (fileExists(filename) == 1)
+			slotArr[k] = 1;
+	}
 	Window* win = (Window*)mainWindow->control;
 	Panel* mainPanel = (Panel*)mainWindow->children[0]->control;
-	UINode* slotNumBtn = createLabel(win->surface, 500, 50, "images/slotNum.bmp", mainWindow->children[0], "slotNum");
-	UINode* slot1Btn = CreateButton(win->surface, 600, 100, "images/1.bmp", NULL, mainWindow->children[0], 0, "slot1");
-	UINode* slot2Btn = CreateButton(win->surface, 600, 150, "images/2.bmp", NULL, mainWindow->children[0], 0, "slot2");
-	UINode* slot3Btn = CreateButton(win->surface, 600, 200, "images/3.bmp", NULL, mainWindow->children[0], 0, "slot3");
-	UINode* slot4Btn = CreateButton(win->surface, 600, 250, "images/4.bmp", NULL, mainWindow->children[0], 0, "slot4");
-	UINode* slot5Btn = CreateButton(win->surface, 600, 300, "images/5.bmp", NULL, mainWindow->children[0], 0, "slot5");
-	UINode* slot6Btn = CreateButton(win->surface, 600, 350, "images/6.bmp", NULL, mainWindow->children[0], 0, "slot6");
-	UINode* slot7Btn = CreateButton(win->surface, 600, 400, "images/7.bmp", NULL, mainWindow->children[0], 0, "slot7");
+	UINode* slotNumBtn = createLabel(win->surface, 550, 120, "images/slotNum.bmp", mainWindow->children[0], "slotNum");
+	
+	int x = 600;
+	int x2 = 650;
+	int y = 170;
+	int lasty = y;
+
+
+
+
+
+
+
 
 	addChildToFather(mainWindow->children[0], slotNumBtn);
-	addChildToFather(mainWindow->children[0], slot1Btn);
-	addChildToFather(mainWindow->children[0], slot2Btn);
-	addChildToFather(mainWindow->children[0], slot3Btn);
-	addChildToFather(mainWindow->children[0], slot4Btn);
-	addChildToFather(mainWindow->children[0], slot5Btn);
-	addChildToFather(mainWindow->children[0], slot6Btn);
-	addChildToFather(mainWindow->children[0], slot7Btn);
+	for (int i = 1; i <= gameSlots; i++)
+	{
+		int xpos = 0;
+		int ypos = 0;
+		if (slotArr[i - 1] == 0)
+			continue;
+		//char btnName[9];
+		char imageName[20];
+		char* btnName = getBtnName(i);
+		sprintf(imageName, "%s%d.bmp","images/", i);
+		//sprintf(btnName, "%s%d", "slot",i);
+		if (i % 2 == 0)
+		{
+			xpos = x2;
+			ypos = lasty;
+			
+		}
+		else
+		{
+			xpos = x;
+			ypos = y;
+			lasty = y;
+		}
+			
+		UINode* slotNumBtn = CreateButton(win->surface, xpos, ypos, imageName, loadGameFromSlot, mainWindow->children[0], 0, btnName);
+
+
+
+
+
+
+		addChildToFather(mainWindow->children[0], slotNumBtn);
+		y = y + 20;
+	}
+	
 
 	presentUITree(mainWindow);
 
@@ -453,6 +527,84 @@ void openSettingWindow()
 	//create setting window
 	shouldQuitSelectionEvents = 1;
 	shouldQuitsettingEvents = 0;
+
+	char* whiteBtnName = "whiteMark";
+	char* blackBtnName = "black";
+	char* depth1BtnName = "depth1Mark";
+	char* depth2BtnName = "depth2";
+	char* depth3BtnName = "depth3";
+	char* depth4BtnName = "depth4";
+	char* depthBestBtnName = "best";
+
+	char* whiteBtnP = "images/PlayersSelection/whiteMark.bmp";
+	char* blackBtnP = "images/PlayersSelection/black.bmp";
+	char* depth1BtnP = "images/AISettings/1m.bmp";
+	char* depth2BtnP = "images/AISettings/2.bmp";
+	char* depth3BtnP = "images/AISettings/3.bmp";
+	char* depth4BtnP = "images/AISettings/4.bmp";
+	char* depthBestBtnP = "images/AISettings/best.bmp";
+	//load real values in case of load game:
+	if (userColor == BLACK)
+	{
+		whiteBtnName = "white";
+		blackBtnName = "blackMark";
+		whiteBtnP = "images/PlayersSelection/white.bmp";
+		blackBtnP = "images/PlayersSelection/blackMark.bmp";
+
+	}
+	if (minimax_depth == 2)
+	{
+		depth1BtnName = "depth1";
+		depth2BtnName = "depth2Mark";
+		depth3BtnName = "depth3";
+		depth4BtnName = "depth4";
+		depthBestBtnName = "best";
+		depth1BtnP = "images/AISettings/1.bmp";
+		depth2BtnP = "images/AISettings/2m.bmp";
+		depth3BtnP = "images/AISettings/3.bmp";
+		depth4BtnP = "images/AISettings/4.bmp";
+		depthBestBtnP = "images/AISettings/best.bmp";
+	}
+	else if (minimax_depth == 3)
+	{
+		depth1BtnName = "depth1";
+		depth2BtnName = "depth2";
+		depth3BtnName = "depth3Mark";
+		depth4BtnName = "depth4";
+		depthBestBtnName = "best";
+		depth1BtnP = "images/AISettings/1.bmp";
+		depth2BtnP = "images/AISettings/2.bmp";
+		depth3BtnP = "images/AISettings/3m.bmp";
+		depth4BtnP = "images/AISettings/4.bmp";
+		depthBestBtnP = "images/AISettings/best.bmp";
+	}
+	else if (minimax_depth == 4)
+	{
+		depth1BtnName = "depth1";
+		depth2BtnName = "depth2";
+		depth3BtnName = "depth3";
+		depth4BtnName = "depth4Mark";
+		depthBestBtnName = "best";
+		depth1BtnP = "images/AISettings/1m.bmp";
+		depth2BtnP = "images/AISettings/2.bmp";
+		depth3BtnP = "images/AISettings/3.bmp";
+		depth4BtnP = "images/AISettings/4m.bmp";
+		depthBestBtnP = "images/AISettings/best.bmp";
+	}
+	else if (minimax_depth == -1)
+	{
+		depth1BtnName = "depth1";
+		depth2BtnName = "depth2";
+		depth3BtnName = "depth3";
+		depth4BtnName = "depth4";
+		depthBestBtnName = "depthBestMark";
+		depth1BtnP = "images/AISettings/1.bmp";
+		depth2BtnP = "images/AISettings/2.bmp";
+		depth3BtnP = "images/AISettings/3.bmp";
+		depth4BtnP = "images/AISettings/4.bmp";
+		depthBestBtnP = "images/AISettings/bestm.bmp";
+	}
+
 	//clean resources
 	settingWindow = CreateWindow("Chess Game AI Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)settingWindow->control;
@@ -462,13 +614,14 @@ void openSettingWindow()
 	UINode* titleLabel = createLabel(win->surface, 300, 50, "images/AISettings/title.bmp", settingPanel, "titleLabel");
 	UINode* depthLabel = createLabel(win->surface, 50, 250, "images/AISettings/gameDepth.bmp", settingPanel, "depthLabel");
 
-	UINode* whiteBtn = CreateButton(win->surface, 250, 150, "images/PlayersSelection/whiteMark.bmp", chooseWhiteColor, settingPanel, 0, "whiteMark");
-	UINode* blackBtn = CreateButton(win->surface, 500, 150, "images/PlayersSelection/black.bmp", chooseBlackColor, settingPanel, 0, "black");
-	UINode* depth1 = CreateButton(win->surface, 250, 250, "images/AISettings/1m.bmp", chooseDepth1, settingPanel, 0, "depth1Mark");
-	UINode* depth2 = CreateButton(win->surface, 350, 250, "images/AISettings/2.bmp", chooseDepth2, settingPanel, 0, "depth2");
-	UINode* depth3 = CreateButton(win->surface, 450, 250, "images/AISettings/3.bmp", chooseDepth3, settingPanel, 0, "depth3");
-	UINode* depth4 = CreateButton(win->surface, 550, 250, "images/AISettings/4.bmp", chooseDepth4, settingPanel, 0, "depth4");
-	UINode* depthBest = CreateButton(win->surface, 650, 250, "images/AISettings/best.bmp", chooseDepthBest, settingPanel, 0, "best");
+	
+	UINode* whiteBtn = CreateButton(win->surface, 250, 150, whiteBtnP, chooseWhiteColor, settingPanel, 0, whiteBtnName);
+	UINode* blackBtn = CreateButton(win->surface, 500, 150, blackBtnP, chooseBlackColor, settingPanel, 0, blackBtnName);
+	UINode* depth1 = CreateButton(win->surface, 250, 250, depth1BtnP, chooseDepth1, settingPanel, 0, depth1BtnName);
+	UINode* depth2 = CreateButton(win->surface, 350, 250, depth2BtnP, chooseDepth2, settingPanel, 0, depth2BtnName);
+	UINode* depth3 = CreateButton(win->surface, 450, 250, depth3BtnP, chooseDepth3, settingPanel, 0, depth3BtnName);
+	UINode* depth4 = CreateButton(win->surface, 550, 250, depth4BtnP, chooseDepth4, settingPanel, 0, depth4BtnName);
+	UINode* depthBest = CreateButton(win->surface, 650, 250, depthBestBtnP, chooseDepthBest, settingPanel, 0, depthBestBtnName);
 
 	UINode* returnBtn = CreateButton(win->surface, 250, 350, "images/AISettings/return.bmp", returnFunc, settingPanel, 0, "return");
 	UINode* playBtn = CreateButton(win->surface, 550, 350, "images/AISettings/play.bmp", startNewGame, settingPanel, 0, "play");
@@ -643,22 +796,26 @@ void twoPlayerMode()
 {
 	UINode* father = getNodeByName("selectPanel", playerSelectionWindow);
 	//check if comp players button is marked and change him to unmark
-	UINode* markNodeBtn = getNodeByName("twoPlayersH", playerSelectionWindow);
+	UINode* markNodeBtn = getNodeByName("playerVsCompMark", playerSelectionWindow);
 	if (markNodeBtn != NULL)
 	{
 		Window* win = (Window*)playerSelectionWindow->control;
 		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
-		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, markNodeBtn->father, 0, "compPlayers");
-		replaceUINodeChild(father, regularBtn, "twoPlayersH");
+		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, markNodeBtn->father, 0, "playerVsComp");
+		replaceUINodeChild(father, regularBtn, "playerVsCompMark");
 	}
 	gameMode = 1;
 	//update the bottom to be in highlight color
 	UINode* buttonNode = getNodeByName("twoPlayers", playerSelectionWindow);
+	if (buttonNode == NULL)
+	{
+		presentUITree(playerSelectionWindow);
+		return;
+	}
 	//change the node with new control and load him
 	Window* win = (Window*)playerSelectionWindow->control;
 	ImgButton* oldBtn = (ImgButton*)buttonNode->control;
-	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/twoplay.bmp", NULL, buttonNode->father, 0, "twoPlayersmark");
-	
+	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/twoplay.bmp", NULL, buttonNode->father, 0, "twoPlayersMark");
 	
 	replaceUINodeChild(father, coloredBtnNode, "twoPlayers");
 	presentUITree(playerSelectionWindow);
@@ -668,24 +825,28 @@ void playerVsComputerMode()
 {
 	UINode* father = getNodeByName("selectPanel", playerSelectionWindow);
 	//check if two players button is marked and change him to unmark
-	UINode* markNodeBtn = getNodeByName("twoPlayersmark", playerSelectionWindow);
+	UINode* markNodeBtn = getNodeByName("twoPlayersMark", playerSelectionWindow);
 	if (markNodeBtn != NULL)
 	{
 		Window* win = (Window*)playerSelectionWindow->control;
 		ImgButton* oldBtn = (ImgButton*)markNodeBtn->control;
 		UINode* regularBtn = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/twoPlayers.bmp", twoPlayerMode, markNodeBtn->father, 0, "twoPlayers");
-		replaceUINodeChild(father, regularBtn, "twoPlayersmark");
+		replaceUINodeChild(father, regularBtn, "twoPlayersMark");
 	}
 
 	gameMode = 2;
-	UINode* buttonNode = getNodeByName("compPlayers", playerSelectionWindow);
+	UINode* buttonNode = getNodeByName("playerVsComp", playerSelectionWindow);
+	if (buttonNode == NULL)
+	{
+		presentUITree(playerSelectionWindow);
+		return;
+	}
+
 	//change the node with new control and load him
 	Window* win = (Window*)playerSelectionWindow->control;
 	ImgButton* oldBtn = (ImgButton*)buttonNode->control;
-	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/playComH.bmp", NULL, buttonNode->father, 0, "twoPlayersH");
-
-	
-	replaceUINodeChild(father, coloredBtnNode, "compPlayers");
+	UINode* coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/playComH.bmp", NULL, buttonNode->father, 0, "playerVsCompMark");	
+	replaceUINodeChild(father, coloredBtnNode, "playerVsComp");
 	presentUITree(playerSelectionWindow);
 }
 
@@ -708,14 +869,17 @@ void chooseNextWhite()
 	//update the bottom to be in highlight color
 	UINode* buttonNode = getNodeByName("white", playerSelectionWindow);
 	if (buttonNode == NULL)
+	{
+		presentUITree(playerSelectionWindow);
 		return;
+	}
 	//change the node with new control and load him
 	win = (Window*)playerSelectionWindow->control;
 	oldBtn = (ImgButton*)buttonNode->control;
 	coloredBtnNode = CreateButton(win->surface, oldBtn->x, oldBtn->y, "images/PlayersSelection/whiteMark.bmp", NULL, buttonNode->father, 0, "whiteMark");
 	replaceUINodeChild(father, coloredBtnNode, "white");
 	presentUITree(playerSelectionWindow);
- 
+
 }
 void chooseNextBlack()
 {
@@ -732,6 +896,11 @@ void chooseNextBlack()
 	}
 	//update the bottom to be in highlight color
 	UINode* buttonNode = getNodeByName("black", playerSelectionWindow);
+	if (buttonNode == NULL)
+	{
+		presentUITree(playerSelectionWindow);
+		return;
+	}
 	//change the node with new control and load him
 	Window* win = (Window*)playerSelectionWindow->control;
 	ImgButton* oldBtn = (ImgButton*)buttonNode->control;
@@ -743,8 +912,17 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 {
 	//clear mainWindow tree
 	shouldQuitMainEvents = 1;
-	
+
 	char* sourceBtnName = (char*)sourceBottomName;
+	char* whiteBtnPath;
+	char* blackBtnPath;
+
+	char* twoplayersBtnPath;
+	char* playervsCompBtnPath;
+	char* whiteBtnName = "whiteMark";
+	char* blackBtnName = "black";
+	char* twoplayersBtnName = "twoPlayers";
+	char* playervsCompBtnName = "playerVsComp";
 	//init or load the game configuration
 	if (strcmp(sourceBtnName, "newGame") == 0)
 	{
@@ -754,19 +932,55 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 		userColor = WHITE;
 		pawnPromotionTool = -1000;//queen
 		init_board(board);
-		freeUINode(mainWindow);
+		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
+		blackBtnPath = "images/PlayersSelection/black.bmp";
+		twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
+		playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
+
 	}
 	else if (strcmp(sourceBtnName, "loadGame") == 0)
 	{
-		freeUINode(mainWindow);
-		//Todo: load new game to board, wating for niro
+		if (gameMode == 2)
+		{
+			playervsCompBtnName = "playerVsCompMark";
+			twoplayersBtnName = "twoPlayers";
+			playervsCompBtnPath = "images/PlayersSelection/playComH.bmp";
+			twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
+		}
+		else if (gameMode == 1)
+		{
+			playervsCompBtnName = "playerVsCom";
+			twoplayersBtnName = "twoPlayersMark";
+			twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";
+			playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
+		}
+		if (nextPlayer == WHITE)
+		{
+			whiteBtnName = "whiteMark";
+			blackBtnName = "black";
+			whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
+			blackBtnPath = "images/PlayersSelection/black.bmp";
+		}
+		else if (nextPlayer == BLACK)
+		{
+			whiteBtnName = "white";
+			blackBtnName = "blackMark";
+			whiteBtnPath = "images/PlayersSelection/white.bmp";
+			blackBtnPath = "images/PlayersSelection/blackMark.bmp";
+		}
+
+
+
 	}
+
+
+	freeUINode(mainWindow);
 	//move to the next window
 	//create window
 	shouldQuitSelectionEvents = 0;
 	playerSelectionWindow = CreateWindow("Chess Players Selection", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)playerSelectionWindow->control;
-	UINode* selectPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), playerSelectionWindow, 0,"selectPanel");
+	UINode* selectPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), playerSelectionWindow, 0, "selectPanel");
 
 	Panel* p = (Panel*)selectPanel->control;
 	//create labels and buttons
@@ -777,13 +991,13 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	UINode* BoardSettingsBtn = CreateButton(win->surface, 300, 400, "images/PlayersSelection/boardSettings.bmp", openBoardSettingWindow, selectPanel, 0, "boardSet");
 	UINode* NextBtn = CreateButton(win->surface, 550, 400, "images/PlayersSelection/next.bmp", NextButtomClicked, selectPanel, 0, "next");
 
-	UINode* twoPlayersBtn = CreateButton(win->surface, 250, 150, "images/PlayersSelection/twoPlayers.bmp", twoPlayerMode, selectPanel, 0, "twoPlayers");
-	UINode* compPlayersBtn = CreateButton(win->surface, 500, 150, "images/PlayersSelection/playComp.bmp", playerVsComputerMode, selectPanel, 0, "compPlayers");
-	UINode* whiteBtn = CreateButton(win->surface, 250, 250, "images/PlayersSelection/whiteMark.bmp", chooseNextWhite, selectPanel, 0, "whiteMark");
-	UINode* blackBtn = CreateButton(win->surface, 500, 250, "images/PlayersSelection/black.bmp", chooseNextBlack, selectPanel, 0, "black");
+	UINode* twoPlayersBtn = CreateButton(win->surface, 250, 150, twoplayersBtnPath, twoPlayerMode, selectPanel, 0, twoplayersBtnName);
+	UINode* compPlayersBtn = CreateButton(win->surface, 500, 150, playervsCompBtnPath, playerVsComputerMode, selectPanel, 0, playervsCompBtnName);
+	UINode* whiteBtn = CreateButton(win->surface, 250, 250, whiteBtnPath, chooseNextWhite, selectPanel, 0, whiteBtnName);
+	UINode* blackBtn = CreateButton(win->surface, 500, 250, blackBtnPath, chooseNextBlack, selectPanel, 0, blackBtnName);
 
-	//labels:
-	//UINode* defaultColLabel = createLabel(win->surface, 450, 245, "images/PlayersSelection/whitet.bmp", selectPanel, "colorLabel");
+
+
 
 	addChildToFather(playerSelectionWindow, selectPanel);
 	addChildToFather(selectPanel, titleLabel);
@@ -802,6 +1016,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	presentUITree(playerSelectionWindow);
 	EventsLoopPlayerSelectionWindow();
 }
+
 
 void quitGame()
 {

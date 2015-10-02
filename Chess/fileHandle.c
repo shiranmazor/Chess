@@ -8,6 +8,16 @@
 #define calloc(x,y) myCalloc(x,y)
 #define realloc(x,y) myRealloc(x,y)
 
+int fileExists(const char *fname)
+{
+	FILE *file;
+	if (file = fopen(fname, "r"))
+	{
+		fclose(file);
+		return 1;
+	}
+	return 0;
+}
 char * getFilenameBySlotNumber(int slotNumber)
 {
 	char slotStr[2];
