@@ -835,7 +835,7 @@ void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move)
 	char Player = board[nextPos->x][nextPos->y];
 	
 	//check if last move did promote
-	if (isLastMovePromotePawn == 1)
+	if (move->movePromotePawn == 1)
 	{
 		int color = getColorByPos(nextPos->x, nextPos->y);
 		if (color == WHITE)
@@ -862,11 +862,11 @@ void performUserMove(Move *move)
 	board[curr->x][curr->y] = EMPTY;
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		checkAndPerformPromotion(board, nextPos, WHITE);
+		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
 	else if (Player == BLACK_P)
-		checkAndPerformPromotion(board, nextPos, BLACK);
+		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
 	else
-		isLastMovePromotePawn = 0;
+		move->movePromotePawn = 0;
 }
 
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
@@ -892,11 +892,11 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		checkAndPerformPromotion(board, nextPos, WHITE);
+		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
 	else if (Player == BLACK_P)
-		checkAndPerformPromotion(board, nextPos, BLACK);
+		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
 	else
-		isLastMovePromotePawn = 0;
+		move->movePromotePawn = 0;
 }
 int getColorByPos(int x, int y)
 {
@@ -1017,9 +1017,9 @@ Move * parseMoveCommand(char *command)
 
 
 /* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
-void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
+int checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
 {
-	isLastMovePromotePawn = 0;
+	int promot = 0;
 	if (playerColor == WHITE && currPawnPos->y == BOARD_SIZE -1)//need promote
 	{
 		if (pawnPromotionTool == EMPTY)//default to queent
@@ -1030,7 +1030,7 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 		{
 			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
 		}
-		isLastMovePromotePawn = 1;
+		promot = 1;
 	}
 	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
 	{
@@ -1042,8 +1042,9 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnP
 		{
 			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
 		}
-		isLastMovePromotePawn = 1;
+		promot = 1;
 	}
+	return promot;
 }
 
 int isMoveLegal(Move *move, int userColor)

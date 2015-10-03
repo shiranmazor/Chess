@@ -523,27 +523,18 @@ int ComputerMove()
 	//call minimax algorithm
 	Move* computerMove = NULL;
 	int opponentColor = (computerColor == BLACK) ? WHITE : BLACK;
-	minimax(board, minimax_depth, &computerMove, -9999, 9999, 1, 0,minimax_depth);
+	minimax(board, minimax_depth, &computerMove, -9999, 9999, 1, 0);
 	//perforam chosen  move
 	performUserMove(computerMove);
 	//check if promotion has happend and print move
 	int isPromote = 0;
 	Pos *curr = computerMove->currPos;
 	Pos *next = computerMove->dest->pos;
-	if (board[curr->x][curr->y] == WHITE_P)
-	{
-		if (next->y == BOARD_SIZE - 1)
-			isPromote = 1;
-	}
-	else if (board[curr->x][curr->y] == BLACK_P)
-	{
-		if (next->y == 0)
-			isPromote = 1;
-	}
-	if (isPromote == 1)
+	if (computerMove->movePromotePawn == 1)
 	{
 		char* moveStr = getStringFormatMove(*computerMove);
-		printf("%s%s %s", "Computer: move ", moveStr, "queen");
+		moveStr = str_replace(moveStr, "\n", "");
+		printf("%s%s %s", "Computer: move ", moveStr, "queen\n");
 		free(moveStr);
 	}
 	else
@@ -753,7 +744,7 @@ int getMoveScore(Move *move, int d, int playerColor)
 		int oldComputerColor = computerColor;
 		computerColor = playerColor;
 		userColor = opponentColor;
-		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0, d - 1);
+		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0);
 		computerColor = oldComputerColor;
 	}
 	UndoMove(board, move);
@@ -1122,7 +1113,7 @@ void runConsole()
 	pawnPromotionTool =EMPTY;//queen
 	init_board(board);
 	print_board(board);
-	
+	//test_config_for_best_move2();
 	settingState();
 
 }

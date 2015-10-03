@@ -74,6 +74,7 @@ struct Move
 	PosNode *dest;
 	int eat;
 	char eatTool;
+	int movePromotePawn;
 };
 
 
@@ -127,7 +128,7 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isPlayerStuck(int playerColor);
 Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
-void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
+int checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
 void performUserMove(Move *move);
 void printGameMoves(MoveNode *movesList);
 int countPlayers(char board[BOARD_SIZE][BOARD_SIZE]);

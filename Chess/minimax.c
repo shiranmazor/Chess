@@ -5,33 +5,52 @@
 #define calloc(x,y) myCalloc(x,y)
 #define realloc(x,y) myRealloc(x,y)
 
+int countKings2(char board[BOARD_SIZE][BOARD_SIZE])
+{
+	int kingsCounter = 0;
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		for (int j = 0; j < BOARD_SIZE; j++)
+		{
+			if (board[i][j] == WHITE_K || board[i][j] == BLACK_K)
+				kingsCounter++;
+		}
+	}
+	return kingsCounter;
+}
 //recursive function for return the scoring result of the best move
 int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove, 
-	int alpha, int beta, int isMax, int boardCounter, int scoreDepth)
+	int alpha, int beta, int isMax, int boardCounter)
 {
 	//if depth  == -1 we are in best difficulty
 	
 	MoveNode* moves;
 	int mate;
+	int oponnentColor;
 	int newRes;
+	int kings;
 	int color = computerColor;
 	if (isMax == 0)
 		color = userColor;
-	mate = isPlayerUnderMate(board, computerColor);
-	if (mate == 1)
-		return -1000;
+	
+	
+	/*
+	kings = countKings2(board);
+	if (kings < 2)
+	mate = 1;
+	*/
+	
+
+	oponnentColor = color == WHITE ? BLACK : WHITE;
+	//if the next moves can lead to chessmate - eating the opponent king
+	mate = isPlayerUnderMate(board, oponnentColor);
 	moves = getMoves(board, color);
 	
 	//check if no moves or depth is 0
-	if (moves == NULL || depth == 0 || boardCounter == 1000000)
+	if (moves == NULL || depth == 0 || boardCounter == 1000000 || mate ==1)
 	{
-		//print_board(board);
 		int res = score(board, computerColor);
 		freeMoves(moves, NULL);
-		/*
-		if (isMax == 0)
-		res = res * (-1);
-		*/
 
 		return res;
 	}
@@ -44,12 +63,9 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 			while (movesPointer != NULL)
 			{
 				
-				//char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, movesPointer->move);
 				boardCounter++;
-				//print_board(board);
-				//print_board(newBoard);
-				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter, depth - 1);
+				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter);
 				UndoMove(board, movesPointer->move);
 
 				newRes = max(newRes,temp);
@@ -57,7 +73,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				if (newRes > alpha)
 				{
 					alpha = newRes;
-					if (depth == minimax_depth || depth == scoreDepth)//check if we are in first recursion
+					if (depth == minimax_depth)//check if we are in first recursion
 						*(bestMove) = movesPointer->move;
 
 				}
@@ -83,7 +99,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				performMoveMinimax(board, movesPointer->move);
 				
 				boardCounter++;
-				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 1, boardCounter, depth - 1);
+				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 1, boardCounter);
 				UndoMove(board, movesPointer->move);
 				newRes = min(newRes, temp);
 				if (newRes < beta)
