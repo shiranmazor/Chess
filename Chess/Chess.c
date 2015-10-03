@@ -480,13 +480,11 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 
 				if (!isValidPos(&nextPosOnSameDirection)) 
 					break;
-
-				
-
 			}
 		}
 	}
-	//todo free adj array, in all functions who uses adj
+	
+	freeArray(adj, 4);
 	return movesList;
 }
 
@@ -509,6 +507,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 		}
 	}
 
+	freeArray(adj, 8);
 	return movesList;
 }
 
@@ -558,6 +557,7 @@ MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 			}
 		}
 	}
+	freeArray(adj,4);
 	return movesList;
 }
 
@@ -580,6 +580,7 @@ MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 		}
 	}
 	
+	freeArray(adj, 8);
 	return movesList;
 }
 
@@ -710,7 +711,8 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 				continue;
 
 			MoveNode * movesList = getMove(board, pos, playerColor);
-
+			//freeMoves(movesList, NULL);
+			//movesList = NULL;
 			if (movesList != NULL)
 				addMoveNodeToList(&firstMoveNode, movesList);
 		}

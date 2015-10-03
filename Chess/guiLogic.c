@@ -771,7 +771,7 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
 	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGameIfBoardValid, menuPanel, 0, "next"));
 
-	init_board(board);
+	//init_board(board);
 	drawBoard(board, boardSettingsWindow);
 	presentUITree(boardSettingsWindow);
 	EventsLoopboardSettingWindow();
