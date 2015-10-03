@@ -534,6 +534,60 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 			return NULL;
 	}
 
+	//check if player under check and then remove any moves that keeps the check status
+	if (isPlayerUnderCheck(board, playerColor))
+	{
+		MoveNode * moveNode = movesList;
+		MoveNode * prev = NULL;
+		while (moveNode != NULL)
+		{
+			performMoveMinimax(board, moveNode->move);
+			if (isPlayerUnderCheck(board, playerColor))
+			{
+				if (prev == NULL)
+				{
+					movesList = moveNode->next;
+				}
+				else
+				{
+					prev->next = moveNode->next;
+				}
+			}
+			else
+			{
+				prev = moveNode;
+			}
+			UndoMove(board, moveNode->move);
+			moveNode = moveNode->next;
+		}
+	}
+	else//board is not under check but checking 
+	{
+		MoveNode * moveNode = movesList;
+		MoveNode * prev = NULL;
+		while (moveNode != NULL)
+		{
+			performMoveMinimax(board, moveNode->move);
+			if (isPlayerUnderCheck(board, playerColor))
+			{
+				if (prev == NULL)
+				{
+					movesList = moveNode->next;
+				}
+				else
+				{
+					prev->next = moveNode->next;
+				}
+			}
+			else
+			{
+				prev = moveNode;
+			}
+			UndoMove(board, moveNode->move);
+			moveNode = moveNode->next;
+		}
+	}
+
 	return movesList;
 }
 
@@ -564,60 +618,7 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 		}
 	}
 
-	//check if player under check and then remove any moves that keeps the check status
-	if (isPlayerUnderCheck(board,playerColor))
-	{
-		MoveNode * moveNode = firstMoveNode;
-		MoveNode * prev = NULL;
-		while (moveNode != NULL)
-		{
-			performMoveMinimax(board, moveNode->move);
-			if (isPlayerUnderCheck(board, playerColor))
-			{
-				if (prev == NULL)
-				{
-					firstMoveNode = moveNode->next;
-				}
-				else
-				{
-					prev->next = moveNode->next;
-				}
-			}
-			else
-			{
-				prev = moveNode;
-			}
-			UndoMove(board, moveNode->move);
-			moveNode = moveNode->next;
-		}
-	}
-	else//board is not under check but checking 
-	{
-		MoveNode * moveNode = firstMoveNode;
-		MoveNode * prev = NULL;
-		while (moveNode != NULL)
-		{
-			performMoveMinimax(board, moveNode->move);
-			if (isPlayerUnderCheck(board, playerColor))
-			{
-				if (prev == NULL)
-				{
-					firstMoveNode = moveNode->next;
-				}
-				else
-				{
-					prev->next = moveNode->next;
-				}
-			}
-			else
-			{
-				prev = moveNode;
-			}
-			//print_board2(board);
-			UndoMove(board, moveNode->move);
-			moveNode = moveNode->next;
-		}
-	}
+	
 	return firstMoveNode;
 }
 

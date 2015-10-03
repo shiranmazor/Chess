@@ -954,7 +954,7 @@ void printGameMoves(MoveNode *movesList)
 	{
 		char* moveStr = getStringFormatMove(*(movesList->move));
 		movesList = movesList->next;
-		printf("%s %s", "move", moveStr);
+		printf("%s", moveStr);
 		free(moveStr);
 	}
 }
