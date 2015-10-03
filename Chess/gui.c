@@ -7,8 +7,6 @@
 //UI Tree:
 UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* father, void(*Action)(void*))
 {
-	Window* win;
-
 	UINode* node = (UINode*)malloc(sizeof(UINode));
 	//control cast:
 	if (type == WINDOW)
@@ -32,9 +30,27 @@ UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* f
 void addChildToFather(UINode* father, UINode* child)
 {
 	father->childsNumber++;
-	father->children = (UINode*)realloc(father->children,father->childsNumber*sizeof(UINode*));
+	father->children = (UINode**)realloc(father->children,father->childsNumber*sizeof(UINode*));
 	father->children[father->childsNumber - 1] = child;
 
+}
+char* getUINodeName(UINode* node)
+{
+	if (node->type == LABEL)
+	{
+		Label* l = (Label*)node->control;
+		return l->name;
+	}
+	else if (node->type == PANEL)
+	{
+		Panel* p = (Panel*)node->control;
+		return p->name;
+	}
+	else if (node->type == BUTTON)
+	{
+		ImgButton* b = (ImgButton*)node->control;
+		return b->name;
+	}
 }
 
 void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameToreplace)
@@ -87,24 +103,7 @@ int getUINodeY(UINode* node)
 		return b->y;
 	}
 }
-char* getUINodeName(UINode* node)
-{
-	if (node->type == LABEL)
-	{
-		Label* l = (Label*)node->control;
-		return l->name;
-	}
-	else if (node->type == PANEL)
-	{
-		Panel* p = (Panel*)node->control;
-		return p->name;
-	}
-	else if (node->type == BUTTON)
-	{
-		ImgButton* b = (ImgButton*)node->control;
-		return b->name;
-	}
-}
+
 UINode* getNodeByName(char* controlName, UINode* root)
 {
 	UINode* node = NULL;

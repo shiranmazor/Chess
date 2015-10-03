@@ -927,6 +927,8 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 		nextPlayer = WHITE;
 		userColor = WHITE;
 		init_board(board);
+		playervsCompBtnName = "playerVsComp";
+		twoplayersBtnName = "twoPlayersMark";
 		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
 		blackBtnPath = "images/PlayersSelection/black.bmp";
 		twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";
@@ -944,7 +946,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 		}
 		else if (gameMode == 1)
 		{
-			playervsCompBtnName = "playerVsCom";
+			playervsCompBtnName = "playerVsComp";
 			twoplayersBtnName = "twoPlayersMark";
 			twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";
 			playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
