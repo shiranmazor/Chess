@@ -32,14 +32,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 	int color = computerColor;
 	if (isMax == 0)
 		color = userColor;
-	
-	
-	/*
-	kings = countKings2(board);
-	if (kings < 2)
-	mate = 1;
-	*/
-	
+
 
 	oponnentColor = color == WHITE ? BLACK : WHITE;
 	//if the next moves can lead to chessmate - eating the opponent king
@@ -68,26 +61,28 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter);
 				UndoMove(board, movesPointer->move);
 
-				newRes = max(newRes,temp);
-				//insert prunning:
-				if (newRes > alpha)
+				if (newRes < temp)
 				{
-					alpha = newRes;
+					newRes = temp;
+
 					if (depth == minimax_depth)//check if we are in first recursion
 						*(bestMove) = movesPointer->move;
 
 				}
+				//insert prunning:
+				alpha = (alpha > newRes ? alpha : newRes);
 				//if (alpha >= beta)
-				if (newRes >=beta )
+				if (alpha >=beta )
 				{
 					freeMoves(moves, *(bestMove));
-					return beta;//pruning
+					moves = NULL;
+					break;
+
 				}
 				movesPointer = movesPointer->next;
 			}
-
-			freeMoves(moves, *(bestMove));
-			return newRes;
+			if (moves != NULL)
+				freeMoves(moves, *(bestMove));
 		}
 		else//player is the user:
 		{
@@ -106,19 +101,20 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 					beta = newRes;
 
 				//if (alpha >= beta)
-				if (newRes <= alpha)
+				if (beta <= alpha)
 				{
 					freeMoves(moves, *(bestMove));
-					return alpha;
+					moves = NULL;
+					break;
+
 				}
 
 				movesPointer = movesPointer->next;
 			}
-
-			freeMoves(moves, *(bestMove));
-			return newRes;
+			if (moves != NULL)
+				freeMoves(moves, *(bestMove));
 		}
-
+	return newRes;
 	}
 }
 

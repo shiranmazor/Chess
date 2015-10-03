@@ -1207,7 +1207,9 @@ int isPawnMoveLegal(Move *move, int useColor)
 	//move one step forward or eat diagonally
 	Pos *curr = move->currPos;
 	Pos* next = move->dest->pos;
-	if (next->y != curr->y + 1)
+	if (next->y != curr->y + 1 && useColor == WHITE)
+		return 0;
+	else if (next->y != curr->y - 1 && useColor == BLACK)
 		return 0;
 	if (curr->x == next->x)//same colum do not eat
 	{
@@ -1288,6 +1290,7 @@ int isKnightMoveLegal(Move *move, int useColor)
 			return 1;
 	}
 
+	return 0;
 }
 int isBishopMoveLegal(Move *move, int useColor)
 {

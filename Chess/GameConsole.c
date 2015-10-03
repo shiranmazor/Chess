@@ -545,7 +545,7 @@ int ComputerMove()
 		free(moveStr);
 	}
 	print_board(board);
-		freeMove(computerMove);
+	freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
 	{
 		if (checkForTie(board, opponentColor))
@@ -747,6 +747,7 @@ int getMoveScore(Move *move, int d, int playerColor)
 		computerColor = playerColor;
 		userColor = opponentColor;
 		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0);
+		freeMove(bestMove);
 		computerColor = oldComputerColor;
 	}
 	UndoMove(board, move);
