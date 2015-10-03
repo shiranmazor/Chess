@@ -545,7 +545,7 @@ int ComputerMove()
 		free(moveStr);
 	}
 	print_board(board);
-	freeMove(computerMove);
+		freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
 	{
 		if (checkForTie(board, opponentColor))

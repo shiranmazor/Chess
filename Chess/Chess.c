@@ -188,13 +188,41 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	while (moveNode != NULL)
 	{
 		int playerColor = getColorByPos(pos.x, pos.y);
-		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y== BOARD_SIZE - 1) || 
-			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0)
-			&& moveNode->move->movePromotePawn == 0)//need promote
+		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y == BOARD_SIZE - 1 && moveNode->move->movePromotePawn == 0) ||
+			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0 && moveNode->move->movePromotePawn == 0))//need promote
 		{
+			Pos curr1; 
+			Pos dest1;
+			curr1.x = moveNode->move->currPos->x;
+			curr1.y = moveNode->move->currPos->y;
+			dest1.x = moveNode->move->dest->pos->x;
+			dest1.y = moveNode->move->dest->pos->y;
+
+			Pos curr2;
+			Pos dest2;
+			curr2.x = moveNode->move->currPos->x;
+			curr2.y = moveNode->move->currPos->y;
+			dest2.x = moveNode->move->dest->pos->x;
+			dest2.y = moveNode->move->dest->pos->y;
+
+			Pos curr3;
+			Pos dest3;
+			curr3.x = moveNode->move->currPos->x;
+			curr3.y = moveNode->move->currPos->y;
+			dest3.x = moveNode->move->dest->pos->x;
+			dest3.y = moveNode->move->dest->pos->y;
+
+			Pos curr4;
+			Pos dest4;
+			curr4.x = moveNode->move->currPos->x;
+			curr4.y = moveNode->move->currPos->y;
+			dest4.x = moveNode->move->dest->pos->x;
+			dest4.y = moveNode->move->dest->pos->y;
+
 			if (prev == NULL)
 			{
 				movesList = moveNode->next;
+				freeMove(moveNode->move);
 			}
 			else
 			{
@@ -202,27 +230,24 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			}
 			//need promote
 			//add 4 additional moves
-
-			Pos curr = *(moveNode->move->currPos);
-			Pos dest = *(moveNode->move->dest->pos);
-			MoveNode * moveNodeNew1 = createMoveNode(curr, dest);
+			MoveNode * moveNodeNew1 = createMoveNode(curr1, dest1);
 			moveNodeNew1->move->movePromotePawn = 1;
-			moveNodeNew1->move->movePromotePawn = (playerColor == WHITE) ? WHITE_B : BLACK_B;
+			moveNodeNew1->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_B : BLACK_B;
 			addMoveNodeToList(&movesList, moveNodeNew1);
 
-			MoveNode * moveNodeNew2 = createMoveNode(curr, dest);
+			MoveNode * moveNodeNew2 = createMoveNode(curr2, dest2);
 			moveNodeNew2->move->movePromotePawn = 1;
-			moveNodeNew2->move->movePromotePawn = (playerColor == WHITE) ? WHITE_N : BLACK_N;
+			moveNodeNew2->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_N : BLACK_N;
 			addMoveNodeToList(&movesList, moveNodeNew2);
 
-			MoveNode * moveNodeNew3 = createMoveNode(curr, dest);
+			MoveNode * moveNodeNew3 = createMoveNode(curr3, dest3);
 			moveNodeNew3->move->movePromotePawn = 1;
-			moveNodeNew3->move->movePromotePawn = (playerColor == WHITE) ? WHITE_Q : BLACK_Q;
+			moveNodeNew3->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_Q : BLACK_Q;
 			addMoveNodeToList(&movesList, moveNodeNew3);
 
-			MoveNode * moveNodeNew4 = createMoveNode(curr, dest);
+			MoveNode * moveNodeNew4 = createMoveNode(curr4, dest4);
 			moveNodeNew4->move->movePromotePawn = 1;
-			moveNodeNew4->move->movePromotePawn = (playerColor == WHITE) ? WHITE_R : BLACK_R;
+			moveNodeNew4->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_R : BLACK_R;
 			addMoveNodeToList(&movesList, moveNodeNew4);	
 			
 		}
@@ -1079,22 +1104,22 @@ void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], int playerColo
 	{
 		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[move->currPos->x][move->currPos->y] = WHITE_Q;
+			board[move->dest->pos->x][move->dest->pos->y] = WHITE_Q;
 		}
 		else
 		{
-			board[move->currPos->x][move->currPos->y] = move->pawnPromotionTool;
+			board[move->dest->pos->x][move->dest->pos->y] = move->pawnPromotionTool;
 		}
 	}
 	else if (move->movePromotePawn == 1)//need promote
 	{
 		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[move->currPos->x][move->currPos->y] = BLACK_Q;
+			board[move->dest->pos->x][move->dest->pos->y] = BLACK_Q;
 		}
 		else
 		{
-			board[move->currPos->x][move->currPos->y] = move->pawnPromotionTool;
+			board[move->dest->pos->x][move->dest->pos->y] = move->pawnPromotionTool;
 		}
 	}
 }
