@@ -637,30 +637,31 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					presentUITree(gameWindow);
 					isEmptyClicked = 0;
 
+					if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
+					{
+						//declare win
+						break;
+					}
+					else if (checkForTie(board, getOpponentColor(nextPlayer)))
+					{
+						//decalte tie
+						break;
+					}
+					else if (isPlayerUnderCheck(board, getOpponentColor(nextPlayer)))
+					{
+						//declare check
+						int foo = 1;
+					}
+
 					if (gameMode == 2)
 					{
 						//player vs AI
-						if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
-						{
-							//declare win
-							break;
-						}
-						else if (checkForTie(board, getOpponentColor(nextPlayer)))
-						{
-							//decalte tie
-							break;
-						}
-						else if (isPlayerUnderCheck(board, getOpponentColor(nextPlayer)))
-						{
-							//declare check
-							int foo = 1;
-						}
 						ComputerMove();
 						
 					}
 					else if (gameMode == 1)
 					{
-						//player vs player
+						nextPlayer = getOpponentColor(nextPlayer);
 					}
 					drawBoard(board, gameWindow);
 					presentUITree(gameWindow);
