@@ -921,13 +921,14 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	if (strcmp(sourceBtnName, "newGame") == 0)
 	{
 		//set default values:
+		gameMode = 1;
 		minimax_depth = 1;
 		nextPlayer = WHITE;
 		userColor = WHITE;
 		init_board(board);
 		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
 		blackBtnPath = "images/PlayersSelection/black.bmp";
-		twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
+		twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";
 		playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
 
 	}
