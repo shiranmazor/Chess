@@ -22,7 +22,6 @@ int countKings2(char board[BOARD_SIZE][BOARD_SIZE])
 int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove, 
 	int alpha, int beta, int isMax, int boardCounter)
 {
-	//if depth  == -1 we are in best difficulty
 	
 	MoveNode* moves;
 	int mate;
@@ -47,7 +46,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 
 		return res;
 	}
-	else//############ let's generate minimax tree!
+	else//############ lets generate minimax tree!
 	{
 		if (isMax == 1)//player is the computer
 		{
@@ -89,7 +88,6 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 						*(bestMove) = movesPointer->move;
 
 				}
-				//if (alpha >= beta)
 				if (newRes >= beta)
 				{
 					freeMoves(moves, *(bestMove));
@@ -102,13 +100,12 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				freeMoves(moves, *(bestMove));
 			return newRes;
 		}
-		else//player is the user:
+		else//player is the user
 		{
 			newRes = 10000;
 			MoveNode* movesPointer = moves;
 			while (movesPointer != NULL)
 			{
-				//char newBoard[BOARD_SIZE][BOARD_SIZE];
 				performMoveMinimax(board, movesPointer->move);
 				
 				boardCounter++;
@@ -131,14 +128,12 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				if (newRes < beta)
 					beta = newRes;
 
-				//if (alpha >= beta)
 				if (newRes <= alpha)
 				{
 					freeMoves(moves, *(bestMove));
 					return alpha;
 				}
 				
-
 				movesPointer = movesPointer->next;
 			}
 			if (moves != NULL)

@@ -118,6 +118,7 @@ char* getBtnName(int i)
 		return "9";
 	if (i == 10)
 		return "10";
+	return "1";
 
 }
 void loadGame()

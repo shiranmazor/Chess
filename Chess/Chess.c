@@ -5,14 +5,27 @@
 #define calloc(x,y) myCalloc(x,y)
 #define realloc(x,y) myRealloc(x,y)
 
+void freeArrayPos(Pos** arrMul, int c)
+{
+	if (arrMul == NULL)
+		return;
+
+	for (int i = 0; i < c; ++i) {
+		if (arrMul[i] != NULL)
+			free(arrMul[i]);
+	}
+
+	free(arrMul);
+}
 
 
 void freeMove(Move *move)
 {
+	PosNode *node;
 	if (move == NULL)
 		return;
 	free(move->currPos);
-	PosNode *node = move->dest;
+	node = move->dest;
 	while (node != NULL)
 	{
 		PosNode *toFree = node;
@@ -118,6 +131,8 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	if (userColor == WHITE)
 	{
 		Pos upRight;
+		Pos upLeft;
+		Pos upCenter;
 		upRight.x = pos.x + 1;
 		upRight.y = pos.y + 1;
 
@@ -126,8 +141,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			MoveNode * moveNode = createMoveNode(pos, upRight);
 			addMoveNodeToList(&movesList, moveNode);
 		}
-
-		Pos upLeft;
+	
 		upLeft.x = pos.x - 1;
 		upLeft.y = pos.y + 1;
 
@@ -137,7 +151,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			addMoveNodeToList(&movesList, moveNode);
 		}
 
-		Pos upCenter;
+		
 		upCenter.x = pos.x;
 		upCenter.y = pos.y + 1;
 
@@ -151,6 +165,8 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	{
 		//black - down
 		Pos downRight;
+		Pos downLeft;
+		Pos downCenter;
 		downRight.x = pos.x + 1;
 		downRight.y = pos.y - 1;
 
@@ -159,8 +175,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			MoveNode * moveNode = createMoveNode(pos, downRight);
 			addMoveNodeToList(&movesList, moveNode);
 		}
-
-		Pos downLeft;
+		
 		downLeft.x = pos.x - 1;
 		downLeft.y = pos.y - 1;
 
@@ -169,8 +184,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			MoveNode * moveNode = createMoveNode(pos, downLeft);
 			addMoveNodeToList(&movesList, moveNode);
 		}
-
-		Pos downCenter;
+	
 		downCenter.x = pos.x;
 		downCenter.y = pos.y - 1;
 
@@ -484,7 +498,7 @@ MoveNode *getBishopMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 		}
 	}
 	
-	freeArray(adj, 4);
+	freeArrayPos(adj, 4);
 	return movesList;
 }
 
@@ -507,7 +521,7 @@ MoveNode *getKingMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 		}
 	}
 
-	freeArray(adj, 8);
+	freeArrayPos(adj, 8);
 	return movesList;
 }
 
@@ -557,7 +571,7 @@ MoveNode *getRookMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int playerCo
 			}
 		}
 	}
-	freeArray(adj,4);
+	freeArrayPos(adj, 4);
 	return movesList;
 }
 
@@ -580,7 +594,7 @@ MoveNode *getKnightMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int player
 		}
 	}
 	
-	freeArray(adj, 8);
+	freeArrayPos(adj, 8);
 	return movesList;
 }
 
@@ -834,7 +848,6 @@ void print_board2(char board[BOARD_SIZE][BOARD_SIZE])
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	int isMate = 1;
-	char boardCopy[BOARD_SIZE][BOARD_SIZE];
 	MoveNode * moves = getMoves(board, playerColor);
 	MoveNode* movesPointer = moves;
 	if (isPlayerUnderCheck(board, playerColor) == 0)
@@ -1191,7 +1204,6 @@ int isMoveLegal(Move *move, int userColor)
 	else
 	{
 		//a player cannot insert himself to check state
-		char boardCopy[BOARD_SIZE][BOARD_SIZE];
 		performMoveMinimax(board, move);
 		if (isPlayerUnderCheck(board, userColor) == 1)
 		{
@@ -1379,7 +1391,7 @@ int isQueenMoveLegal(Move *move, int useColor)
 		else if (next->x == curr->x + k && next->y == curr->y - k)
 			foundOnDiagonal = 1;
 	}
-	if (foundOnDiagonal = 1)
+	if (foundOnDiagonal == 1)
 		return 1;
 	else
 	{
@@ -2108,7 +2120,6 @@ int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	Pos *kingPos = getKingPos(playerColor);
 	if (kingPos == NULL)
 	{
-		stop = 1;
 		return 0;
 	}
 		

@@ -100,7 +100,7 @@ struct Move
 #define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define print_message(message) (printf("%s", message));
 
-
+void freeArrayPos(Pos** arrMul, int c);
 void freeMove(Move *move);
 void freeMoveWithoutDest(MoveNode *moveNode);
 void freeMoves(MoveNode *moveNodeHead, Move* notDelete);
