@@ -632,9 +632,12 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					move.currPos = &posToMoveFrom;
 					performUserMove(&move);
 					drawBoard(board, gameWindow);
-					presentUITree(gameWindow);
-					isEmptyClicked = 0;
 					
+					isEmptyClicked = 0;
+					ComputerMove();
+					drawBoard(board,gameWindow);
+					SDL_Delay(100);
+					presentUITree(gameWindow);
 				}
 			}
 		}

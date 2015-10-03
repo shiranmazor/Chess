@@ -113,7 +113,7 @@ GameStatus readFileWithFilename(char * filename)
 
 	char nextTurn[100];
 	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\n<game>\n\t<next_turn>%[^<]</next_turn>\n", nextTurn);
-	gameState.nextTurn = strcmp(nextTurn, "Black") ? WHITE : BLACK;
+  	gameState.nextTurn = strcmp(nextTurn, "Black") ? WHITE : BLACK;
 	fscanf(f, "\t<game_mode>%d</game_mode>\n", &gameState.gameMode);
 	char diff[100];
 	diff[0] = '1';
