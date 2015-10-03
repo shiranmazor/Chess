@@ -156,7 +156,7 @@ void executeSettingCmd(char* input)
 	//trim all spaces from start and end:
 	input = trimwhitespace(input);
 	char **arr = NULL;
-	int arr_len = split(input, ' ', &arr);
+	split(input, ' ', &arr);
 	if (strstr(input, "game_mode"))
 	{
 		//arr len in 2:
@@ -527,9 +527,6 @@ int ComputerMove()
 	//perforam chosen  move
 	performUserMove(computerMove);
 	//check if promotion has happend and print move
-	int isPromote = 0;
-	Pos *curr = computerMove->currPos;
-	Pos *next = computerMove->dest->pos;
 	if (computerMove->movePromotePawn == 1)
 	{
 		char* moveStr = getStringFormatMove(*computerMove);
@@ -611,7 +608,7 @@ int UserMove(int userColor)
 		else if (StartsWith(input, "get_moves"))
 		{
 			char **arr = NULL;
-			int arr_len = split(input, ' ', &arr);
+			split(input, ' ', &arr);
 			Pos* pos = formatPos(arr[1]);
 			if (pos == NULL)
 				continue;
@@ -633,7 +630,7 @@ int UserMove(int userColor)
 		else if (StartsWith(input, "get_best_moves"))
 		{
 			char **arr = NULL;
-			int arr_len = split(input, ' ', &arr);
+			split(input, ' ', &arr);
 			int d = atoi(arr[1]);
 			free(arr);
 			//get all move and check their score by minimax
@@ -670,7 +667,7 @@ int UserMove(int userColor)
 		else if (StartsWith(input, "get_score"))
 		{
 			char **arr = NULL;
-			int arr_len = split(input, ' ', &arr);
+			split(input, ' ', &arr);
 			int d = atoi(arr[1]);
 			free(arr);
 			//get_score d move <x,y> to <i,j> x
@@ -684,7 +681,7 @@ int UserMove(int userColor)
 		else if (StartsWith(input, "save"))
 		{
 			char **arr = NULL;
-			int arr_len = split(input, ' ', &arr);
+			split(input, ' ', &arr);
 			//create gamseState struct:
 			GameStatus status;
 			copyBoard(board,status.board);
@@ -741,7 +738,6 @@ int getMoveScore(Move *move, int d, int playerColor)
 	}
 	else
 	{
-		int oldUserColor = userColor;
 		int oldComputerColor = computerColor;
 		computerColor = playerColor;
 		userColor = opponentColor;
@@ -752,193 +748,6 @@ int getMoveScore(Move *move, int d, int playerColor)
 	UndoMove(board, move);
 	freeMove(bestMove);
 	return res;
-}
-
-void getMovesUnitTests()
-{
-	MoveNode * movesList = getMoves(board, 0);
-	//markMoves(board, movesList);
-	//print_board(board);
-
-	movesList = getMoves(board, 1);
-
-/*	for (int i = 0; i < 8; i++)
-	{
-		assert(movesList->move->currPos->x == i);
-		assert(movesList->move->currPos->y == 1);
-		assert(movesList->move->dest->pos->x == i);
-		assert(movesList->move->dest->pos->y == 2);
-		movesList = movesList->next;
-	}
-	assert(movesList == NULL);
-	*/
-	clear_board();
-
-	board[4][4] = WHITE_R;
-	
-	movesList = getMoves(board, WHITE);
-
-	/*
-		move <4,4> to <4,3>
-		move <4,4> to <4,2>
-		move <4,4> to <4,1>
-		move <4,4> to <4,0>
-		move <4,4> to <3,4>
-		move <4,4> to <2,4>
-		move <4,4> to <1,4>
-		move <4,4> to <0,4>
-		move <4,4> to <5,4>
-		move <4,4> to <6,4>
-		move <4,4> to <7,4>
-		move <4,4> to <4,5>
-		move <4,4> to <4,6>
-		move <4,4> to <4,7>
-	*/
-
-	board[4][4] = WHITE_B;
-	movesList = getMoves(board, WHITE);
-	//printMoves(movesList);
-
-	//board[4][4] = WHITE_K;
-	//movesList = getMoves(board, WHITE);
-	//printMoves(movesList);
-	//markMoves(board,movesList);
-	//print_board(board);
-	init_board(board);
-	board[1][1] = BLACK_N;
-	movesList = getMoves(board, BLACK);
-	//printMoves(movesList);
-	markMoves(board, movesList);
-	//print_board(board);
-
-
-	clear_board();
-
-	board[4][4] = WHITE_P;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	//print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	//print_board(board);
-	clear_board();
-
-	board[4][4] = WHITE_B;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	board[2][2] = BLACK_Q;
-	print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = WHITE_K;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	board[3][3] = BLACK_B;
-	print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = WHITE_N;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	
-
-	print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = WHITE_Q;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = WHITE_R;
-	board[5][5] = WHITE_P;
-	board[4][5] = WHITE_P;
-	print_board(board);
-	movesList = getMoves(board, WHITE);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	movesList = getMoves(board, BLACK);
-	assert(movesList == NULL);
-
-	clear_board();
-
-	board[4][4] = BLACK_P;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_B;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_K;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_N;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_Q;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_R;
-	board[5][5] = BLACK_P;
-	board[4][5] = BLACK_P;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
-
-	board[4][4] = BLACK_P;
-	board[4][3] = WHITE_N;
-	board[5][3] = WHITE_B;
-	print_board(board);
-	movesList = getMoves(board, BLACK);
-	markMoves(board, movesList);
-	print_board(board);
-	clear_board();
 }
 
 void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)
@@ -960,6 +769,7 @@ char* getPawnPromoteString(char tool)
 		return "queen";
 	else if (tool == WHITE_R || tool == BLACK_R)
 		return "rook";
+	return "queen";
 }
 void printGameMoves(MoveNode *movesList)
 {
