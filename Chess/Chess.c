@@ -187,6 +187,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	MoveNode * prev = NULL;
 	while (moveNode != NULL)
 	{
+		MoveNode * toFree = NULL;
 		int playerColor = getColorByPos(pos.x, pos.y);
 		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y == BOARD_SIZE - 1 && moveNode->move->movePromotePawn == 0) ||
 			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0 && moveNode->move->movePromotePawn == 0))//need promote
@@ -221,15 +222,13 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 			if (prev == NULL)
 			{
-				MoveNode * toFree = movesList;
+				toFree = movesList;
 				movesList = moveNode->next;
-				freeMoveNode(toFree);
 			}
 			else
 			{
-				MoveNode * toFree = moveNode;
+				toFree = moveNode;
 				prev->next = moveNode->next;
-				freeMoveNode(toFree);
 			}
 			//need promote
 			//add 4 additional moves
@@ -259,6 +258,9 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			prev = moveNode;
 		}
 		moveNode = moveNode->next;
+
+		if (toFree != NULL)
+			freeMoveNode(toFree);
 	}
 	return movesList;
 }
@@ -612,7 +614,7 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 			return NULL;
 	}
 
-	MoveNode * tmp;
+	MoveNode * toFree = NULL;
 	//check if player under check and then remove any moves that keeps the check status
 	if (isPlayerUnderCheck(board, playerColor))
 	{
@@ -620,29 +622,31 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 		MoveNode * prev = NULL;
 		while (moveNode != NULL)
 		{
+			toFree = NULL;
 			performMoveMinimax(board, moveNode->move);
 			if (isPlayerUnderCheck(board, playerColor))
 			{
-				
+				UndoMove(board, moveNode->move);
 				if (prev == NULL)
 				{
-					MoveNode * toFree = movesList;
+					toFree = movesList;
 					movesList = moveNode->next;
-					freeMoveNode(toFree);
 				}
 				else
 				{
-					MoveNode * toFree = moveNode;
+					toFree = moveNode;
 					prev->next = moveNode->next;
-					freeMoveNode(toFree);
 				}
 			}
 			else
 			{
+				UndoMove(board, moveNode->move);
 				prev = moveNode;
 			}
-			UndoMove(board, moveNode->move);
+			
 			moveNode = moveNode->next;
+			if (toFree != NULL)
+				freeMoveNode(toFree);
 		}
 	}
 	else//board is not under check but checking 
@@ -651,30 +655,36 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 		MoveNode * prev = NULL;
 		while (moveNode != NULL)
 		{
+			toFree = NULL;
 			performMoveMinimax(board, moveNode->move);
 			if (isPlayerUnderCheck(board, playerColor))
 			{
+				UndoMove(board, moveNode->move);
 				if (prev == NULL)
 				{
-					MoveNode * toFree = movesList;
+					toFree = movesList;
 					movesList = moveNode->next;
-					freeMoveNode(toFree);
 				}
 				else
 				{
-					MoveNode * toFree = moveNode;
+					toFree = moveNode;
 					prev->next = moveNode->next;
-					freeMoveNode(toFree);
 				}
 			}
 			else
 			{
+				UndoMove(board, moveNode->move);
 				prev = moveNode;
 			}
-			UndoMove(board, moveNode->move);
+			
 			moveNode = moveNode->next;
+
+			if (toFree != NULL)
+				freeMoveNode(toFree);
 		}
 	}
+
+
 
 	return movesList;
 }

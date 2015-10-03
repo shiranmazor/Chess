@@ -1,5 +1,4 @@
 #include "gui.h"
-
 #define malloc(x) myMalloc(x)
 #define free(x) myFree(x)
 #define calloc(x,y) myCalloc(x,y)
@@ -598,20 +597,16 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						if (getColor(board[i][j]) == nextPlayer)
 						{
 							MoveNode  * moveNode = getMove(board, pos, nextPlayer);
-							MoveNode * node = moveNode;
-							while (node != NULL)
+							while (moveNode != NULL)
 							{
-								int destX = node->move->dest->pos->x;
-								int destY = node->move->dest->pos->y;
+								int destX = moveNode->move->dest->pos->x;
+								int destY = moveNode->move->dest->pos->y;
 
 								UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
 								addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
-								MoveNode * tmp;
-								tmp = node->next;
-								freeMoveNode(node);
-								node = tmp;
+								moveNode = moveNode->next;
 							}
-							
+							freeMoveNode(moveNode);
 							posToMoveFrom.x = i;
 							posToMoveFrom.y = j;
 						}
