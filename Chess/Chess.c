@@ -715,7 +715,6 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 				addMoveNodeToList(&firstMoveNode, movesList);
 		}
 	}
-
 	
 	return firstMoveNode;
 }
@@ -837,7 +836,10 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	MoveNode * moves = getMoves(board, playerColor);
 	MoveNode* movesPointer = moves;
 	if (isPlayerUnderCheck(board, playerColor) == 0)
+	{
+		freeMoves(moves, NULL);
 		return 0;
+	}
 
 	if (moves == NULL)
 		return 1;
@@ -1406,9 +1408,14 @@ int isPlayerStuck(int playerColor)
 {
 	MoveNode *moveList = getMoves(board, playerColor);
 	if (moveList == NULL)
+	{
 		return 1;
+	}
 	else
+	{
+		freeMoves(moveList,NULL);
 		return 0;
+	}
 }
 
 

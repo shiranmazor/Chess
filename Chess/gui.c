@@ -604,9 +604,11 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 
 								UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
 								addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
+								MoveNode * toFree = moveNode;
 								moveNode = moveNode->next;
+								freeMoveNode(toFree);
 							}
-							freeMoveNode(moveNode);
+							
 							posToMoveFrom.x = i;
 							posToMoveFrom.y = j;
 						}
