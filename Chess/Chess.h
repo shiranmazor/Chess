@@ -4,11 +4,7 @@
 
 #ifndef CHESS_HELP_H
 #include "ChessHelp.h"
-#endif CHESS_HELP_H
-
-#ifndef FILE_HANDLE_H
-#include "FileHandle.h"
-#endif FILE_HANDLE_H
+#endif 
 
 #define WHITE  1
 #define BLACK  0
@@ -41,7 +37,7 @@ int minimax_depth;
 int userColor;
 int nextPlayer;
 int computerColor;
-char pawnPromotionTool;
+
 int isLastMovePromotePawn;
 int getOpponentColor(int userColor);
 
@@ -76,6 +72,7 @@ struct Move
 	int eat;
 	char eatTool;
 	int movePromotePawn;
+	char pawnPromotionTool;
 };
 
 
@@ -129,13 +126,13 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isPlayerStuck(int playerColor);
 Pos* getKingPos(int playerColor);
 void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOARD_SIZE]);
-int checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor);
+void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], int playerColor, Move *move);
 void performUserMove(Move *move);
 void printGameMoves(MoveNode *movesList);
 int countPlayers(char board[BOARD_SIZE][BOARD_SIZE]);
 void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move);
 
-//legal moves:
+
 int isMoveLegal(Move *move, int userColor);
 int isPawnMoveLegal(Move *move, int useColor);
 int isRookMoveLegal(Move *move, int useColor);
@@ -153,7 +150,7 @@ int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *
 int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 
 
-#endif CHESS_
+#endif 
 
 
 

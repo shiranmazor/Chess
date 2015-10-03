@@ -1,5 +1,5 @@
 #include "Console.h"
-#include "fileHandle.h"
+
 
 #define malloc(x) myMalloc(x)
 #define free(x) myFree(x)
@@ -191,7 +191,7 @@ void executeSettingCmd(char* input)
 		}
 		else if (strstr(input, "best"))
 		{
-			minimax_depth = -1;
+			minimax_depth = 4;
 		}
 		else
 		{
@@ -231,7 +231,8 @@ void executeSettingCmd(char* input)
 		{
 			//load game
 			gameMode = gStatus.gameMode;
-			strcpy(board, gStatus.board);
+			copyBoard(gStatus.board, board);
+			//strcpy(board, gStatus.board);
 			userColor = gStatus.userColor;
 			minimax_depth = gStatus.difficulty;
 			nextPlayer = gStatus.nextTurn;
@@ -534,7 +535,7 @@ int ComputerMove()
 	{
 		char* moveStr = getStringFormatMove(*computerMove);
 		moveStr = str_replace(moveStr, "\n", "");
-		printf("%s%s %s", "Computer: move ", moveStr, "queen\n");
+		printf("%s%s %s\n", "Computer: move ", moveStr, getPawnPromoteString(computerMove->pawnPromotionTool));
 		free(moveStr);
 	}
 	else
@@ -544,7 +545,7 @@ int ComputerMove()
 		free(moveStr);
 	}
 	print_board(board);
-	freeMove(computerMove);
+		freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
 	{
 		if (checkForTie(board, opponentColor))
@@ -555,9 +556,9 @@ int ComputerMove()
 		if (isPlayerUnderMate(board, opponentColor) == 1)
 		{
 			if (opponentColor == BLACK)
-				printf("%s", MATE_BLACK);
-			else
 				printf("%s", MATE_WHITE);
+			else
+				printf("%s", MATE_BLACK);
 			exit(0);
 		}
 	}
@@ -687,7 +688,8 @@ int UserMove(int userColor)
 			int arr_len = split(input, ' ', &arr);
 			//create gamseState struct:
 			GameStatus status;
-			strcpy(status.board, board);
+			copyBoard(board,status.board);
+			//strcpy(status.board, board);
 			status.userColor = userColor;
 			status.gameMode = gameMode;
 			status.nextTurn = nextPlayer;
@@ -713,9 +715,9 @@ int UserMove(int userColor)
 	if (isPlayerUnderMate(board, opponentColor) == 1)
 	{
 		if (opponentColor == BLACK)
-			printf("%s", MATE_BLACK);
-		else
 			printf("%s", MATE_WHITE);
+		else
+			printf("%s", MATE_BLACK);
 		exit(0);
 	}
 	if (isPlayerUnderCheck(board, opponentColor) == 1)
@@ -948,14 +950,31 @@ void markMoves(char board[BOARD_SIZE][BOARD_SIZE], MoveNode * movesList)
 	}
 }
 
+char* getPawnPromoteString(char tool)
+{
+	if (tool == WHITE_B || tool == BLACK_B)
+		return "bishop";
+	else if (tool == WHITE_N || tool == BLACK_N)
+		return "knight";
+	else if (tool == WHITE_Q || tool == BLACK_Q)
+		return "queen";
+	else if (tool == WHITE_R || tool == BLACK_R)
+		return "rook";
+}
 void printGameMoves(MoveNode *movesList)
 {
 	while (movesList != NULL)
 	{
 		char* moveStr = getStringFormatMove(*(movesList->move));
-		movesList = movesList->next;
-		printf("%s", moveStr);
+		if (movesList->move->movePromotePawn == 1)
+		{
+			moveStr = str_replace(moveStr, "\n","");
+			printf("%s %s\n", moveStr, getPawnPromoteString(movesList->move->pawnPromotionTool));
+		}
+		else
+			printf("%s", moveStr);
 		free(moveStr);
+		movesList = movesList->next;
 	}
 }
 void printMoves(MoveNode *movesList)
@@ -973,7 +992,6 @@ void testMateTieCheck()
 	minimax_depth = 1;
 	userColor = WHITE;
 	nextPlayer = WHITE;
-	pawnPromotionTool = EMPTY;//queen
 	init_board(board);
 	print_board(board);
 	gameMode = 2;
@@ -1110,7 +1128,6 @@ void runConsole()
 	minimax_depth = 1;
 	userColor = WHITE;
 	nextPlayer = WHITE;
-	pawnPromotionTool =EMPTY;//queen
 	init_board(board);
 	print_board(board);
 	//test_config_for_best_move2();

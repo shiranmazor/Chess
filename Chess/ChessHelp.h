@@ -31,5 +31,5 @@ char *str_replace(char *orig, char *rep, char *with);
 int str_cut(char *str, int begin, int len);
 
 
-#endif CHESS_HELP_H
+#endif 
 

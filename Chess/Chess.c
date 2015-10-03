@@ -182,6 +182,81 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 	}
 
+	//scan the movesList, if one of the move is to promote, we return 4 moves instead
+	MoveNode * moveNode = movesList;
+	MoveNode * prev = NULL;
+	while (moveNode != NULL)
+	{
+		int playerColor = getColorByPos(pos.x, pos.y);
+		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y == BOARD_SIZE - 1 && moveNode->move->movePromotePawn == 0) ||
+			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0 && moveNode->move->movePromotePawn == 0))//need promote
+		{
+			Pos curr1; 
+			Pos dest1;
+			curr1.x = moveNode->move->currPos->x;
+			curr1.y = moveNode->move->currPos->y;
+			dest1.x = moveNode->move->dest->pos->x;
+			dest1.y = moveNode->move->dest->pos->y;
+
+			Pos curr2;
+			Pos dest2;
+			curr2.x = moveNode->move->currPos->x;
+			curr2.y = moveNode->move->currPos->y;
+			dest2.x = moveNode->move->dest->pos->x;
+			dest2.y = moveNode->move->dest->pos->y;
+
+			Pos curr3;
+			Pos dest3;
+			curr3.x = moveNode->move->currPos->x;
+			curr3.y = moveNode->move->currPos->y;
+			dest3.x = moveNode->move->dest->pos->x;
+			dest3.y = moveNode->move->dest->pos->y;
+
+			Pos curr4;
+			Pos dest4;
+			curr4.x = moveNode->move->currPos->x;
+			curr4.y = moveNode->move->currPos->y;
+			dest4.x = moveNode->move->dest->pos->x;
+			dest4.y = moveNode->move->dest->pos->y;
+
+			if (prev == NULL)
+			{
+				movesList = moveNode->next;
+				freeMove(moveNode->move);
+			}
+			else
+			{
+				prev->next = moveNode->next;
+			}
+			//need promote
+			//add 4 additional moves
+			MoveNode * moveNodeNew1 = createMoveNode(curr1, dest1);
+			moveNodeNew1->move->movePromotePawn = 1;
+			moveNodeNew1->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_B : BLACK_B;
+			addMoveNodeToList(&movesList, moveNodeNew1);
+
+			MoveNode * moveNodeNew2 = createMoveNode(curr2, dest2);
+			moveNodeNew2->move->movePromotePawn = 1;
+			moveNodeNew2->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_N : BLACK_N;
+			addMoveNodeToList(&movesList, moveNodeNew2);
+
+			MoveNode * moveNodeNew3 = createMoveNode(curr3, dest3);
+			moveNodeNew3->move->movePromotePawn = 1;
+			moveNodeNew3->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_Q : BLACK_Q;
+			addMoveNodeToList(&movesList, moveNodeNew3);
+
+			MoveNode * moveNodeNew4 = createMoveNode(curr4, dest4);
+			moveNodeNew4->move->movePromotePawn = 1;
+			moveNodeNew4->move->pawnPromotionTool = (playerColor == WHITE) ? WHITE_R : BLACK_R;
+			addMoveNodeToList(&movesList, moveNodeNew4);	
+			
+		}
+		else
+		{
+			prev = moveNode;
+		}
+		moveNode = moveNode->next;
+	}
 	return movesList;
 }
 
@@ -646,6 +721,8 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 		perror_message("createMoveNode");
 		exit(0);
 	}
+	move->movePromotePawn = 0;
+	move->pawnPromotionTool = EMPTY;
 	move->currPos = malloc(sizeof(Pos));
 	if (move->currPos == NULL)
 	{
@@ -873,11 +950,9 @@ void performUserMove(Move *move)
 	board[curr->x][curr->y] = EMPTY;
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
+		checkAndPerformPromotion(board, WHITE,move);
 	else if (Player == BLACK_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
-	else
-		move->movePromotePawn = 0;
+		checkAndPerformPromotion(board, BLACK, move);
 }
 
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
@@ -885,7 +960,7 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 	Pos* curr = move->currPos;
 	Pos* nextPos = move->dest->pos;
 	char Player = board[curr->x][curr->y];
-	pawnPromotionTool = EMPTY;
+
 	//check if move is eating
 	if (board[nextPos->x][nextPos->y] != EMPTY)
 	{
@@ -903,11 +978,14 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
+	{
+		checkAndPerformPromotion(board, WHITE, move);
+	}
+		
 	else if (Player == BLACK_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
-	else
-		move->movePromotePawn = 0;
+	{
+		checkAndPerformPromotion(board, BLACK, move);
+	}
 }
 int getColorByPos(int x, int y)
 {
@@ -959,7 +1037,7 @@ Move * parseMoveCommand(char *command)
 	char** arr = NULL;
 	int arrLen = split(command, ' ', &arr);
 	//default value
-	pawnPromotionTool = EMPTY;
+	char pawnPromotionTool = userColor == WHITE ? WHITE_Q:BLACK_Q;
 	if (arrLen == 5)//we got promotion
 	{
 		if (userColor == WHITE)
@@ -1020,6 +1098,8 @@ Move * parseMoveCommand(char *command)
 			lastPos = lastPos->next;
 		}
 	}
+
+	move->pawnPromotionTool = pawnPromotionTool;
 	freeArray(arr, arrLen);
 	freeArray(destArr, destArrLen);
 	return move;
@@ -1028,34 +1108,30 @@ Move * parseMoveCommand(char *command)
 
 
 /* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
-int checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
+void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], int playerColor, Move *move)
 {
-	int promot = 0;
-	if (playerColor == WHITE && currPawnPos->y == BOARD_SIZE -1)//need promote
+	if (move->movePromotePawn == 1)//need promote
 	{
-		if (pawnPromotionTool == EMPTY)//default to queent
+		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[currPawnPos->x][currPawnPos->y] = WHITE_Q;
+			board[move->dest->pos->x][move->dest->pos->y] = WHITE_Q;
 		}
 		else
 		{
-			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+			board[move->dest->pos->x][move->dest->pos->y] = move->pawnPromotionTool;
 		}
-		promot = 1;
 	}
-	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
+	else if (move->movePromotePawn == 1)//need promote
 	{
-		if (pawnPromotionTool == EMPTY)//default to queent
+		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[currPawnPos->x][currPawnPos->y] = BLACK_Q;
+			board[move->dest->pos->x][move->dest->pos->y] = BLACK_Q;
 		}
 		else
 		{
-			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+			board[move->dest->pos->x][move->dest->pos->y] = move->pawnPromotionTool;
 		}
-		promot = 1;
 	}
-	return promot;
 }
 
 int isMoveLegal(Move *move, int userColor)
@@ -1155,7 +1231,8 @@ int isRookMoveLegal(Move *move, int useColor)
 		int end = max(curr->y, next->y);
 		for (int j = start; j < end; j++)
 		{
-			if (next->x == i && next->y == j)
+			
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
@@ -1168,7 +1245,7 @@ int isRookMoveLegal(Move *move, int useColor)
 		int end = max(curr->x, next->x);
 		for (int i = start; i < end; i++)
 		{
-			if (next->x == i && next->y == j)
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
@@ -1223,7 +1300,7 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x-1, j = curr->y+1; i > next->x && j < next->y; i--, j++)
 		{
-			if (next->x == i && next->y == j)
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
@@ -1233,7 +1310,7 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x - 1, j = curr->y - 1; i > next->x && j > next->y; i--, j--)
 		{
-			if (next->x == i && next->y == j)
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
@@ -1243,7 +1320,7 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x + 1, j = curr->y + 1; i < next->x && j < next->y; i++, j++)
 		{
-			if (next->x == i && next->y == j)
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
@@ -1253,7 +1330,7 @@ int isBishopMoveLegal(Move *move, int useColor)
 	{
 		for (int i = curr->x + 1, j = curr->y - 1; i < next->x && j > next->y; i++, j--)
 		{
-			if (next->x == i && next->y == j)
+			if ((next->x == i && next->y == j) || (curr->x == i && curr->y == j))
 				break;
 			if (board[i][j] != EMPTY)
 				return 0;
