@@ -223,7 +223,6 @@ void executeSettingCmd(char* input)
 	else if (strstr(input, "load"))
 	{
 		clear_board();
-		int filePathLen = strlen(arr[1]);
 		char* filePath = arr[1];
 		//check if file exist! Todo:
 		GameStatus gStatus = readFileWithFilename(filePath);

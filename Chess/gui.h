@@ -5,7 +5,7 @@
 
 #ifndef CHESS_HELP_H
 #include "ChessHelp.h"
-#endif CHESS_HELP_H
+#endif 
 
 #ifndef FILE_HANDLE_H
 #include "fileHandle.h"

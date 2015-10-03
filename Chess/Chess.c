@@ -707,7 +707,6 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	MoveNode *firstMoveNode = NULL;
-	MoveNode *lastNode = NULL;
 
 	int i, j;
 	
@@ -2116,7 +2115,6 @@ int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE], int oponnentColor, Pos *
 
 int isPlayerUnderCheck(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
-	int stop;
 	Pos *kingPos = getKingPos(playerColor);
 	if (kingPos == NULL)
 	{

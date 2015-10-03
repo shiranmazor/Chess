@@ -27,7 +27,6 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 	int mate;
 	int oponnentColor;
 	int newRes;
-	int kings;
 	int color = computerColor;
 	if (isMax == 0)
 		color = userColor;

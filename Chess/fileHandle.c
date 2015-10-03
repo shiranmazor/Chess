@@ -10,7 +10,8 @@
 int fileExists(const char *fname)
 {
 	FILE *file;
-	if (file = fopen(fname, "r"))
+	file = fopen(fname, "r");
+	if (file != NULL)
 	{
 		fclose(file);
 		return 1;
