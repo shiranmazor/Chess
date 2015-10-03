@@ -182,6 +182,56 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 	}
 
+	//scan the movesList, if one of the move is to promote, we return 4 moves instead
+	MoveNode * moveNode = movesList;
+	MoveNode * prev = NULL;
+	while (moveNode != NULL)
+	{
+		int playerColor = getColorByPos(pos.x, pos.y);
+		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y== BOARD_SIZE - 1) || 
+			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0)
+			&& moveNode->move->movePromotePawn == 0)//need promote
+		{
+			if (prev == NULL)
+			{
+				movesList = moveNode->next;
+			}
+			else
+			{
+				prev->next = moveNode->next;
+			}
+			//need promote
+			//add 4 additional moves
+
+			Pos curr = *(moveNode->move->currPos);
+			Pos dest = *(moveNode->move->dest->pos);
+			MoveNode * moveNodeNew1 = createMoveNode(curr, dest);
+			moveNodeNew1->move->movePromotePawn = 1;
+			moveNodeNew1->move->movePromotePawn = (playerColor == WHITE) ? WHITE_B : BLACK_B;
+			addMoveNodeToList(&movesList, moveNodeNew1);
+
+			MoveNode * moveNodeNew2 = createMoveNode(curr, dest);
+			moveNodeNew2->move->movePromotePawn = 1;
+			moveNodeNew2->move->movePromotePawn = (playerColor == WHITE) ? WHITE_N : BLACK_N;
+			addMoveNodeToList(&movesList, moveNodeNew2);
+
+			MoveNode * moveNodeNew3 = createMoveNode(curr, dest);
+			moveNodeNew3->move->movePromotePawn = 1;
+			moveNodeNew3->move->movePromotePawn = (playerColor == WHITE) ? WHITE_Q : BLACK_Q;
+			addMoveNodeToList(&movesList, moveNodeNew3);
+
+			MoveNode * moveNodeNew4 = createMoveNode(curr, dest);
+			moveNodeNew4->move->movePromotePawn = 1;
+			moveNodeNew4->move->movePromotePawn = (playerColor == WHITE) ? WHITE_R : BLACK_R;
+			addMoveNodeToList(&movesList, moveNodeNew4);	
+			
+		}
+		else
+		{
+			prev = moveNode;
+		}
+		moveNode = moveNode->next;
+	}
 	return movesList;
 }
 
@@ -636,6 +686,8 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 		perror_message("createMoveNode");
 		exit(0);
 	}
+	move->movePromotePawn = 0;
+	move->pawnPromotionTool = EMPTY;
 	move->currPos = malloc(sizeof(Pos));
 	if (move->currPos == NULL)
 	{
@@ -863,11 +915,9 @@ void performUserMove(Move *move)
 	board[curr->x][curr->y] = EMPTY;
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
+		checkAndPerformPromotion(board, WHITE,move);
 	else if (Player == BLACK_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
-	else
-		move->movePromotePawn = 0;
+		checkAndPerformPromotion(board, BLACK, move);
 }
 
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
@@ -875,7 +925,7 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 	Pos* curr = move->currPos;
 	Pos* nextPos = move->dest->pos;
 	char Player = board[curr->x][curr->y];
-	pawnPromotionTool = EMPTY;
+
 	//check if move is eating
 	if (board[nextPos->x][nextPos->y] != EMPTY)
 	{
@@ -893,11 +943,14 @@ void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move)
 
 	//check promotion in case of pawn:
 	if (Player == WHITE_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, WHITE);
+	{
+		checkAndPerformPromotion(board, WHITE, move);
+	}
+		
 	else if (Player == BLACK_P)
-		move->movePromotePawn = checkAndPerformPromotion(board, nextPos, BLACK);
-	else
-		move->movePromotePawn = 0;
+	{
+		checkAndPerformPromotion(board, BLACK, move);
+	}
 }
 int getColorByPos(int x, int y)
 {
@@ -949,7 +1002,7 @@ Move * parseMoveCommand(char *command)
 	char** arr = NULL;
 	int arrLen = split(command, ' ', &arr);
 	//default value
-	pawnPromotionTool = EMPTY;
+	char pawnPromotionTool = userColor == WHITE ? WHITE_Q:BLACK_Q;
 	if (arrLen == 5)//we got promotion
 	{
 		if (userColor == WHITE)
@@ -1010,6 +1063,8 @@ Move * parseMoveCommand(char *command)
 			lastPos = lastPos->next;
 		}
 	}
+
+	move->pawnPromotionTool = pawnPromotionTool;
 	freeArray(arr, arrLen);
 	freeArray(destArr, destArrLen);
 	return move;
@@ -1018,34 +1073,30 @@ Move * parseMoveCommand(char *command)
 
 
 /* check if pwan need promotion (he is at the end) and promot to nextPromotionTool , default is the queen*/
-int checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], Pos* currPawnPos, int playerColor)
+void checkAndPerformPromotion(char board[BOARD_SIZE][BOARD_SIZE], int playerColor, Move *move)
 {
-	int promot = 0;
-	if (playerColor == WHITE && currPawnPos->y == BOARD_SIZE -1)//need promote
+	if (move->movePromotePawn == 1)//need promote
 	{
-		if (pawnPromotionTool == EMPTY)//default to queent
+		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[currPawnPos->x][currPawnPos->y] = WHITE_Q;
+			board[move->currPos->x][move->currPos->y] = WHITE_Q;
 		}
 		else
 		{
-			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+			board[move->currPos->x][move->currPos->y] = move->pawnPromotionTool;
 		}
-		promot = 1;
 	}
-	else if (playerColor == BLACK && currPawnPos->y == 0)//need promote
+	else if (move->movePromotePawn == 1)//need promote
 	{
-		if (pawnPromotionTool == EMPTY)//default to queent
+		if (move->pawnPromotionTool == EMPTY)//default to queent
 		{
-			board[currPawnPos->x][currPawnPos->y] = BLACK_Q;
+			board[move->currPos->x][move->currPos->y] = BLACK_Q;
 		}
 		else
 		{
-			board[currPawnPos->x][currPawnPos->y] = pawnPromotionTool;
+			board[move->currPos->x][move->currPos->y] = move->pawnPromotionTool;
 		}
-		promot = 1;
 	}
-	return promot;
 }
 
 int isMoveLegal(Move *move, int userColor)

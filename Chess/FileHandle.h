@@ -1,6 +1,9 @@
 #ifndef FILE_HANDLE_H
 #define FILE_HANDLE_H
+
+#ifndef CHESS_
 #include "Chess.h"
+#endif 
 
 #define SLOTS_NUM  7
 #define gameSlots SLOTS_NUM 
@@ -25,5 +28,5 @@ int saveFileWithSlotNumber(GameStatus gameState, int slotNumber);
 char * getFilenameBySlotNumber(int slotNumber);
 int fileExists(const char *fname);
 
-#endif FILE_HANDLE_H
+#endif 
 

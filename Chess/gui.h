@@ -2,10 +2,22 @@
 #define GUI_H
 #include "SDL.h"
 #include "SDL_video.h"
-#include "fileHandle.h"
+
+#ifndef CHESS_HELP_H
 #include "ChessHelp.h"
+#endif CHESS_HELP_H
+
+#ifndef FILE_HANDLE_H
+#include "fileHandle.h"
+#endif 
+
+#ifndef CHESS_
 #include "Chess.h"
+#endif 
+
+#ifndef CONSOLE_H
 #include "Console.h"
+#endif 
 
 
 #define WIN_HEIGHT 600
@@ -156,6 +168,6 @@ void loadGameFromSlot(char* slotName);
 void RunGui();
 
 
-#endif GUI_H
+#endif 
 
 
