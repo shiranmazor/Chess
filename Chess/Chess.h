@@ -43,6 +43,7 @@ int nextPlayer;
 int computerColor;
 char pawnPromotionTool;
 int isLastMovePromotePawn;
+int getOpponentColor(int userColor);
 
 
 typedef struct Pos Pos;

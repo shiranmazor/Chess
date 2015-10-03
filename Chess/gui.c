@@ -597,16 +597,20 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						if (getColor(board[i][j]) == nextPlayer)
 						{
 							MoveNode  * moveNode = getMove(board, pos, nextPlayer);
-							while (moveNode != NULL)
+							MoveNode * node = moveNode;
+							while (node != NULL)
 							{
-								int destX = moveNode->move->dest->pos->x;
-								int destY = moveNode->move->dest->pos->y;
+								int destX = node->move->dest->pos->x;
+								int destY = node->move->dest->pos->y;
 
 								UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
 								addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
-								moveNode = moveNode->next;
+								MoveNode * tmp;
+								tmp = node->next;
+								freeMoveNode(node);
+								node = tmp;
 							}
-							freeMoveNode(moveNode);
+							
 							posToMoveFrom.x = i;
 							posToMoveFrom.y = j;
 						}
@@ -632,11 +636,35 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					move.currPos = &posToMoveFrom;
 					performUserMove(&move);
 					drawBoard(board, gameWindow);
-					
+					presentUITree(gameWindow);
 					isEmptyClicked = 0;
-					ComputerMove();
-					drawBoard(board,gameWindow);
-					SDL_Delay(100);
+
+					if (gameMode == 2)
+					{
+						//player vs AI
+						if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
+						{
+							//declare win
+							break;
+						}
+						else if (checkForTie(board, getOpponentColor(nextPlayer)))
+						{
+							//decalte tie
+							break;
+						}
+						else if (isPlayerUnderCheck(board, getOpponentColor(nextPlayer)))
+						{
+							//declare check
+							int foo = 1;
+						}
+						ComputerMove();
+						
+					}
+					else if (gameMode == 1)
+					{
+						//player vs player
+					}
+					drawBoard(board, gameWindow);
 					presentUITree(gameWindow);
 				}
 			}
