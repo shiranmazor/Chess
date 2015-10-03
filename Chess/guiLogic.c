@@ -133,6 +133,8 @@ void loadGame()
 		sprintf(filename, "%s%d.xml", FILENAME, num);
 		if (fileExists(filename) == 1)
 			slotArr[k] = 1;
+		else
+			slotArr[k] = 0;
 	}
 	Window* win = (Window*)mainWindow->control;
 	Panel* mainPanel = (Panel*)mainWindow->children[0]->control;
@@ -142,14 +144,6 @@ void loadGame()
 	int x2 = 650;
 	int y = 170;
 	int lasty = y;
-
-
-
-
-
-
-
-
 	addChildToFather(mainWindow->children[0], slotNumBtn);
 	for (int i = 1; i <= gameSlots; i++)
 	{
