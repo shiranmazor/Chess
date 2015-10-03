@@ -221,12 +221,15 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 
 			if (prev == NULL)
 			{
+				MoveNode * toFree = movesList;
 				movesList = moveNode->next;
-				freeMove(moveNode->move);
+				freeMoveNode(toFree);
 			}
 			else
 			{
+				MoveNode * toFree = moveNode;
 				prev->next = moveNode->next;
+				freeMoveNode(toFree);
 			}
 			//need promote
 			//add 4 additional moves
