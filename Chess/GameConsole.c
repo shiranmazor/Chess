@@ -231,7 +231,8 @@ void executeSettingCmd(char* input)
 		{
 			//load game
 			gameMode = gStatus.gameMode;
-			strcpy(board, gStatus.board);
+			copyBoard(gStatus.board, board);
+			//strcpy(board, gStatus.board);
 			userColor = gStatus.userColor;
 			minimax_depth = gStatus.difficulty;
 			nextPlayer = gStatus.nextTurn;
@@ -555,9 +556,9 @@ int ComputerMove()
 		if (isPlayerUnderMate(board, opponentColor) == 1)
 		{
 			if (opponentColor == BLACK)
-				printf("%s", MATE_BLACK);
-			else
 				printf("%s", MATE_WHITE);
+			else
+				printf("%s", MATE_BLACK);
 			exit(0);
 		}
 	}
@@ -687,7 +688,8 @@ int UserMove(int userColor)
 			int arr_len = split(input, ' ', &arr);
 			//create gamseState struct:
 			GameStatus status;
-			strcpy(status.board, board);
+			copyBoard(board,status.board);
+			//strcpy(status.board, board);
 			status.userColor = userColor;
 			status.gameMode = gameMode;
 			status.nextTurn = nextPlayer;
@@ -713,9 +715,9 @@ int UserMove(int userColor)
 	if (isPlayerUnderMate(board, opponentColor) == 1)
 	{
 		if (opponentColor == BLACK)
-			printf("%s", MATE_BLACK);
-		else
 			printf("%s", MATE_WHITE);
+		else
+			printf("%s", MATE_BLACK);
 		exit(0);
 	}
 	if (isPlayerUnderCheck(board, opponentColor) == 1)

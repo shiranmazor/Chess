@@ -137,17 +137,17 @@ int score(char board[BOARD_SIZE][BOARD_SIZE], int PlayerColor)
 	
 	int pawnScore = 1, knightBishopScore = 3, rookScore = 5;
 	int queendScore = 9, kingScore = 400;
-	if (checkForTie(board, PlayerColor) == 1)
+	if (isPlayerUnderMate(board, opponentColor) == 1)
+	{
+		return winning;
+	}
+	else if (checkForTie(board, PlayerColor) == 1)
 	{
 		return tie;
 	}
 	else if (isPlayerUnderMate(board, PlayerColor) == 1)
 	{
 		return loosing;
-	}
-	else if (isPlayerUnderMate(board, opponentColor) == 1)
-	{
-		return winning;
 	}
 	else
 	{
