@@ -60,13 +60,13 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				boardCounter++;
 				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter);
 				UndoMove(board, movesPointer->move);
-
+				/*
 				if (newRes < temp)
 				{
-					newRes = temp;
+				newRes = temp;
 
-					if (depth == minimax_depth)//check if we are in first recursion
-						*(bestMove) = movesPointer->move;
+				if (depth == minimax_depth)//check if we are in first recursion
+				*(bestMove) = movesPointer->move;
 
 				}
 				//insert prunning:
@@ -74,15 +74,33 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				//if (alpha >= beta)
 				if (alpha >=beta )
 				{
-					freeMoves(moves, *(bestMove));
-					moves = NULL;
-					break;
+				freeMoves(moves, *(bestMove));
+				moves = NULL;
+				break;
 
 				}
+				*/
+				newRes = max(newRes, temp);
+				//insert prunning:
+				if (newRes > alpha)
+				{
+					alpha = newRes;
+					if (depth == minimax_depth)//check if we are in first recursion
+						*(bestMove) = movesPointer->move;
+
+				}
+				//if (alpha >= beta)
+				if (newRes >= beta)
+				{
+					freeMoves(moves, *(bestMove));
+					return beta;//pruning
+				}
+				
 				movesPointer = movesPointer->next;
 			}
 			if (moves != NULL)
 				freeMoves(moves, *(bestMove));
+			return newRes;
 		}
 		else//player is the user:
 		{
@@ -97,24 +115,36 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 1, boardCounter);
 				UndoMove(board, movesPointer->move);
 				newRes = min(newRes, temp);
+				/*
 				if (newRes < beta)
-					beta = newRes;
+				beta = newRes;
 
 				//if (alpha >= beta)
 				if (beta <= alpha)
 				{
-					freeMoves(moves, *(bestMove));
-					moves = NULL;
-					break;
+				freeMoves(moves, *(bestMove));
+				moves = NULL;
+				break;
 
 				}
+				*/
+				if (newRes < beta)
+					beta = newRes;
+
+				//if (alpha >= beta)
+				if (newRes <= alpha)
+				{
+					freeMoves(moves, *(bestMove));
+					return alpha;
+				}
+				
 
 				movesPointer = movesPointer->next;
 			}
 			if (moves != NULL)
 				freeMoves(moves, *(bestMove));
+			return newRes;
 		}
-	return newRes;
 	}
 }
 
