@@ -643,6 +643,34 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					presentUITree(gameWindow);
 					isEmptyClicked = 0;
 
+					//clear chess/tie/mate button area
+					if (getNodeByName("check", gameWindow) != NULL)
+					{
+						freeUINode(getNodeByName("check", gameWindow));
+						gameWindow->children[1]->childsNumber--;
+					}
+					if (getNodeByName("tie", gameWindow) != NULL)
+					{
+						freeUINode(getNodeByName("tie", gameWindow));
+						gameWindow->children[1]->childsNumber--;
+					}
+					if (getNodeByName("mate", gameWindow) != NULL)
+					{
+						freeUINode(getNodeByName("mate", gameWindow));
+						gameWindow->children[1]->childsNumber--;
+					}
+
+					Window * win = (Window *)gameWindow->control;
+					SDL_Rect rect;
+					rect.x = 605;
+					rect.y = 270;
+					rect.w = 195;
+					rect.h = 170;
+
+					Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+					SDL_FillRect(win->surface, &rect, white);
+					presentUITree(gameWindow);
+
 					if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
 					{
 						//declare win
@@ -670,10 +698,15 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
 						addChildToFather(gameWindow->children[1], check);
 						presentUITree(gameWindow);
-						
+						SDL_Delay(1500);	
 					}
-					else
+
+					if (gameMode == 2)
 					{
+						//player vs AI
+						ComputerMove();
+
+						//clear chess/tie/mate button area
 						if (getNodeByName("check", gameWindow) != NULL)
 						{
 							freeUINode(getNodeByName("check", gameWindow));
@@ -689,6 +722,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 							freeUINode(getNodeByName("mate", gameWindow));
 							gameWindow->children[1]->childsNumber--;
 						}
+
 						Window * win = (Window *)gameWindow->control;
 						SDL_Rect rect;
 						rect.x = 605;
@@ -700,12 +734,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						SDL_FillRect(win->surface, &rect, white);
 						presentUITree(gameWindow);
 
-					}
 
-					if (gameMode == 2)
-					{
-						//player vs AI
-						ComputerMove();
 						
 					}
 					else if (gameMode == 1)
@@ -749,6 +778,8 @@ void EventsLoopboardSettingWindow()
 
 void EventsLoopMainWindow()
 {
+	if (mainWindow == NULL)
+		return;
 
 	while (!shouldQuitMainEvents)
 	{
@@ -763,11 +794,17 @@ void EventsLoopMainWindow()
 			}
 			else if (e.type == SDL_MOUSEBUTTONUP)
 			{
+				if (mainWindow == NULL)
+					return;
+
 				int x, y;
 				SDL_GetMouseState(&x, &y);
 				//check if buttons were clicked
-				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
+				for (int i = 0; mainWindow != NULL && i < mainWindow->children[0]->childsNumber; i++)
 				{
+					if (mainWindow == NULL)
+						return;
+
 					if (mainWindow->children[0]->children[i]->type != 'b')
 						continue;
 					ImgButton* btn = (ImgButton*)mainWindow->children[0]->children[i]->control;
