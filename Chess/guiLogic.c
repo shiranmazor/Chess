@@ -8,7 +8,6 @@
 /*creating the uitree for the main window*/
 void CreateMainWindow()
 {
-	shouldQuitMainEvents = 0;
 	mainWindow = CreateWindow("Chess", WIN_WIDTH, WIN_HEIGHT, 0,NULL);
 
 	Window* win = (Window*)mainWindow->control;
@@ -25,6 +24,7 @@ void CreateMainWindow()
 	addChildToFather(mainPanel, loadGameBtn);
 	addChildToFather(mainPanel, quitGameBtn);
 	addChildToFather(mainPanel, logoBtn);
+	ActiveWindow = mainWindow;
 	
 }
 void doNothing()
@@ -52,33 +52,13 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 
 void goToMainMenu()
 {
-
-	/*
 	clear_board();
 	nextPlayer = WHITE;
-	shouldQuitSelectionEvents = 1;
-	//clean resources
-	if (playerSelectionWindow != NULL)
-	{
-	freeUINode(playerSelectionWindow);
-	playerSelectionWindow = NULL;
-	}
-	CreateMainWindow();
-	presentUITree(mainWindow);
-	EventsLoopMainWindow();
-	*/
-	clear_board();
-	nextPlayer = WHITE;
-	shouldQuitGameEvents = 1;
-	if (gameWindow != NULL)
-	{
-		freeUINode(gameWindow);
-		gameWindow = NULL;
-	}
 	
 	CreateMainWindow();
+	ActiveWindow = mainWindow;
 	presentUITree(mainWindow);
-	EventsLoopMainWindow();
+	
 }
 
 void showBestMove()
@@ -148,7 +128,7 @@ void loadGameFromSlot(char* slotName)
 	GameStatus gStatus = readFileWithSlotNumber(slotNum);
 	//load parameters to board
 	gameMode = gStatus.gameMode;
-	strcpy(board, gStatus.board);
+	copyBoard(board, gStatus.board);
 	userColor = gStatus.userColor;
 	minimax_depth = gStatus.difficulty;
 	nextPlayer = gStatus.nextTurn;
@@ -256,9 +236,7 @@ void startNewGame()
 	presentUITree(gameWindow);
 	
 	//call Events loop for new game
-	EventsLoopGameWindow();
-
-	shouldQuitMainEvents = 1;	
+	ActiveWindow = gameWindow;
 }
 void chooseBlackColor()
 {
@@ -576,19 +554,10 @@ void chooseDepthBest()
 }
 void returnFunc()
 {
-	shouldQuitsettingEvents = 1;
-	if (settingWindow != NULL)
-	{
-		freeUINode(settingWindow);
-		settingWindow = NULL;
-	}
 	openPlayerSelectionWindow("None");
 }
 void openSettingWindow()
 {
-	//create setting window
-	shouldQuitSelectionEvents = 1;
-	shouldQuitsettingEvents = 0;
 
 	char* whiteBtnName = "whiteMark";
 	char* blackBtnName = "black";
@@ -675,7 +644,6 @@ void openSettingWindow()
 	UINode* userColorLabel = createLabel(win->surface, 50, 150, "images/AISettings/userColor.bmp", settingPanel, "userColorLabel");
 	UINode* titleLabel = createLabel(win->surface, 300, 50, "images/AISettings/title.bmp", settingPanel, "titleLabel");
 	UINode* depthLabel = createLabel(win->surface, 50, 250, "images/AISettings/gameDepth.bmp", settingPanel, "depthLabel");
-
 	
 	UINode* whiteBtn = CreateButton(win->surface, 250, 150, whiteBtnP, chooseWhiteColor, settingPanel, 0, whiteBtnName);
 	UINode* blackBtn = CreateButton(win->surface, 500, 150, blackBtnP, chooseBlackColor, settingPanel, 0, blackBtnName);
@@ -704,15 +672,10 @@ void openSettingWindow()
 
 	//add user color label, white and black button
 	presentUITree(settingWindow);
-	EventsLoopSettingWindow();
-
-
-
+	ActiveWindow = settingWindow;
 }
 void NextButtomClicked()
 {
-	shouldQuitSelectionEvents = 1;
-	free(playerSelectionWindow);
 	if (gameMode == 2)//player vs computer
 	{
 		openSettingWindow();
@@ -805,8 +768,6 @@ void startNewGameIfBoardValid()
 void openBoardSettingWindow()
 {
 
-	shouldQuitMainEvents = 1;
-	shouldQuitSelectionEvents = 1;
 	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)boardSettingsWindow->control;
 
@@ -839,7 +800,7 @@ void openBoardSettingWindow()
 	//init_board(board);
 	drawBoard(board, boardSettingsWindow);
 	presentUITree(boardSettingsWindow);
-	EventsLoopboardSettingWindow();
+	ActiveWindow = boardSettingsWindow;
 
 
 }
@@ -849,16 +810,10 @@ void cancelPlayerSelection()
 
 	clear_board();
 	nextPlayer = WHITE;
-	shouldQuitSelectionEvents = 1;
 	//clean resources
-	if (playerSelectionWindow != NULL)
-	{
-		freeUINode(playerSelectionWindow);
-		playerSelectionWindow = NULL;
-	}
 	CreateMainWindow();
 	presentUITree(mainWindow);
-	EventsLoopMainWindow();
+	ActiveWindow = mainWindow;
 	
 }
 void twoPlayerMode()
@@ -979,8 +934,6 @@ void chooseNextBlack()
 }
 void openPlayerSelectionWindow(void* sourceBottomName)
 {
-	//clear mainWindow tree
-	shouldQuitMainEvents = 1;
 
 	char* sourceBtnName = (char*)sourceBottomName;
 	char* whiteBtnPath;
@@ -1052,14 +1005,8 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 
 	}
 
-	if (mainWindow != NULL)
-	{
-		freeUINode(mainWindow);
-		mainWindow = NULL;
-	}
 	//move to the next window
 	//create window
-	shouldQuitSelectionEvents = 0;
 	playerSelectionWindow = CreateWindow("Chess Players Selection", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
 	Window* win = (Window*)playerSelectionWindow->control;
 	UINode* selectPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), playerSelectionWindow, 0, "selectPanel");
@@ -1078,9 +1025,6 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	UINode* whiteBtn = CreateButton(win->surface, 250, 250, whiteBtnPath, chooseNextWhite, selectPanel, 0, whiteBtnName);
 	UINode* blackBtn = CreateButton(win->surface, 500, 250, blackBtnPath, chooseNextBlack, selectPanel, 0, blackBtnName);
 
-
-
-
 	addChildToFather(playerSelectionWindow, selectPanel);
 	addChildToFather(selectPanel, titleLabel);
 	addChildToFather(selectPanel, gameModeLabel);
@@ -1096,7 +1040,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	addChildToFather(selectPanel, NextBtn);
 
 	presentUITree(playerSelectionWindow);
-	EventsLoopPlayerSelectionWindow();
+	ActiveWindow = playerSelectionWindow;
 }
 
 void QuitError()
@@ -1155,7 +1099,7 @@ void quitGame()
 		freeUINode(playerSelectionWindow);
 		playerSelectionWindow = NULL;
 	}	
-	shouldQuitMainEvents = 1;
+	shouldQuitEvents = 1;
 	SDL_Quit();
 	exit(0);
 }

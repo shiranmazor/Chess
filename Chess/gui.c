@@ -297,7 +297,7 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 }
 
 
-UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,int childsNumber, char* name)
+UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,int childsNumber, char* name)
 {
 	Window * win = getRoot(father);
 
@@ -537,18 +537,28 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 		{
 			
 			ImgButton * btn = (ImgButton *)root->children[k]->control;
+			char* btnName = btn->name;
 			if (isButtonClicked(*btn, clickedX, clickedY))
 			{
-				if (root->children[k]->Action != NULL)
+				Window * win = getRoot(root); 
+				if (mainWindow !=NULL && win == (Window *)mainWindow->control)
+				{
+
+					root->children[k]->Action(btnName);
+					return;
+
+				}
+				else if (root->children[k]->Action != NULL)
+				{
 					root->children[k]->Action(NULL);
-				char* btnName = btn->name;
+				}				
 				//in main windows all bottons functions recieve sourcebtnName
 				int i = clickedX / 76;
 				int j = BOARD_SIZE - (clickedY / 76) - 1;
-
-				if (strcmp("cube", btnName) == 0)
+				
+				 if (strcmp("cube", btnName) == 0)
 				{
-					Window * win = getRoot(root); //(Window *)boardSettingsWindow->control;
+					
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 					if (boardSettingsWindow != NULL && boardSettingsWindow->control != NULL && win == (Window *)boardSettingsWindow->control)
 					{
@@ -722,7 +732,129 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 	}
 }
 
-void EventsLoopboardSettingWindow()
+void freeUnActivateWindows()
+{
+	if (ActiveWindow == mainWindow)
+	{
+		if (playerSelectionWindow != NULL)
+		{
+			freeUINode(playerSelectionWindow);
+			playerSelectionWindow = NULL;
+		}
+		if (settingWindow != NULL)
+		{
+			freeUINode(settingWindow);
+			settingWindow = NULL;
+		}
+		if (boardSettingsWindow != NULL)
+		{
+			freeUINode(boardSettingsWindow);
+			boardSettingsWindow = NULL;
+		}
+		if (gameWindow != NULL)
+		{
+			freeUINode(gameWindow);
+			gameWindow = NULL;
+		}
+	}
+	else if (ActiveWindow == playerSelectionWindow)
+	{
+		if (mainWindow != NULL)
+		{
+			freeUINode(mainWindow);
+			mainWindow = NULL;
+		}
+		if (settingWindow != NULL)
+		{
+			freeUINode(settingWindow);
+			settingWindow = NULL;
+		}
+		if (boardSettingsWindow != NULL)
+		{
+			freeUINode(boardSettingsWindow);
+			boardSettingsWindow = NULL;
+		}
+		if (gameWindow != NULL)
+		{
+			freeUINode(gameWindow);
+			gameWindow = NULL;
+		}
+	}
+	else if (ActiveWindow == settingWindow)
+	{
+		if (mainWindow != NULL)
+		{
+			freeUINode(mainWindow);
+			mainWindow = NULL;
+		}
+		if (playerSelectionWindow != NULL)
+		{
+			freeUINode(playerSelectionWindow);
+			playerSelectionWindow = NULL;
+		}
+		if (boardSettingsWindow != NULL)
+		{
+			freeUINode(boardSettingsWindow);
+			boardSettingsWindow = NULL;
+		}
+		if (gameWindow != NULL)
+		{
+			freeUINode(gameWindow);
+			gameWindow = NULL;
+		}
+		else if (ActiveWindow == gameWindow)
+		{
+			if (mainWindow != NULL)
+			{
+				freeUINode(mainWindow);
+				mainWindow = NULL;
+			}
+			if (playerSelectionWindow != NULL)
+			{
+				freeUINode(playerSelectionWindow);
+				playerSelectionWindow = NULL;
+			}
+			if (boardSettingsWindow != NULL)
+			{
+				freeUINode(boardSettingsWindow);
+				boardSettingsWindow = NULL;
+			}
+			if (settingWindow != NULL)
+			{
+				freeUINode(settingWindow);
+				settingWindow = NULL;
+			}
+		}
+	}
+}
+void EventsLoop()
+{
+	while (!shouldQuitEvents)
+	{
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0 && !shouldQuitBoardSeEvents)
+		{
+			if (e.type == SDL_QUIT)
+			{
+				shouldQuitEvents = 1;
+				SDL_Quit();
+				exit(0);
+			}
+			else if (e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				
+				triggerClickEvent(ActiveWindow, x, y);
+				freeUnActivateWindows();
+			}
+		}
+		SDL_Delay(1);
+	}
+
+	SDL_Quit();
+}
+/*void EventsLoopboardSettingWindow()
 {
 	while (!shouldQuitBoardSeEvents)
 	{
@@ -745,8 +877,9 @@ void EventsLoopboardSettingWindow()
 		SDL_Delay(1);
 	}
 	SDL_Quit();
-}
+}*/
 
+/*
 void EventsLoopMainWindow()
 {
 
@@ -894,7 +1027,7 @@ void EventsLoopGameWindow()
 	}
 	SDL_Quit();
 }
-
+*/
 void RunGui()
 {
 	init();
@@ -905,13 +1038,11 @@ void RunGui()
 	playerSelectionWindow = NULL;
 	boardSettingsWindow = NULL;
 
-	shouldQuitMainEvents = 0;
-	shouldQuitGameEvents = 0;
-	shouldQuitsettingEvents = 0;
-	shouldQuitSelectionEvents = 0;
+	shouldQuitEvents = 0;
 	
 	CreateMainWindow();
 	presentUITree(mainWindow);
-	EventsLoopMainWindow();
+	EventsLoop();
+	
 	
 }
