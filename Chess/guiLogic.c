@@ -770,6 +770,9 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
 	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGameIfBoardValid, menuPanel, 0, "next"));
 
+	UINode* returnBtn = CreateButton(win->surface, 15, 500, "images/AISettings/return.bmp", returnFunc, menuPanel, 0, "return");
+	addChildToFather(menuPanel, returnBtn);
+
 	//init_board(board);
 	drawBoard(board, boardSettingsWindow);
 	presentUITree(boardSettingsWindow);
