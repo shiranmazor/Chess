@@ -44,6 +44,8 @@ int shouldQuitBoardSeEvents;
 int shouldQuitGameEvents;
 int shouldQuitsettingEvents;
 int shouldQuitSelectionEvents;
+int isGameOver;
+
 Pos posToMoveFrom;
 
 //structures

@@ -63,6 +63,9 @@ void goToMainMenu()
 
 void showBestMove()
 {
+	if (isGameOver == 1)
+		return;
+
 	drawBoard(board,gameWindow);
 	if (gameMode == 2)
 	{
@@ -93,6 +96,7 @@ void showBestMove()
 
 void CreateGameWindow()
 {
+	isGameOver = 0;
 	//set white background
 	SDL_Rect screenRect;
 	screenRect.x = screenRect.y = 0;

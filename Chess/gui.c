@@ -519,8 +519,98 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 	}
 }
 
+char promotionTool;
+Pos promotionPos;
+
+void doPromotion()
+{
+	board[promotionPos.x][promotionPos.y] = promotionTool;
+
+	if (getNodeByName("prom_black_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_b", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_black_q", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_q", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_black_r", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_r", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_black_n", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_n", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_white_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_b", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_white_q", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_q", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_white_r", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_r", gameWindow));
+		gameWindow->childsNumber--;
+	}
+	if (getNodeByName("prom_white_n", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_n", gameWindow));
+		gameWindow->childsNumber--;
+	}	
+	drawBoard(board, gameWindow);
+	presentUITree(gameWindow);
+}
+void setPromotionToolToBlackBishop()
+{
+	promotionTool = BLACK_B;
+	doPromotion();
+}
+void setPromotionToolToBlackQueen()
+{
+	promotionTool = BLACK_Q;
+	doPromotion();
+}
+void setPromotionToolToBlackRook()
+{
+	promotionTool = BLACK_R;
+	doPromotion();
+}
+void setPromotionToolToBlackKnight()
+{
+	promotionTool = BLACK_N;
+	doPromotion();
+}
+void setPromotionToolToWhiteBishop()
+{
+	promotionTool = WHITE_B;
+	doPromotion();
+}
+void setPromotionToolToWhiteQueen()
+{
+	promotionTool = WHITE_Q;
+	doPromotion();
+}
+void setPromotionToolToWhiteRook()
+{
+	promotionTool = WHITE_R;
+	doPromotion();
+}
+void setPromotionToolToWhiteKnight()
+{
+	promotionTool = WHITE_N;
+	doPromotion();
+}
+
 int isEmptyClicked = 0;
-int isGameOver = 0;
 void emptyClicked()
 {
 	isEmptyClicked = 1;
@@ -529,10 +619,15 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
 		return; 
+	if (root->type == PANEL)
+	{
+		int foo = 1;
+	}
 
 	for (int k = 0; k < root->childsNumber; k++)
 	{
-		
+	
+
 		if (root->children[k]->type == BUTTON)
 		{
 			
@@ -648,6 +743,29 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					move.dest = &desPos;
 			
 					move.currPos = &posToMoveFrom;
+					move.movePromotePawn = 0;
+					if (isPawnNeedPromotion(nextPlayer, &move))
+					{
+						isGameOver = 1; //not really over, we just want to force the user to choose promotion tool
+						Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+						UINode * panel = gameWindow->children[1];
+						if (nextPlayer == BLACK)
+						{
+							addChildToFather(panel, createButtonWithColor(win->surface, 0, 320, "images/tools/black_bishop.bmp", setPromotionToolToBlackBishop, panel, 0, "prom_black_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 2, 320, "images/tools/black_rook.bmp", setPromotionToolToBlackRook, panel, 0, "prom_black_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 3, 320, "images/tools/black_knight.bmp", setPromotionToolToBlackKnight, panel, 0, "prom_black_n", green));
+						}
+						else
+						{
+							addChildToFather(panel, createButtonWithColor(win->surface, 0, 320, "images/tools/white_bishop.bmp", setPromotionToolToWhiteBishop, panel, 0, "prom_white_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46, 320, "images/tools/white_queen.bmp", setPromotionToolToWhiteQueen, panel, 0, "prom_white_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 2, 320, "images/tools/white_rook.bmp", setPromotionToolToWhiteRook, panel, 0, "prom_white_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 3, 320, "images/tools/white_knight.bmp", setPromotionToolToWhiteKnight, panel, 0, "prom_white_n", green));
+						}
+						promotionPos.x = i;
+						promotionPos.y = j;
+					}
 					performUserMove(&move);
 					drawBoard(board, gameWindow);
 					presentUITree(gameWindow);
