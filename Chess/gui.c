@@ -59,7 +59,7 @@ char* getUINodeName(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->name;
 	}
-	return WINDOW;
+	return "Window";
 }
 
 void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameToreplace)

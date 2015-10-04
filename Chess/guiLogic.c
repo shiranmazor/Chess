@@ -52,8 +52,33 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 
 void goToMainMenu()
 {
-	freeUINode(mainWindow);
+
+	/*
+	clear_board();
+	nextPlayer = WHITE;
+	shouldQuitSelectionEvents = 1;
+	//clean resources
+	if (playerSelectionWindow != NULL)
+	{
+	freeUINode(playerSelectionWindow);
+	playerSelectionWindow = NULL;
+	}
 	CreateMainWindow();
+	presentUITree(mainWindow);
+	EventsLoopMainWindow();
+	*/
+	clear_board();
+	nextPlayer = WHITE;
+	shouldQuitGameEvents = 1;
+	if (gameWindow != NULL)
+	{
+		freeUINode(gameWindow);
+		gameWindow = NULL;
+	}
+	
+	CreateMainWindow();
+	presentUITree(mainWindow);
+	EventsLoopMainWindow();
 }
 
 void showBestMove()

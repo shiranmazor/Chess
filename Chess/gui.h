@@ -122,7 +122,7 @@ int  getUINodeX(UINode* node);
 UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect);
 UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber, char* name);
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father, int childsNumber, char* name);
-UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
+UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,
 	int childsNumber, char* name, Uint32 color);
 ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window);
 UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name);
