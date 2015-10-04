@@ -5,6 +5,14 @@
 #define realloc(x,y) myRealloc(x,y)
 
 //UI Tree:
+Window * getRoot(UINode * node)
+{
+	UINode * root = node;
+	while (root->father != NULL)
+		root = root->father;
+
+	return (Window *)root->control;
+}
 UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* father, void(*Action)(void*))
 {
 	UINode* node = (UINode*)malloc(sizeof(UINode));
@@ -190,17 +198,14 @@ void presentUITree(UINode* root)
 	else if (root->type == BUTTON)
 	{
 		ImgButton* control = (ImgButton*)root->control;
-		Panel *p;
-		Window * win;
-		if (root->father->type == PANEL)
-			p = (Panel*)root->father->control;
-		win = getRoot(root);
+		
+		Window * win = getRoot(root);
 		//apply image to screen
 		if (SDL_BlitSurface(control->surface, NULL, win->surface, control->rect) != 0)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
-			exit(1);
+			QuitError();
 		}
 		SDL_Flip(control->surface);
 		SDL_Flip(win->surface);
@@ -216,7 +221,7 @@ void presentUITree(UINode* root)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
-			exit(1);
+			QuitError();
 		}
 		SDL_Flip(control->surface);
 		SDL_Flip(p->surface);
@@ -246,12 +251,12 @@ UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_R
 	if (win == NULL) 
 	{
 		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
-		return 1;
+		QuitError();
 	}
 	if (rect != NULL)
 	{
 		Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
-		SDL_FillRect(win, &rect, clearColor);
+		SDL_FillRect(win, rect, clearColor);
 	}
 	Window *winObj = (Window*)malloc(sizeof(Window));
 	winObj->height = height;
@@ -282,22 +287,14 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 	if (SDL_FillRect(surface, &rect, color) != 0)
 	{
 		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
-			exit(1);
+		QuitError();
 	}
 	UINode *panelNode = CreateAndAddUINode(panel, childsNumber, PANEL, father, NULL);
 	return panelNode;
 }
 
-Window * getRoot(UINode * node)
-{
-	UINode * root = node;
-	while (root->father != NULL)
-		root = root->father;
 
-	return (Window *) root->control;
-}
-UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
-	int childsNumber, char* name)
+UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,int childsNumber, char* name)
 {
 	Window * win = getRoot(father);
 
@@ -369,7 +366,7 @@ ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 	{
 		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 		SDL_FreeSurface(btn.surface);
-		exit(1);
+		QuitError();
 	}
 	//Update Screen
 	SDL_Flip(window);
@@ -384,7 +381,7 @@ void init()
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("ERROR: unable to init SDL : %s\n", SDL_GetError());
-		exit(1);
+		QuitError();
 		return NULL;
 	}
 

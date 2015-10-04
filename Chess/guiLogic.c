@@ -1036,7 +1036,35 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	EventsLoopPlayerSelectionWindow();
 }
 
+void QuitError()
+{
+	//free resurces
 
+	if (mainWindow != NULL)
+	{
+		freeUINode(mainWindow);
+		mainWindow = NULL;
+	}
+	if (gameWindow != NULL)
+	{
+		freeUINode(gameWindow);
+		gameWindow = NULL;
+	}
+
+	if (settingWindow != NULL)
+	{
+		freeUINode(settingWindow);
+		settingWindow = NULL;
+	}
+
+	if (playerSelectionWindow != NULL)
+	{
+		freeUINode(playerSelectionWindow);
+		playerSelectionWindow = NULL;
+	}
+	SDL_Quit();
+	exit(1);
+}
 void quitGame()
 {
 	//free resurces
