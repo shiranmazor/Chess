@@ -525,47 +525,62 @@ Pos promotionPos;
 void doPromotion()
 {
 	board[promotionPos.x][promotionPos.y] = promotionTool;
-
-	if (getNodeByName("prom_black_b", gameWindow) != NULL)
+	//nrqb
+	if (getNodeByName("prom_black_n", gameWindow) != NULL)
 	{
-		freeUINode(getNodeByName("prom_black_b", gameWindow));
-		gameWindow->childsNumber--;
-	}
-	if (getNodeByName("prom_black_q", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("prom_black_q", gameWindow));
-		gameWindow->childsNumber--;
+		freeUINode(getNodeByName("prom_black_n", gameWindow));
+		gameWindow->children[1]->childsNumber--;
 	}
 	if (getNodeByName("prom_black_r", gameWindow) != NULL)
 	{
 		freeUINode(getNodeByName("prom_black_r", gameWindow));
-		gameWindow->childsNumber--;
+		gameWindow->children[1]->childsNumber--;
 	}
-	if (getNodeByName("prom_black_n", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("prom_black_n", gameWindow));
-		gameWindow->childsNumber--;
-	}
-	if (getNodeByName("prom_white_b", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("prom_black_b", gameWindow));
-		gameWindow->childsNumber--;
-	}
-	if (getNodeByName("prom_white_q", gameWindow) != NULL)
+	if (getNodeByName("prom_black_q", gameWindow) != NULL)
 	{
 		freeUINode(getNodeByName("prom_black_q", gameWindow));
-		gameWindow->childsNumber--;
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_black_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_b", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+
+	if (getNodeByName("prom_white_n", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_n", gameWindow));
+		gameWindow->children[1]->childsNumber--;
 	}
 	if (getNodeByName("prom_white_r", gameWindow) != NULL)
 	{
-		freeUINode(getNodeByName("prom_black_r", gameWindow));
-		gameWindow->childsNumber--;
+		freeUINode(getNodeByName("prom_white_r", gameWindow));
+		gameWindow->children[1]->childsNumber--;
 	}
-	if (getNodeByName("prom_white_n", gameWindow) != NULL)
+	if (getNodeByName("prom_white_q", gameWindow) != NULL)
 	{
-		freeUINode(getNodeByName("prom_black_n", gameWindow));
-		gameWindow->childsNumber--;
-	}	
+		freeUINode(getNodeByName("prom_white_q", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	if (getNodeByName("prom_white_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_b", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	Window * win = (Window *)gameWindow->control;
+	SDL_Rect rect;
+	rect.x = 605;
+	rect.y = 320;
+	rect.w = 195;
+	rect.h = 80;
+
+	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	SDL_FillRect(win->surface, &rect, white);
+	isGameOver = 0;
+
 	drawBoard(board, gameWindow);
 	presentUITree(gameWindow);
 }
@@ -751,17 +766,17 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						UINode * panel = gameWindow->children[1];
 						if (nextPlayer == BLACK)
 						{
-							addChildToFather(panel, createButtonWithColor(win->surface, 0, 320, "images/tools/black_bishop.bmp", setPromotionToolToBlackBishop, panel, 0, "prom_black_b", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 2, 320, "images/tools/black_rook.bmp", setPromotionToolToBlackRook, panel, 0, "prom_black_r", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 3, 320, "images/tools/black_knight.bmp", setPromotionToolToBlackKnight, panel, 0, "prom_black_n", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10, 320, "images/tools/black_bishop.bmp", setPromotionToolToBlackBishop, panel, 0, "prom_black_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10+46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 2, 320, "images/tools/black_rook.bmp", setPromotionToolToBlackRook, panel, 0, "prom_black_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 3, 320, "images/tools/black_knight.bmp", setPromotionToolToBlackKnight, panel, 0, "prom_black_n", green));
 						}
 						else
 						{
-							addChildToFather(panel, createButtonWithColor(win->surface, 0, 320, "images/tools/white_bishop.bmp", setPromotionToolToWhiteBishop, panel, 0, "prom_white_b", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46, 320, "images/tools/white_queen.bmp", setPromotionToolToWhiteQueen, panel, 0, "prom_white_q", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 2, 320, "images/tools/white_rook.bmp", setPromotionToolToWhiteRook, panel, 0, "prom_white_r", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 46 * 3, 320, "images/tools/white_knight.bmp", setPromotionToolToWhiteKnight, panel, 0, "prom_white_n", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10, 320, "images/tools/white_bishop.bmp", setPromotionToolToWhiteBishop, panel, 0, "prom_white_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46, 320, "images/tools/white_queen.bmp", setPromotionToolToWhiteQueen, panel, 0, "prom_white_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 2, 320, "images/tools/white_rook.bmp", setPromotionToolToWhiteRook, panel, 0, "prom_white_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 3, 320, "images/tools/white_knight.bmp", setPromotionToolToWhiteKnight, panel, 0, "prom_white_n", green));
 						}
 						promotionPos.x = i;
 						promotionPos.y = j;
