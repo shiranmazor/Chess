@@ -5,6 +5,14 @@
 #define realloc(x,y) myRealloc(x,y)
 
 //UI Tree:
+Window * getRoot(UINode * node)
+{
+	UINode * root = node;
+	while (root->father != NULL)
+		root = root->father;
+
+	return (Window *)root->control;
+}
 UINode* CreateAndAddUINode(void* control, int childsNumber, char type, UINode* father, void(*Action)(void*))
 {
 	UINode* node = (UINode*)malloc(sizeof(UINode));
@@ -51,6 +59,7 @@ char* getUINodeName(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->name;
 	}
+	return WINDOW;
 }
 
 void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameToreplace)
@@ -83,6 +92,7 @@ int  getUINodeX(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->x;
 	}
+	return 0;
 }
 int getUINodeY(UINode* node)
 {
@@ -102,6 +112,7 @@ int getUINodeY(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->y;
 	}
+	return 0;
 }
 
 UINode* getNodeByName(char* controlName, UINode* root)
@@ -190,17 +201,14 @@ void presentUITree(UINode* root)
 	else if (root->type == BUTTON)
 	{
 		ImgButton* control = (ImgButton*)root->control;
-		Panel *p;
-		Window * win;
-		if (root->father->type == PANEL)
-			p = (Panel*)root->father->control;
-		win = getRoot(root);
+		
+		Window * win = getRoot(root);
 		//apply image to screen
 		if (SDL_BlitSurface(control->surface, NULL, win->surface, control->rect) != 0)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
-			exit(1);
+			QuitError();
 		}
 		SDL_Flip(control->surface);
 		SDL_Flip(win->surface);
@@ -216,7 +224,7 @@ void presentUITree(UINode* root)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
-			exit(1);
+			QuitError();
 		}
 		SDL_Flip(control->surface);
 		SDL_Flip(p->surface);
@@ -246,12 +254,12 @@ UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_R
 	if (win == NULL) 
 	{
 		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
-		return 1;
+		QuitError();
 	}
 	if (rect != NULL)
 	{
 		Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
-		SDL_FillRect(win, &rect, clearColor);
+		SDL_FillRect(win, rect, clearColor);
 	}
 	Window *winObj = (Window*)malloc(sizeof(Window));
 	winObj->height = height;
@@ -282,22 +290,14 @@ UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
 	if (SDL_FillRect(surface, &rect, color) != 0)
 	{
 		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
-			exit(1);
+		QuitError();
 	}
 	UINode *panelNode = CreateAndAddUINode(panel, childsNumber, PANEL, father, NULL);
 	return panelNode;
 }
 
-Window * getRoot(UINode * node)
-{
-	UINode * root = node;
-	while (root->father != NULL)
-		root = root->father;
 
-	return (Window *) root->control;
-}
-UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
-	int childsNumber, char* name)
+UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,int childsNumber, char* name)
 {
 	Window * win = getRoot(father);
 
@@ -305,7 +305,7 @@ UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(
 	return createButtonWithColor(surface, x, y, filename, Action, father, childsNumber, name, white);
 }
 
-UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
+UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,
 	int childsNumber, char* name, Uint32 color)
 {
 	int parentX = getUINodeX(father);
@@ -326,7 +326,6 @@ UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filen
 	btn->rect = imgrect;
 	btn->surface->format->Amask = 0xFF000000;
 	//btn->surface->format->Ashift = 24;
-	Window * win = getRoot(father);
 	SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, color);
 
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
@@ -369,7 +368,7 @@ ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window)
 	{
 		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 		SDL_FreeSurface(btn.surface);
-		exit(1);
+		QuitError();
 	}
 	//Update Screen
 	SDL_Flip(window);
@@ -384,10 +383,8 @@ void init()
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("ERROR: unable to init SDL : %s\n", SDL_GetError());
-		exit(1);
-		return NULL;
+		QuitError();
 	}
-
 }
 
 void toolClicked()
@@ -533,7 +530,6 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 	if (root == NULL)
 		return; 
 
-	
 	for (int k = 0; k < root->childsNumber; k++)
 	{
 		
@@ -556,10 +552,8 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 					if (boardSettingsWindow != NULL && boardSettingsWindow->control != NULL && win == (Window *)boardSettingsWindow->control)
 					{
-						UINode * panel = boardSettingsWindow->children[0];
-						char * filename = getFilenameByTool(lastChosenTool);
 
-						if (lastChosenTool == NULL)
+						if (lastChosenTool == 0)
 							continue;
 
 						if (lastChosenTool != EMPTY && checkNewBoardValidation(getColor(lastChosenTool), getToolName(lastChosenTool)) == 0)
@@ -772,8 +766,6 @@ void EventsLoopMainWindow()
 				int x, y;
 				SDL_GetMouseState(&x, &y);
 				//check if buttons were clicked
-				//get all ImageButtons:
-				UINode** buttonNodes = mainWindow->children[0]->children;
 				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
 				{
 					if (mainWindow->children[0]->children[i]->type != 'b')
@@ -822,7 +814,6 @@ void EventsLoopPlayerSelectionWindow()
 					ImgButton* btn = (ImgButton*)buttons[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
-						char* btnName = btn->name;
 						//in main windows all bottons functions recieve sourcebtnName
 						if (buttons[i]->Action != NULL)
 						{
@@ -864,7 +855,6 @@ void EventsLoopSettingWindow()
 					ImgButton* btn = (ImgButton*)buttons[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
-						char* btnName = btn->name;
 						//in main windows all bottons functions recieve sourcebtnName
 						if (buttons[i]->Action != NULL)
 						{
@@ -908,6 +898,7 @@ void EventsLoopGameWindow()
 void RunGui()
 {
 	init();
+	lastChosenTool = 0;
 	mainWindow = NULL;
 	settingWindow = NULL;
 	gameWindow = NULL;

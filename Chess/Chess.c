@@ -111,6 +111,13 @@ int getOpponentColor(int userColor)
 {
 	return userColor == 1 ? 0 : 1;
 }
+int isPawnNeedPromotion(int playerColor, Move* move)
+{
+	if ((playerColor == WHITE && move->currPos->y == BOARD_SIZE - 2 && move->dest->pos->y == BOARD_SIZE - 1 && move->movePromotePawn == 0) ||
+		(playerColor == BLACK && move->currPos->y == 1 && move->dest->pos->y == 0 && move->movePromotePawn == 0))
+		return 1;
+	else return 0;
+}
 
 int getColor(char tool)
 {
@@ -276,14 +283,6 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 			freeMoveNode(toFree);
 	}
 	return movesList;
-}
-
-int isPawnNeedPromotion(int playerColor, Move* move)
-{
-	if ((playerColor == WHITE && move->currPos->y == BOARD_SIZE - 2 && move->dest->pos->y == BOARD_SIZE - 1 && move->movePromotePawn == 0) ||
-		(playerColor == BLACK && move->currPos->y == 1 && move->dest->pos->y == 0 && move->movePromotePawn == 0))
-		return 1;
-	else return 0;
 }
 
 void getDiagAdjPositions(Pos pos, Pos** adj)
