@@ -37,15 +37,7 @@ struct UINode* gameWindow;
 struct UINode* ActiveWindow;
 
 char lastChosenTool;
-
 int shouldQuitEvents;
-int shouldQuitMainEvents;
-int shouldQuitBoardSeEvents;
-int shouldQuitGameEvents;
-int shouldQuitsettingEvents;
-int shouldQuitSelectionEvents;
-int isGameOver;
-
 Pos posToMoveFrom;
 
 //structures
@@ -138,10 +130,7 @@ UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode
 void init();
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY);
 SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window);
-void EventsLoopMainWindow();
-void EventsLoopGameWindow();
-void EventsLoopPlayerSelectionWindow();
-void EventsLoopSettingWindow();
+void EventsLoop();
 
 //gui logic: create all 4 specific windows, game  buttons
 void CreateMainWindow();
@@ -169,7 +158,7 @@ void chooseWhiteColor();
 void chooseBlackColor();
 void returnFunc();
 void loadGame();
-void loadGameFromSlot(char* slotName);
+void loadGameFromSlot(void* name);
 void RunGui();
 void QuitError();
 

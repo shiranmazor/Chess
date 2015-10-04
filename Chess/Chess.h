@@ -37,6 +37,7 @@ int minimax_depth;
 int userColor;
 int nextPlayer;
 int computerColor;
+int guiMode;
 
 int isLastMovePromotePawn;
 int getOpponentColor(int userColor);

@@ -125,9 +125,9 @@ void CreateGameWindow()
 	addChildToFather(leftPanel, quitBtn);
 }
 
-void loadGameFromSlot(char* slotName)
+void loadGameFromSlot(void* name)
 {
-	int len = strlen(slotName);
+	char* slotName = (char*)name;
 	int slotNum = atoi(slotName);
 	GameStatus gStatus = readFileWithSlotNumber(slotNum);
 	//load parameters to board
@@ -171,7 +171,6 @@ char* getBtnName(int i)
 void loadGame()
 {
 
-	//UINode* loadGameBtn = CreateButton(win->surface, 315, 230, "images/LoadGame.bmp", loadGame, mainPanel, 0, "loadGame");
 	int slotArr[gameSlots];//init to 1
 	//find all FILENAME files in the project dir
 	char filename[16];
@@ -185,7 +184,6 @@ void loadGame()
 			slotArr[k] = 0;
 	}
 	Window* win = (Window*)mainWindow->control;
-	Panel* mainPanel = (Panel*)mainWindow->children[0]->control;
 	UINode* slotNumBtn = createLabel(win->surface, 550, 120, "images/slotNum.bmp", mainWindow->children[0], "slotNum");
 	
 	int x = 600;
@@ -216,7 +214,6 @@ void loadGame()
 		}
 			
 		UINode* slotNumBtn = CreateButton(win->surface, xpos, ypos, imageName, loadGameFromSlot, mainWindow->children[0], 0, btnName);
-
 		addChildToFather(mainWindow->children[0], slotNumBtn);
 		y = y + 20;
 	}
@@ -1007,7 +1004,6 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	Window* win = (Window*)playerSelectionWindow->control;
 	UINode* selectPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), playerSelectionWindow, 0, "selectPanel");
 
-	Panel* p = (Panel*)selectPanel->control;
 	//create labels and buttons
 	UINode* gameModeLabel = createLabel(win->surface, 50, 150, "images/PlayersSelection/gameMode.bmp", selectPanel, "gameMode");
 	UINode* titleLabel = createLabel(win->surface, 220, 50, "images/PlayersSelection/title1.bmp", selectPanel, "title1");
