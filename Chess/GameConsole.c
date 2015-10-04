@@ -527,20 +527,21 @@ int ComputerMove()
 	//perforam chosen  move
 	performUserMove(computerMove);
 	//check if promotion has happend and print move
-	if (computerMove->movePromotePawn == 1)
+	if (computerMove->movePromotePawn == 1 && guiMode == 0)
 	{
 		char* moveStr = getStringFormatMove(*computerMove);
 		moveStr = str_replace(moveStr, "\n", "");
 		printf("%s%s %s\n", "Computer: move ", moveStr, getPawnPromoteString(computerMove->pawnPromotionTool));
 		free(moveStr);
 	}
-	else
+	else if (guiMode == 0)
 	{
 		char* moveStr = getStringFormatMove(*computerMove);
 		printf("%s%s", "Computer: move ", moveStr);
 		free(moveStr);
 	}
-	print_board(board);
+	if (guiMode == 0)
+		print_board(board);
 	freeMove(computerMove);
 	if (isPlayerStuck(opponentColor))
 	{
