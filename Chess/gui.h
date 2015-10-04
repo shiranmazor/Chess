@@ -39,7 +39,7 @@ struct UINode* ActiveWindow;
 char lastChosenTool;
 int shouldQuitEvents;
 Pos posToMoveFrom;
-
+int isGameOver;
 //structures
 struct ImgButton
 {
