@@ -571,7 +571,7 @@ int ComputerMove()
 Move * get_best_move(int playerColor, int depth)
 {
 	Move* highestMove = NULL;
-	MoveNode* moves = getMoves(board, userColor);
+	MoveNode* moves = getMoves(board, playerColor);
 	MoveNode* movesPointer = moves;
 	int maxRes = -10000;
 	while (movesPointer != NULL)
