@@ -158,7 +158,7 @@ void chooseWhiteColor();
 void chooseBlackColor();
 void returnFunc();
 void loadGame();
-void loadGameFromSlot(char* slotName);
+void loadGameFromSlot(void* name);
 void RunGui();
 void QuitError();
 
