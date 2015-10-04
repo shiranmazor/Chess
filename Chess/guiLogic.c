@@ -58,23 +58,31 @@ void goToMainMenu()
 
 void showBestMove()
 {
+	drawBoard(board,gameWindow);
 	if (gameMode == 2)
 	{
 		//player vs AI
-		Move* bestMove = NULL;
-		Window * win = (Window *)gameWindow;
+		Move * bestMove = get_best_move(nextPlayer, minimax_depth);
+		Window * win = (Window *)gameWindow->control;
 		Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
-		minimax(board, minimax_depth, &bestMove, -9999, 9999, 1, 0);
 		int destY = bestMove->dest->pos->y;
 		int destX = bestMove->dest->pos->x;
 		UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
-		addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
+		addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "bestMoveEmpty", green));
+
+		int fromX = bestMove->currPos->x;
+		int fromY = bestMove->currPos->y;
+
+		parent = gameWindow->children[0]->children[fromY*BOARD_SIZE + fromX];
+		addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "bestMoveEmpty", green));
+
+		freeMove(bestMove);
 	}
 	else if (gameMode == 1)
 	{
 
 	}
-	drawBoard();
+	
 	presentUITree(gameWindow);
 }
 
