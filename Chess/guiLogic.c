@@ -128,7 +128,7 @@ void loadGameFromSlot(char* slotName)
 	GameStatus gStatus = readFileWithSlotNumber(slotNum);
 	//load parameters to board
 	gameMode = gStatus.gameMode;
-	copyBoard(board, gStatus.board);
+	copyBoard(gStatus.board,board);
 	userColor = gStatus.userColor;
 	minimax_depth = gStatus.difficulty;
 	nextPlayer = gStatus.nextTurn;
@@ -195,11 +195,9 @@ void loadGame()
 		int ypos = 0;
 		if (slotArr[i - 1] == 0)
 			continue;
-		//char btnName[9];
 		char imageName[20];
 		char* btnName = getBtnName(i);
 		sprintf(imageName, "%s%d.bmp","images/", i);
-		//sprintf(btnName, "%s%d", "slot",i);
 		if (i % 2 == 0)
 		{
 			xpos = x2;
@@ -215,17 +213,11 @@ void loadGame()
 			
 		UINode* slotNumBtn = CreateButton(win->surface, xpos, ypos, imageName, loadGameFromSlot, mainWindow->children[0], 0, btnName);
 
-
-
-
-
-
 		addChildToFather(mainWindow->children[0], slotNumBtn);
 		y = y + 20;
 	}
-	
-
 	presentUITree(mainWindow);
+	ActiveWindow = mainWindow;
 
 }
 /*create gameWindow and present it*/

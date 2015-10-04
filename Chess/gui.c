@@ -883,30 +883,7 @@ void EventsLoop()
 
 	SDL_Quit();
 }
-/*void EventsLoopboardSettingWindow()
-{
-	while (!shouldQuitBoardSeEvents)
-	{
-		SDL_Event e;
-		while (SDL_PollEvent(&e) != 0 && !shouldQuitBoardSeEvents)
-		{
-			if (e.type == SDL_QUIT)
-			{
-				shouldQuitBoardSeEvents = 1;
-				SDL_Quit();
-				exit(0);
-			}
-			else if (e.type == SDL_MOUSEBUTTONDOWN)
-			{
-				int x, y;
-				SDL_GetMouseState(&x, &y);
-				triggerClickEvent(boardSettingsWindow, x, y);
-			}
-		}
-		SDL_Delay(1);
-	}
-	SDL_Quit();
-}*/
+
 
 /*
 void EventsLoopMainWindow()
