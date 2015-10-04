@@ -59,6 +59,7 @@ char* getUINodeName(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->name;
 	}
+	return WINDOW;
 }
 
 void replaceUINodeChild(UINode* father, UINode* newNode,char* controlNameToreplace)
@@ -91,6 +92,7 @@ int  getUINodeX(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->x;
 	}
+	return 0;
 }
 int getUINodeY(UINode* node)
 {
@@ -110,6 +112,7 @@ int getUINodeY(UINode* node)
 		ImgButton* b = (ImgButton*)node->control;
 		return b->y;
 	}
+	return 0;
 }
 
 UINode* getNodeByName(char* controlName, UINode* root)
@@ -302,7 +305,7 @@ UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(
 	return createButtonWithColor(surface, x, y, filename, Action, father, childsNumber, name, white);
 }
 
-UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(char*), UINode *father,
+UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,
 	int childsNumber, char* name, Uint32 color)
 {
 	int parentX = getUINodeX(father);
@@ -323,7 +326,6 @@ UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filen
 	btn->rect = imgrect;
 	btn->surface->format->Amask = 0xFF000000;
 	//btn->surface->format->Ashift = 24;
-	Window * win = getRoot(father);
 	SDL_SetColorKey(btn->surface, SDL_SRCCOLORKEY, color);
 
 	UINode *buttonNode = CreateAndAddUINode(btn, childsNumber, BUTTON, father, Action);
@@ -382,9 +384,7 @@ void init()
 	{
 		printf("ERROR: unable to init SDL : %s\n", SDL_GetError());
 		QuitError();
-		return NULL;
 	}
-
 }
 
 void toolClicked()
@@ -530,7 +530,6 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 	if (root == NULL)
 		return; 
 
-	
 	for (int k = 0; k < root->childsNumber; k++)
 	{
 		
@@ -553,10 +552,8 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 					if (boardSettingsWindow != NULL && boardSettingsWindow->control != NULL && win == (Window *)boardSettingsWindow->control)
 					{
-						UINode * panel = boardSettingsWindow->children[0];
-						char * filename = getFilenameByTool(lastChosenTool);
 
-						if (lastChosenTool == NULL)
+						if (lastChosenTool == 0)
 							continue;
 
 						if (lastChosenTool != EMPTY && checkNewBoardValidation(getColor(lastChosenTool), getToolName(lastChosenTool)) == 0)
@@ -769,8 +766,6 @@ void EventsLoopMainWindow()
 				int x, y;
 				SDL_GetMouseState(&x, &y);
 				//check if buttons were clicked
-				//get all ImageButtons:
-				UINode** buttonNodes = mainWindow->children[0]->children;
 				for (int i = 0; i < mainWindow->children[0]->childsNumber; i++)
 				{
 					if (mainWindow->children[0]->children[i]->type != 'b')
@@ -819,7 +814,6 @@ void EventsLoopPlayerSelectionWindow()
 					ImgButton* btn = (ImgButton*)buttons[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
-						char* btnName = btn->name;
 						//in main windows all bottons functions recieve sourcebtnName
 						if (buttons[i]->Action != NULL)
 						{
@@ -861,7 +855,6 @@ void EventsLoopSettingWindow()
 					ImgButton* btn = (ImgButton*)buttons[i]->control;
 					if (isButtonClicked(*btn, x, y))
 					{
-						char* btnName = btn->name;
 						//in main windows all bottons functions recieve sourcebtnName
 						if (buttons[i]->Action != NULL)
 						{
@@ -905,6 +898,7 @@ void EventsLoopGameWindow()
 void RunGui()
 {
 	init();
+	lastChosenTool = 0;
 	mainWindow = NULL;
 	settingWindow = NULL;
 	gameWindow = NULL;
