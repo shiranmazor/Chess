@@ -131,6 +131,7 @@ void performUserMove(Move *move);
 void printGameMoves(MoveNode *movesList);
 int countPlayers(char board[BOARD_SIZE][BOARD_SIZE]);
 void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move);
+Move * get_best_move(int playerColor, int depth);
 
 
 int isMoveLegal(Move *move, int userColor);

@@ -568,6 +568,25 @@ int ComputerMove()
 	return 0;
 }
 
+Move * get_best_move(int playerColor, int depth)
+{
+	Move* highestMove = NULL;
+	MoveNode* moves = getMoves(board, userColor);
+	MoveNode* movesPointer = moves;
+	int maxRes = -10000;
+	while (movesPointer != NULL)
+	{
+		int res = getMoveScore(movesPointer->move, depth, playerColor);
+		if (res > maxRes)
+		{
+			maxRes = res;
+			highestMove = movesPointer->move;
+		}
+		movesPointer = movesPointer->next;
+	}
+	freeMoves(moves, highestMove);
+	return highestMove;
+}
 /*return the user result after performing  the move 1-win, 0-not win yet*/
 int UserMove(int userColor)
 {

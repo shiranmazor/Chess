@@ -1129,6 +1129,8 @@ Move * parseMoveCommand(char *command)
 	}
 
 	move->pawnPromotionTool = pawnPromotionTool;
+	if (move->pawnPromotionTool != EMPTY)
+		move->movePromotePawn = 1;
 	freeArray(arr, arrLen);
 	freeArray(destArr, destArrLen);
 	return move;
