@@ -203,8 +203,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	{
 		MoveNode * toFree = NULL;
 		int playerColor = getColorByPos(pos.x, pos.y);
-		if ((playerColor == WHITE && moveNode->move->currPos->y == BOARD_SIZE - 2 && moveNode->move->dest->pos->y == BOARD_SIZE - 1 && moveNode->move->movePromotePawn == 0) ||
-			(playerColor == BLACK && moveNode->move->currPos->y == 1 && moveNode->move->dest->pos->y == 0 && moveNode->move->movePromotePawn == 0))//need promote
+		if (isPawnNeedPromotion(playerColor, moveNode->move) ==1)
 		{
 			Pos curr1; 
 			Pos dest1;
@@ -279,6 +278,13 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	return movesList;
 }
 
+int isPawnNeedPromotion(int playerColor, Move* move)
+{
+	if ((playerColor == WHITE && move->currPos->y == BOARD_SIZE - 2 && move->dest->pos->y == BOARD_SIZE - 1 && move->movePromotePawn == 0) ||
+		(playerColor == BLACK && move->currPos->y == 1 && move->dest->pos->y == 0 && move->movePromotePawn == 0))
+		return 1;
+	else return 0;
+}
 
 void getDiagAdjPositions(Pos pos, Pos** adj)
 {
@@ -1046,7 +1052,7 @@ x- optional for promotion command if entered update pawnPromotionTool with speci
 otherwise pawnPromotionTool = queen value
 next player - the color of thr current player
 */
-Move * parseMoveCommand(char *command)
+Move * parseMoveCommand(char *command, int playerColor)
 {
 	trimwhitespace(command);
 
@@ -1063,13 +1069,16 @@ Move * parseMoveCommand(char *command)
 	}
 
 	Move *move = (Move*)malloc(sizeof(Move));
+	move->movePromotePawn = 0;
 	char** arr = NULL;
 	int arrLen = split(command, ' ', &arr);
+	//check if pawn need promotion:
+	
 	//default value
-	char pawnPromotionTool = userColor == WHITE ? WHITE_Q:BLACK_Q;
+	char pawnPromotionTool = playerColor == WHITE ? WHITE_Q : BLACK_Q;
 	if (arrLen == 5)//we got promotion
 	{
-		if (userColor == WHITE)
+		if (playerColor == WHITE)
 		{
 			if (strcmp(arr[4], "queen") == 0)
 				pawnPromotionTool = WHITE_Q;
@@ -1098,7 +1107,7 @@ Move * parseMoveCommand(char *command)
 	if (!move->currPos)//position was invalid
 		return NULL;
 	//check if position <x,y> does not contain a piece of the user's color:
-	if (nextPlayer != getColorByPos(move->currPos->x, move->currPos->y))
+	if (playerColor != getColorByPos(move->currPos->x, move->currPos->y))
 	{
 		printf("%s", WRONG_POS_COLOR);
 		return NULL;
@@ -1127,8 +1136,12 @@ Move * parseMoveCommand(char *command)
 			lastPos = lastPos->next;
 		}
 	}
-
-	move->pawnPromotionTool = pawnPromotionTool;
+	if (isPawnNeedPromotion(playerColor, move) == 1)
+	{
+		move->pawnPromotionTool = pawnPromotionTool;
+		move->movePromotePawn = 1;
+	}
+	
 	freeArray(arr, arrLen);
 	freeArray(destArr, destArrLen);
 	return move;

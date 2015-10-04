@@ -568,14 +568,33 @@ int ComputerMove()
 	return 0;
 }
 
+Move * get_best_move(int playerColor, int depth)
+{
+	Move* highestMove = NULL;
+	MoveNode* moves = getMoves(board, userColor);
+	MoveNode* movesPointer = moves;
+	int maxRes = -10000;
+	while (movesPointer != NULL)
+	{
+		int res = getMoveScore(movesPointer->move, depth, playerColor);
+		if (res > maxRes)
+		{
+			maxRes = res;
+			highestMove = movesPointer->move;
+		}
+		movesPointer = movesPointer->next;
+	}
+	freeMoves(moves, highestMove);
+	return highestMove;
+}
 /*return the user result after performing  the move 1-win, 0-not win yet*/
-int UserMove(int userColor)
+int UserMove(int playerColor)
 {
 	char input[50];
 	int MoveDone = 0;
 	while (MoveDone == 0)//didn't perform any move, continuing loop
 	{
-		if (userColor == WHITE)
+		if (playerColor == WHITE)
 			printf("%s", "WHITE player - enter your move:\n");
 		else
 			printf("%s", "BLACK player - enter your move:\n");
@@ -584,13 +603,13 @@ int UserMove(int userColor)
 		strcpy(input, str_replace(input, "\n", ""));
 		if (StartsWith(input, "move"))
 		{
-			Move *move = parseMoveCommand(input);//Invalid position or color on the board- move==NULL
+			Move *move = parseMoveCommand(input, playerColor);//Invalid position or color on the board- move==NULL
 			if (move == NULL)
 				continue;
 			else
 			{
 				//check if the move is legal
-				if (isMoveLegal(move, userColor) == 0)
+				if (isMoveLegal(move, playerColor) == 0)
 				{
 					printf("%s", ILLEGAL_MOVE);
 					freeMove(move);
@@ -612,14 +631,14 @@ int UserMove(int userColor)
 			Pos* pos = formatPos(arr[1]);
 			if (pos == NULL)
 				continue;
-			if (getColorByPos(pos->x, pos->y) != userColor)
+			if (getColorByPos(pos->x, pos->y) != playerColor)
 			{
 				printf("%s", WRONG_POS_COLOR);
 				free(pos);
 				continue;
 			}
 			//else
-			MoveNode *moves = getMove(board, *pos, userColor);
+			MoveNode *moves = getMove(board, *pos, playerColor);
 			if (moves != NULL)
 			{
 				printGameMoves(moves);
@@ -635,14 +654,14 @@ int UserMove(int userColor)
 			free(arr);
 			//get all move and check their score by minimax
 			MoveNode* highestMoves = NULL;
-			MoveNode* moves = getMoves(board, userColor);
+			MoveNode* moves = getMoves(board, playerColor);
 			if (moves == NULL)
 				continue;
 			MoveNode* movesPointer = moves;
 			int maxRes = -10000;
 			while (movesPointer != NULL)
 			{
-				int res = getMoveScore(movesPointer->move, d, userColor);
+				int res = getMoveScore(movesPointer->move, d, playerColor);
 				if (res > maxRes)
 				{
 					maxRes = res;
@@ -672,8 +691,8 @@ int UserMove(int userColor)
 			free(arr);
 			//get_score d move <x,y> to <i,j> x
 			str_cut(input, 0, 12);
-			Move* move = parseMoveCommand(input);
-			int res = getMoveScore(move, d, userColor);
+			Move* move = parseMoveCommand(input, playerColor);
+			int res = getMoveScore(move, d, playerColor);
 			if (res != -1000)
 			printf("%d\n", res);
 
@@ -701,7 +720,7 @@ int UserMove(int userColor)
 	}
 	//outside move loop, move has compelted:
 	print_board(board);
-	int opponentColor = (userColor == BLACK) ? WHITE : BLACK;
+	int opponentColor = (playerColor == BLACK) ? WHITE : BLACK;
 	//check mate or a tie
 	if (checkForTie(board, opponentColor))
 	{

@@ -544,7 +544,11 @@ void chooseDepthBest()
 void returnFunc()
 {
 	shouldQuitsettingEvents = 1;
-	freeUINode(settingWindow);
+	if (settingWindow != NULL)
+	{
+		freeUINode(settingWindow);
+		settingWindow = NULL;
+	}
 	openPlayerSelectionWindow("None");
 }
 void openSettingWindow()
@@ -796,6 +800,9 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
 	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGameIfBoardValid, menuPanel, 0, "next"));
 
+	UINode* returnBtn = CreateButton(win->surface, 15, 500, "images/AISettings/return.bmp", returnFunc, menuPanel, 0, "return");
+	addChildToFather(menuPanel, returnBtn);
+
 	//init_board(board);
 	drawBoard(board, boardSettingsWindow);
 	presentUITree(boardSettingsWindow);
@@ -811,7 +818,11 @@ void cancelPlayerSelection()
 	nextPlayer = WHITE;
 	shouldQuitSelectionEvents = 1;
 	//clean resources
-	freeUINode(playerSelectionWindow);
+	if (playerSelectionWindow != NULL)
+	{
+		freeUINode(playerSelectionWindow);
+		playerSelectionWindow = NULL;
+	}
 	CreateMainWindow();
 	presentUITree(mainWindow);
 	EventsLoopMainWindow();
@@ -941,6 +952,16 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	char* sourceBtnName = (char*)sourceBottomName;
 	char* whiteBtnPath;
 	char* blackBtnPath;
+	if (userColor == WHITE)
+	{
+		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
+		blackBtnPath = "images/PlayersSelection/black.bmp";
+	}
+	else
+	{
+		whiteBtnPath = "images/PlayersSelection/white.bmp";
+		blackBtnPath = "images/PlayersSelection/blackMark.bmp";
+	}
 
 	char* twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
 	char* playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
@@ -996,12 +1017,13 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 			blackBtnPath = "images/PlayersSelection/blackMark.bmp";
 		}
 
-
-
 	}
 
-
-	freeUINode(mainWindow);
+	if (mainWindow != NULL)
+	{
+		freeUINode(mainWindow);
+		mainWindow = NULL;
+	}
 	//move to the next window
 	//create window
 	shouldQuitSelectionEvents = 0;
@@ -1050,13 +1072,28 @@ void quitGame()
 	//free resurces
 
 	if (mainWindow != NULL)
+	{
 		freeUINode(mainWindow);
+		mainWindow = NULL;
+	}
+		
 	if (gameWindow != NULL)
+	{
 		freeUINode(gameWindow);
+		gameWindow = NULL;
+	}
+		
 	if (settingWindow != NULL)
+	{
 		freeUINode(settingWindow);
+		settingWindow = NULL;
+	}
+		
 	if (playerSelectionWindow != NULL)
+	{
 		freeUINode(playerSelectionWindow);
+		playerSelectionWindow = NULL;
+	}	
 	shouldQuitMainEvents = 1;
 	SDL_Quit();
 	exit(0);

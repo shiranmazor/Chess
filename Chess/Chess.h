@@ -113,7 +113,7 @@ int getColor(char tool);
 
 char* getStringFormatMove(Move move);
 char* getStringFormatPos(Pos* pos);
-Move * parseMoveCommand(char *command);
+Move * parseMoveCommand(char *command, int playerColor);
 void performMoveMinimax(char board[BOARD_SIZE][BOARD_SIZE], Move *move);
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor);
@@ -131,6 +131,7 @@ void performUserMove(Move *move);
 void printGameMoves(MoveNode *movesList);
 int countPlayers(char board[BOARD_SIZE][BOARD_SIZE]);
 void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move);
+Move * get_best_move(int playerColor, int depth);
 
 
 int isMoveLegal(Move *move, int userColor);
