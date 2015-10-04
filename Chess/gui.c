@@ -153,13 +153,20 @@ void freeUINode(UINode* root)
 		return;
 	//free surface
 	if (root->control != NULL)
+	{
 		freeControl(root->control, root->type);
+		root->control = NULL;
+	}
+		
 	for (int i = 0; i< root->childsNumber; i++)
 	{
 		freeUINode(root->children[i]);
+		root->children[i] = NULL;
 	}
 	free(root->children);
+	root->children = NULL;
 	free(root);
+	root = NULL;
 }
 /*scan the tree in DFS left-to-right and present the controls*/
 void presentUITree(UINode* root)
@@ -502,6 +509,7 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 				for (int k = 0; k < father->childsNumber; k++)
 				{
 					freeUINode(father->children[k]);
+					father->children[k] = NULL;
 				}
 				father->childsNumber = 0;
 				//father->children[0] = createButtonWithColor(win->surface, 13, 13, getFilenameByTool(board[i][j]), toolClicked, father, 0, "aaaaaaaa", green);

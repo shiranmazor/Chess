@@ -514,7 +514,11 @@ void chooseDepthBest()
 void returnFunc()
 {
 	shouldQuitsettingEvents = 1;
-	freeUINode(settingWindow);
+	if (settingWindow != NULL)
+	{
+		freeUINode(settingWindow);
+		settingWindow = NULL;
+	}
 	openPlayerSelectionWindow("None");
 }
 void openSettingWindow()
@@ -781,7 +785,11 @@ void cancelPlayerSelection()
 	nextPlayer = WHITE;
 	shouldQuitSelectionEvents = 1;
 	//clean resources
-	freeUINode(playerSelectionWindow);
+	if (playerSelectionWindow != NULL)
+	{
+		freeUINode(playerSelectionWindow);
+		playerSelectionWindow = NULL;
+	}
 	CreateMainWindow();
 	presentUITree(mainWindow);
 	EventsLoopMainWindow();
@@ -911,6 +919,16 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	char* sourceBtnName = (char*)sourceBottomName;
 	char* whiteBtnPath;
 	char* blackBtnPath;
+	if (userColor == WHITE)
+	{
+		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
+		blackBtnPath = "images/PlayersSelection/black.bmp";
+	}
+	else
+	{
+		whiteBtnPath = "images/PlayersSelection/white.bmp";
+		blackBtnPath = "images/PlayersSelection/blackMark.bmp";
+	}
 
 	char* twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
 	char* playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
@@ -966,12 +984,13 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 			blackBtnPath = "images/PlayersSelection/blackMark.bmp";
 		}
 
-
-
 	}
 
-
-	freeUINode(mainWindow);
+	if (mainWindow != NULL)
+	{
+		freeUINode(mainWindow);
+		mainWindow = NULL;
+	}
 	//move to the next window
 	//create window
 	shouldQuitSelectionEvents = 0;
@@ -1020,13 +1039,28 @@ void quitGame()
 	//free resurces
 
 	if (mainWindow != NULL)
+	{
 		freeUINode(mainWindow);
+		mainWindow = NULL;
+	}
+		
 	if (gameWindow != NULL)
+	{
 		freeUINode(gameWindow);
+		gameWindow = NULL;
+	}
+		
 	if (settingWindow != NULL)
+	{
 		freeUINode(settingWindow);
+		settingWindow = NULL;
+	}
+		
 	if (playerSelectionWindow != NULL)
+	{
 		freeUINode(playerSelectionWindow);
+		playerSelectionWindow = NULL;
+	}	
 	shouldQuitMainEvents = 1;
 	SDL_Quit();
 	exit(0);

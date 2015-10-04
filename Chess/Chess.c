@@ -1069,6 +1069,7 @@ Move * parseMoveCommand(char *command, int playerColor)
 	}
 
 	Move *move = (Move*)malloc(sizeof(Move));
+	move->movePromotePawn = 0;
 	char** arr = NULL;
 	int arrLen = split(command, ' ', &arr);
 	//check if pawn need promotion:
