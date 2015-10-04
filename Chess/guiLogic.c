@@ -52,7 +52,7 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 
 void goToMainMenu()
 {
-	freeUINode(mainWindow);
+	freeUINode(gameWindow);
 	CreateMainWindow();
 }
 
