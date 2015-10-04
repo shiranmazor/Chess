@@ -515,6 +515,7 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 }
 
 int isEmptyClicked = 0;
+int isGameOver = 0;
 void emptyClicked()
 {
 	isEmptyClicked = 1;
@@ -567,8 +568,10 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					}
 					else if (gameWindow != NULL && gameWindow->control != NULL && win == (Window *)gameWindow->control)
 					{
-						
 						//game window context
+						if (isGameOver == 1)
+							continue;
+						
 						Pos pos;
 						pos.x = i;
 						pos.y = j;
@@ -618,6 +621,8 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 				if (strcmp("empty", btnName) == 0)
 				{
+					if (isGameOver == 1)
+						continue;
 					//perform move
 	
 					Move move;
@@ -639,17 +644,60 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
 					{
 						//declare win
+						Window * win = (Window *) gameWindow;
+						UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1] , 0, "mate");
+						addChildToFather(gameWindow->children[1], mate);
+						presentUITree(gameWindow);
+						isGameOver = 1;
 						break;
 					}
 					else if (checkForTie(board, getOpponentColor(nextPlayer)))
 					{
-						//decalte tie
+						//decalre tie
+						Window * win = (Window *)gameWindow;
+						UINode* tie = CreateButton(win->surface, 20, 270, "images/tie.bmp", NULL, gameWindow->children[1], 0, "tie");
+						addChildToFather(gameWindow->children[1], tie);
+						presentUITree(gameWindow);
+						isGameOver = 1;
 						break;
 					}
 					else if (isPlayerUnderCheck(board, getOpponentColor(nextPlayer)))
 					{
 						//declare check
-						int foo = 1;
+						Window * win = (Window *)gameWindow;
+						UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
+						addChildToFather(gameWindow->children[1], check);
+						presentUITree(gameWindow);
+						
+					}
+					else
+					{
+						if (getNodeByName("check", gameWindow) != NULL)
+						{
+							freeUINode(getNodeByName("check", gameWindow));
+							gameWindow->children[1]->childsNumber--;
+						}
+						if (getNodeByName("tie", gameWindow) != NULL)
+						{
+							freeUINode(getNodeByName("tie", gameWindow));
+							gameWindow->children[1]->childsNumber--;
+						}
+						if (getNodeByName("mate", gameWindow) != NULL)
+						{
+							freeUINode(getNodeByName("mate", gameWindow));
+							gameWindow->children[1]->childsNumber--;
+						}
+						Window * win = (Window *)gameWindow->control;
+						SDL_Rect rect;
+						rect.x = 605;
+						rect.y = 270;
+						rect.w = 195;
+						rect.h = 170;
+
+						Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+						SDL_FillRect(win->surface, &rect, white);
+						presentUITree(gameWindow);
+
 					}
 
 					if (gameMode == 2)

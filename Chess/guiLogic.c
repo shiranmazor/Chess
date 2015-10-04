@@ -50,6 +50,34 @@ void addBoardToPanel(UINode* gamePanel, Window *win)
 	}
 }
 
+void goToMainMenu()
+{
+	freeUINode(mainWindow);
+	CreateMainWindow();
+}
+
+void showBestMove()
+{
+	if (gameMode == 2)
+	{
+		//player vs AI
+		Move* bestMove = NULL;
+		Window * win = (Window *)gameWindow;
+		Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+		minimax(board, minimax_depth, &bestMove, -9999, 9999, 1, 0);
+		int destY = bestMove->dest->pos->y;
+		int destX = bestMove->dest->pos->x;
+		UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
+		addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "empty", green));
+	}
+	else if (gameMode == 1)
+	{
+
+	}
+	drawBoard();
+	presentUITree(gameWindow);
+}
+
 void CreateGameWindow()
 {
 	//set white background
@@ -70,11 +98,13 @@ void CreateGameWindow()
 	//Panel* p = (Panel*)leftPanel->control;
 	//int x = p->width / 2 - 170 / 2;
 	UINode* saveGameBtn = CreateButton(win->surface,20, 50, "images/saveGame.bmp", NULL, leftPanel, 0,"saveGame");
-	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", NULL, leftPanel, 0, "mainMenu");
+	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", goToMainMenu, leftPanel, 0, "mainMenu");
+	UINode* bestMove = CreateButton(win->surface, 20, 200, "images/bestMove.bmp", showBestMove, leftPanel, 0, "mainMenu");
 	UINode* quitBtn = CreateButton(win->surface, 20, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
 
 	addChildToFather(leftPanel, saveGameBtn);
 	addChildToFather(leftPanel, mainMenuBtn);
+	addChildToFather(leftPanel, bestMove);
 	addChildToFather(leftPanel, quitBtn);
 }
 
