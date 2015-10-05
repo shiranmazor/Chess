@@ -2079,18 +2079,10 @@ int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 			return 1;
 		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == BLACK_P)
 			return 1;
-		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == BLACK_P)
-			return 1;
-		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == BLACK_P)
-			return 1;
 	}
 	else
 	{
-		if(isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == WHITE_P)
-			return 1;
-		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == WHITE_P)
-			return 1;
-		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_P)
+		if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_P)
 			return 1;
 		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == WHITE_P)
 			return 1;
