@@ -294,8 +294,7 @@ void getDiagAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -332,8 +331,7 @@ void getStraightAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -372,8 +370,7 @@ void getAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -424,8 +421,7 @@ void getKnightPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 
@@ -758,15 +754,13 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (moveNode == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	Move *move = malloc(sizeof(Move));
 	if (move == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->movePromotePawn = 0;
 	move->pawnPromotionTool = EMPTY;
@@ -774,8 +768,7 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (move->currPos == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->currPos->x = pos.x;
 	move->currPos->y = pos.y;
@@ -783,15 +776,13 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (move->dest == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->dest->pos = malloc(sizeof(Pos));
 	if (move->dest->pos == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->dest->pos->x = destPos.x;
 	move->dest->pos->y = destPos.y;
@@ -811,8 +802,7 @@ Pos * formatPos(char* pos_input)
 	{
 		free(pos_input);
 		perror_message("formatPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	pos_input = replace(pos_input, '<', "");
 	char * toFree = pos_input;
@@ -830,8 +820,7 @@ Pos * formatPos(char* pos_input)
 		if (printf("%s", WRONG_POSITION) < 0)
 		{
 			perror_message("formatPos");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 		free(pos);
 		return NULL;
@@ -876,8 +865,7 @@ char* getStringFormatMove(Move move)
 	if (res == NULL)
 	{
 		perror_message("getStringFormatMove");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	Pos* curr = move.currPos;
 	char* curr_str = getStringFormatPos(curr);
@@ -905,8 +893,7 @@ char* getStringFormatPos(Pos* pos)
 	if (res == NULL)
 	{
 		perror_message("getStringFormatPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	res[0] = '<';
 	char x_char = pos->x + 'a';
@@ -2012,8 +1999,7 @@ Pos* getKingPos(int playerColor)
 	if (pos == NULL)
 	{
 		perror_message("getKingPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{

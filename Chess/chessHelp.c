@@ -52,7 +52,7 @@ char* replace(char *s, char ch, char *repl)
 	{
 		free(s);
 		perror_message("replace");
-		exit(0);
+		exit(1);
 	}
 
 	char *ptr = res;
@@ -67,34 +67,6 @@ char* replace(char *s, char ch, char *repl)
 	}
 	*ptr = 0;
 	return res;
-}
-char* getString(FILE* fp, size_t size)
-{
-	char *str;
-	int ch;
-	size_t len = 0;
-	str = realloc(NULL, sizeof(char)*size);
-	if (str == NULL)
-	{
-		perror_message("getString");
-		exit(0);
-	}
-	while (EOF != (ch = fgetc(fp)) && ch != '\n')
-	{
-		str
-			[len++] = ch;
-		if (len == size)
-		{
-			str = realloc(str, sizeof(char)*(size += 16));
-			if (str == NULL)
-			{
-				perror_message("getString");
-				exit(0);
-			}
-		}
-	}
-	str[len++] = '\0';
-	return str;
 }
 
 char *trimwhitespace(char *str)
@@ -137,7 +109,7 @@ int split(char *str, char c, char ***arr)
 	{
 		free(str);
 		perror_message("split");
-		exit(0);
+		exit(1);
 	}
 	p = str;
 	//2 - allocating arr space
@@ -151,7 +123,7 @@ int split(char *str, char c, char ***arr)
 			{
 				perror_message("split");
 				free(str);
-				exit(0);
+				exit(1);
 			}
 
 			token_len = 0;
@@ -167,7 +139,7 @@ int split(char *str, char c, char ***arr)
 	{
 		perror_message("split");
 		free(str);
-		exit(0);
+		exit(1);
 	}
 
 	i = 0;
