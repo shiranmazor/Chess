@@ -678,9 +678,23 @@ void doPromotion()
 	}
 	else
 	{
-		checkAndDeclareGameStatus(nextPlayer);
+		checkAndDeclareGameStatus(getOpponentColor(nextPlayer));
 	}
 	
+	if (!isGameOver)
+	{
+		if (gameMode == 2)
+		{
+			//player vs AI
+			ComputerMove();
+
+			checkAndDeclareGameStatus(nextPlayer);
+		}
+		else if (gameMode == 1)
+		{
+			nextPlayer = getOpponentColor(nextPlayer);
+		}
+	}
 	drawBoard(board, gameWindow);
 	presentUITree(gameWindow);
 }
@@ -772,7 +786,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				int i = clickedX / 76;
 				int j = BOARD_SIZE - (clickedY / 76) - 1;
 				
-				 if (strcmp("cube", btnName) == 0)
+				if (strcmp("cube", btnName) == 0)
 				{
 					
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
@@ -864,7 +878,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 			
 					move.currPos = &posToMoveFrom;
 					move.movePromotePawn = 0;
-					if ( (board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == WHITE_P)
+					if ( (board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == BLACK_P)
 						&& isPawnNeedPromotion(nextPlayer, &move))
 					{
 						isGameOver = 1; //not really over, we just want to force the user to choose promotion tool
@@ -894,7 +908,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					presentUITree(gameWindow);
 					isEmptyClicked = 0;
 
-					if (checkAndDeclareGameStatus(getOpponentColor(nextPlayer)))
+					if (checkAndDeclareGameStatus(getOpponentColor(nextPlayer)) || isGameOver == 1)
 					{
 						isGameOver = 1;
 						break;
