@@ -295,6 +295,7 @@ void startNewGame()
 void chooseBlackColor()
 {
 	userColor = BLACK;
+	computerColor = WHITE;
 	UINode* father = getNodeByName("AISettingPanel", settingWindow);
 	//check if comp players button is marked and change him to unmark
 	UINode* markNodeBtn = getNodeByName("whiteMark", settingWindow);
@@ -316,6 +317,8 @@ void chooseBlackColor()
 }
 void chooseWhiteColor()
 {
+	userColor = WHITE;
+	computerColor = BLACK;
 	Window* win;
 	ImgButton* oldBtn;
 	userColor = WHITE;
@@ -990,23 +993,43 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 	char* sourceBtnName = (char*)sourceBottomName;
 	char* whiteBtnPath;
 	char* blackBtnPath;
-	if (userColor == WHITE)
-	{
-		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
-		blackBtnPath = "images/PlayersSelection/black.bmp";
-	}
-	else
-	{
-		whiteBtnPath = "images/PlayersSelection/white.bmp";
-		blackBtnPath = "images/PlayersSelection/blackMark.bmp";
-	}
-
 	char* twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
 	char* playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
 	char* whiteBtnName = "whiteMark";
 	char* blackBtnName = "black";
 	char* twoplayersBtnName = "twoPlayers";
 	char* playervsCompBtnName = "playerVsComp";
+	//init resreved arguments
+	if (nextPlayer == WHITE)
+	{
+		whiteBtnName = "whiteMark";
+		blackBtnName = "black";
+		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
+		blackBtnPath = "images/PlayersSelection/black.bmp";
+	}
+	else
+	{
+		whiteBtnName = "white";
+		blackBtnName = "blackMark";
+		whiteBtnPath = "images/PlayersSelection/white.bmp";
+		blackBtnPath = "images/PlayersSelection/blackMark.bmp";
+	}
+
+	//init gamr mode:
+	if (gameMode == 1)
+	{
+		playervsCompBtnName = "playerVsComp";
+		twoplayersBtnName = "twoPlayersMark";
+		twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";
+		playervsCompBtnPath = "images/PlayersSelection/playComp.bmp";
+	}
+	else if (gameMode == 2)
+	{
+		playervsCompBtnName = "playerVsCompMark";
+		twoplayersBtnName = "twoPlayers";
+		playervsCompBtnPath = "images/PlayersSelection/playComH.bmp";
+		twoplayersBtnPath = "images/PlayersSelection/twoPlayers.bmp";
+	}
 	//init or load the game configuration
 	if (strcmp(sourceBtnName, "newGame") == 0)
 	{
@@ -1018,6 +1041,9 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 		init_board(board);
 		playervsCompBtnName = "playerVsComp";
 		twoplayersBtnName = "twoPlayersMark";
+		whiteBtnName = "whiteMark";
+		blackBtnName = "black";
+
 		whiteBtnPath = "images/PlayersSelection/whiteMark.bmp";
 		blackBtnPath = "images/PlayersSelection/black.bmp";
 		twoplayersBtnPath = "images/PlayersSelection/twoplay.bmp";

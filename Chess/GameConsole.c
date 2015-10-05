@@ -124,7 +124,8 @@ void settingState()
 				else if (checkForTie(board, nextPlayer) == 1)
 				{
 					printf("%s", TIE);
-					exit(0);
+					if (guiMode == 0)
+						exit(0);
 				}
 				else if (isPlayerUnderMate(board, nextPlayer) == 1)
 				{
@@ -132,7 +133,8 @@ void settingState()
 						printf("%s", MATE_WHITE);
 					else
 						printf("%s", MATE_BLACK);
-					exit(0);
+					if (guiMode == 0)
+						exit(0);
 				}
 				else
 				{
@@ -145,7 +147,8 @@ void settingState()
 			else if (strcmp(input, "quit") == 0)
 			{
 				//TODO:clean all memory
-				exit(0);
+				if (guiMode == 0)
+					exit(0);
 			}
 		}
 	}
@@ -266,7 +269,8 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "quit"))
 	{
-		exit(0);
+		if (guiMode == 0)
+			exit(0);
 	}
 	else if (strstr(input, "start"))
 	{
@@ -280,7 +284,8 @@ void executeSettingCmd(char* input)
 		else if (checkForTie(board, nextPlayer) == 1)
 		{
 			printf("%s", TIE);
-			exit(0);
+			if (guiMode == 0)
+				exit(0);
 		}
 		else if (isPlayerUnderMate(board, nextPlayer) == 1)
 		{
@@ -288,7 +293,8 @@ void executeSettingCmd(char* input)
 				printf("%s", MATE_WHITE);
 			else
 				printf("%s", MATE_BLACK);
-			exit(0);
+			if (guiMode == 0)
+				exit(0);
 		}
 		else
 		{
@@ -543,27 +549,31 @@ int ComputerMove()
 	if (guiMode == 0)
 		print_board(board);
 	freeMove(computerMove);
-	if (isPlayerStuck(opponentColor))
+	if (guiMode == 0)
 	{
-		if (checkForTie(board, opponentColor))
+		if (isPlayerStuck(opponentColor))
 		{
-			printf("%s", TIE);
-			exit(0);
+			if (checkForTie(board, opponentColor))
+			{
+				printf("%s", TIE);
+				exit(0);
+			}
+			if (isPlayerUnderMate(board, opponentColor) == 1)
+			{
+				if (opponentColor == BLACK)
+					printf("%s", MATE_WHITE);
+				else
+					printf("%s", MATE_BLACK);
+				exit(0);
+			}
 		}
-		if (isPlayerUnderMate(board, opponentColor) == 1)
+
+		if (isPlayerUnderCheck(board, opponentColor) == 1)
 		{
-			if (opponentColor == BLACK)
-				printf("%s", MATE_WHITE);
-			else
-				printf("%s", MATE_BLACK);
-			exit(0);
+			printf("%s", "Check!\n");
 		}
 	}
 	
-	if (isPlayerUnderCheck(board, opponentColor) == 1)
-	{
-		printf("%s", "Check!\n");
-	}
 
 	nextPlayer = (computerColor == WHITE) ? BLACK : WHITE;
 	return 0;
@@ -716,7 +726,8 @@ int UserMove(int playerColor)
 		}
 		else if (StartsWith(input, "quit"))
 		{
-			exit(0);
+			if (guiMode == 0)
+				exit(0);
 		}
 	}
 	//outside move loop, move has compelted:
@@ -726,7 +737,8 @@ int UserMove(int playerColor)
 	if (checkForTie(board, opponentColor))
 	{
 		printf("%s", TIE);
-		exit(0);
+		if (guiMode == 0)
+			exit(0);
 	}
 	if (isPlayerUnderMate(board, opponentColor) == 1)
 	{
@@ -734,7 +746,8 @@ int UserMove(int playerColor)
 			printf("%s", MATE_WHITE);
 		else
 			printf("%s", MATE_BLACK);
-		exit(0);
+		if (guiMode == 0)
+			exit(0);
 	}
 	if (isPlayerUnderCheck(board, opponentColor) == 1)
 	{
