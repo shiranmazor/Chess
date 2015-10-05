@@ -64,6 +64,9 @@ void goToMainMenu()
 
 void showBestMove()
 {
+	if (isGameOver == 1)
+		return;
+
 	drawBoard(board,gameWindow);
 	if (gameMode == 2)
 	{
@@ -147,6 +150,7 @@ void saveGame()
 
 void CreateGameWindow()
 {
+	isGameOver = 0;
 	//set white background
 	SDL_Rect screenRect;
 	screenRect.x = screenRect.y = 0;
@@ -166,7 +170,7 @@ void CreateGameWindow()
 	//int x = p->width / 2 - 170 / 2;
 	UINode* saveGameBtn = CreateButton(win->surface, 20, 50, "images/saveGame.bmp", saveGame, leftPanel, 0, "saveGame");
 	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", goToMainMenu, leftPanel, 0, "mainMenu");
-	UINode* bestMove = CreateButton(win->surface, 20, 200, "images/bestMove.bmp", showBestMove, leftPanel, 0, "mainMenu");
+	UINode* bestMove = CreateButton(win->surface, 20, 200, "images/bestMove.bmp", showBestMove, leftPanel, 0, "bestMove");
 	UINode* quitBtn = CreateButton(win->surface, 20, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
 
 	addChildToFather(leftPanel, saveGameBtn);

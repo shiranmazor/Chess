@@ -547,20 +547,201 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 	}
 }
 
+char promotionTool;
+Pos promotionPos;
+
+void doPromotion()
+{
+	board[promotionPos.x][promotionPos.y] = promotionTool;
+	//nrqb
+	if (getNodeByName("prom_black_n", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_n", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_black_r", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_r", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_black_q", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_q", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_black_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_black_b", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+
+	if (getNodeByName("prom_white_n", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_n", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_white_r", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_r", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("prom_white_q", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_q", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	if (getNodeByName("prom_white_b", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("prom_white_b", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	Window * win = (Window *)gameWindow->control;
+	SDL_Rect rect;
+	rect.x = 605;
+	rect.y = 320;
+	rect.w = 195;
+	rect.h = 80;
+
+	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	SDL_FillRect(win->surface, &rect, white);
+	isGameOver = 0;
+	if (gameMode == 2)
+	{
+		checkAndDeclareGameStatus(computerColor);
+	}
+	else
+	{
+		checkAndDeclareGameStatus(nextPlayer);
+	}
+	
+	drawBoard(board, gameWindow);
+	presentUITree(gameWindow);
+}
+void setPromotionToolToBlackBishop()
+{
+	promotionTool = BLACK_B;
+	doPromotion();
+}
+void setPromotionToolToBlackQueen()
+{
+	promotionTool = BLACK_Q;
+	doPromotion();
+}
+void setPromotionToolToBlackRook()
+{
+	promotionTool = BLACK_R;
+	doPromotion();
+}
+void setPromotionToolToBlackKnight()
+{
+	promotionTool = BLACK_N;
+	doPromotion();
+}
+void setPromotionToolToWhiteBishop()
+{
+	promotionTool = WHITE_B;
+	doPromotion();
+}
+void setPromotionToolToWhiteQueen()
+{
+	promotionTool = WHITE_Q;
+	doPromotion();
+}
+void setPromotionToolToWhiteRook()
+{
+	promotionTool = WHITE_R;
+	doPromotion();
+}
+void setPromotionToolToWhiteKnight()
+{
+	promotionTool = WHITE_N;
+	doPromotion();
+}
+
 int isEmptyClicked = 0;
-int isGameOver = 0;
 void emptyClicked()
 {
 	isEmptyClicked = 1;
 }
+
+//checks for tie/mate/check and declares it to the user
+int checkAndDeclareGameStatus(int colorToCheck)
+{
+	//clear chess/tie/mate button area
+	if (getNodeByName("check", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("check", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("tie", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("tie", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("mate", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("mate", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	Window * win = (Window *)gameWindow->control;
+	SDL_Rect rect;
+	rect.x = 605;
+	rect.y = 270;
+	rect.w = 195;
+	rect.h = 170;
+
+	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	SDL_FillRect(win->surface, &rect, white);
+	presentUITree(gameWindow);
+
+	if (isPlayerUnderMate(board, colorToCheck))
+	{
+		//declare win
+		Window * win = (Window *)gameWindow;
+		UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1], 0, "mate");
+		addChildToFather(gameWindow->children[1], mate);
+		presentUITree(gameWindow);
+		isGameOver = 1;
+		return 1;
+	}
+	else if (checkForTie(board, colorToCheck))
+	{
+		//decalre tie
+		Window * win = (Window *)gameWindow;
+		UINode* tie = CreateButton(win->surface, 20, 270, "images/tie.bmp", NULL, gameWindow->children[1], 0, "tie");
+		addChildToFather(gameWindow->children[1], tie);
+		presentUITree(gameWindow);
+		isGameOver = 1;
+		return 1;
+	}
+	else if (isPlayerUnderCheck(board, colorToCheck))
+	{
+		//declare check
+		Window * win = (Window *)gameWindow;
+		UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
+		addChildToFather(gameWindow->children[1], check);
+		presentUITree(gameWindow);
+		SDL_Delay(1500);
+	}
+}
+
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
 		return; 
+	if (root->type == PANEL)
+	{
+		int foo = 1;
+	}
 
 	for (int k = 0; k < root->childsNumber; k++)
 	{
-		
+	
+
 		if (root->children[k]->type == BUTTON)
 		{
 			
@@ -655,10 +836,9 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 							posToMoveFrom.y = j;
 						}
 						presentUITree(gameWindow);
-
-						
 					}
 				}
+
 				if (strcmp("empty", btnName) == 0)
 				{
 					if (isGameOver == 1)
@@ -676,104 +856,51 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					move.dest = &desPos;
 			
 					move.currPos = &posToMoveFrom;
+					move.movePromotePawn = 0;
+					if ( (board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == WHITE_P)
+						&& isPawnNeedPromotion(nextPlayer, &move))
+					{
+						isGameOver = 1; //not really over, we just want to force the user to choose promotion tool
+						Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+						UINode * panel = gameWindow->children[1];
+						if (nextPlayer == BLACK)
+						{
+							addChildToFather(panel, createButtonWithColor(win->surface, 10, 320, "images/tools/black_bishop.bmp", setPromotionToolToBlackBishop, panel, 0, "prom_black_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10+46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 2, 320, "images/tools/black_rook.bmp", setPromotionToolToBlackRook, panel, 0, "prom_black_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 3, 320, "images/tools/black_knight.bmp", setPromotionToolToBlackKnight, panel, 0, "prom_black_n", green));
+						}
+						else
+						{
+							addChildToFather(panel, createButtonWithColor(win->surface, 10, 320, "images/tools/white_bishop.bmp", setPromotionToolToWhiteBishop, panel, 0, "prom_white_b", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46, 320, "images/tools/white_queen.bmp", setPromotionToolToWhiteQueen, panel, 0, "prom_white_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 2, 320, "images/tools/white_rook.bmp", setPromotionToolToWhiteRook, panel, 0, "prom_white_r", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 3, 320, "images/tools/white_knight.bmp", setPromotionToolToWhiteKnight, panel, 0, "prom_white_n", green));
+						}
+						promotionPos.x = i;
+						promotionPos.y = j;
+						
+					}
+
 					performUserMove(&move);
 					drawBoard(board, gameWindow);
 					presentUITree(gameWindow);
 					isEmptyClicked = 0;
 
-					//clear chess/tie/mate button area
-					if (getNodeByName("check", gameWindow) != NULL)
+					if (checkAndDeclareGameStatus(getOpponentColor(nextPlayer)))
 					{
-						freeUINode(getNodeByName("check", gameWindow));
-						gameWindow->children[1]->childsNumber--;
-					}
-					if (getNodeByName("tie", gameWindow) != NULL)
-					{
-						freeUINode(getNodeByName("tie", gameWindow));
-						gameWindow->children[1]->childsNumber--;
-					}
-					if (getNodeByName("mate", gameWindow) != NULL)
-					{
-						freeUINode(getNodeByName("mate", gameWindow));
-						gameWindow->children[1]->childsNumber--;
-					}
-
-					Window * win = (Window *)gameWindow->control;
-					SDL_Rect rect;
-					rect.x = 605;
-					rect.y = 270;
-					rect.w = 195;
-					rect.h = 170;
-
-					Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
-					SDL_FillRect(win->surface, &rect, white);
-					presentUITree(gameWindow);
-
-					if (isPlayerUnderMate(board, getOpponentColor(nextPlayer)))
-					{
-						//declare win
-						Window * win = (Window *) gameWindow;
-						UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1] , 0, "mate");
-						addChildToFather(gameWindow->children[1], mate);
-						presentUITree(gameWindow);
 						isGameOver = 1;
 						break;
 					}
-					else if (checkForTie(board, getOpponentColor(nextPlayer)))
-					{
-						//decalre tie
-						Window * win = (Window *)gameWindow;
-						UINode* tie = CreateButton(win->surface, 20, 270, "images/tie.bmp", NULL, gameWindow->children[1], 0, "tie");
-						addChildToFather(gameWindow->children[1], tie);
-						presentUITree(gameWindow);
-						isGameOver = 1;
-						break;
-					}
-					else if (isPlayerUnderCheck(board, getOpponentColor(nextPlayer)))
-					{
-						//declare check
-						Window * win = (Window *)gameWindow;
-						UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
-						addChildToFather(gameWindow->children[1], check);
-						presentUITree(gameWindow);
-						SDL_Delay(1500);	
-					}
+					//if (isGameOver == 1 && gameMode == 2)
+					//	break;
 
 					if (gameMode == 2)
 					{
 						//player vs AI
 						ComputerMove();
 
-						//clear chess/tie/mate button area
-						if (getNodeByName("check", gameWindow) != NULL)
-						{
-							freeUINode(getNodeByName("check", gameWindow));
-							gameWindow->children[1]->childsNumber--;
-						}
-						if (getNodeByName("tie", gameWindow) != NULL)
-						{
-							freeUINode(getNodeByName("tie", gameWindow));
-							gameWindow->children[1]->childsNumber--;
-						}
-						if (getNodeByName("mate", gameWindow) != NULL)
-						{
-							freeUINode(getNodeByName("mate", gameWindow));
-							gameWindow->children[1]->childsNumber--;
-						}
-
-						Window * win = (Window *)gameWindow->control;
-						SDL_Rect rect;
-						rect.x = 605;
-						rect.y = 270;
-						rect.w = 195;
-						rect.h = 170;
-
-						Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
-						SDL_FillRect(win->surface, &rect, white);
-						presentUITree(gameWindow);
-
-
-						
+						checkAndDeclareGameStatus(nextPlayer);
 					}
 					else if (gameMode == 1)
 					{
