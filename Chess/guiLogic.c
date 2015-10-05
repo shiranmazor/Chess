@@ -117,7 +117,7 @@ void saveGame()
 	Window* win = (Window*)gameWindow->control;
 
 	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
-	UINode* mis = CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "mis");
+	CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "mis");
 	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
 	savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "saveGamePanel");
 
