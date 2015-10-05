@@ -117,7 +117,7 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root);
 void freeUnActivateWindows();
 
 //create controls:
-UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect);
+UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect, int r, int g, int b);
 UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber, char* name);
 UINode* CreateButton(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father, int childsNumber, char* name);
 UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filename, void(*Action)(void*), UINode *father,
@@ -161,6 +161,7 @@ void loadGame();
 void loadGameFromSlot(void* name);
 void RunGui();
 void QuitError();
+void saveGame();
 
 #endif 
 

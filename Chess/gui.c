@@ -216,18 +216,43 @@ void presentUITree(UINode* root)
 	else if (root->type == LABEL)
 	{
 		Label* control = (Label*)root->control;
-		Panel *p;
-		if (root->father->type == PANEL)
-			p = (Panel*)root->father->control;
+		Window * win = getRoot(root);
 		//apply image to screen
-		if (SDL_BlitSurface(control->surface, NULL, p->surface, control->rect) != 0)
+		if (SDL_BlitSurface(control->surface, NULL, win->surface, control->rect) != 0)
 		{
 			printf("ERROR: failed to blit image : %s\n", SDL_GetError());
 			SDL_FreeSurface(control->surface);
 			QuitError();
 		}
+		/*
+		if (root->father->type == PANEL)
+		{
+		p = (Panel*)root->father->control;
+		//apply image to screen
+		if (SDL_BlitSurface(control->surface, NULL, p->surface, control->rect) != 0)
+		{
+		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+		SDL_FreeSurface(control->surface);
+		QuitError();
+		}
+		}
+
+		if (root->father->type == WINDOW)
+		{
+		w = (Window*)root->father->control;
+		//apply image to screen
+		if (SDL_BlitSurface(control->surface, NULL, w->surface, control->rect) != 0)
+		{
+		printf("ERROR: failed to blit image : %s\n", SDL_GetError());
+		SDL_FreeSurface(control->surface);
+		QuitError();
+		}
+		}
+		*/
+		
+				
 		SDL_Flip(control->surface);
-		SDL_Flip(p->surface);
+		SDL_Flip(win->surface);
 	}
 		
 	for (int i = 0; i<root->childsNumber; i++)
@@ -247,7 +272,7 @@ int isButtonClicked(ImgButton btn, int clickedX, int clickedY)
 	return 0;
 }
 
-UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect)
+UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_Rect* rect, int r, int g, int b)
 {
 	SDL_WM_SetCaption(title, title);
 	SDL_Surface* win = SDL_SetVideoMode(width, height, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
@@ -258,8 +283,8 @@ UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_R
 	}
 	if (rect != NULL)
 	{
-		Uint32 clearColor = SDL_MapRGB(win->format, 255, 255, 255);
-		SDL_FillRect(win, rect, clearColor);
+		Uint32 Color = SDL_MapRGB(win->format, r, g, b);
+		SDL_FillRect(win, rect, Color);
 	}
 	Window *winObj = (Window*)malloc(sizeof(Window));
 	winObj->height = height;
@@ -270,7 +295,8 @@ UINode* CreateWindow(char* title, int width, int height, int childsNumber, SDL_R
 	UINode *winControl = CreateAndAddUINode(winObj, childsNumber, WINDOW, NULL, NULL);
 	return winControl;
 }
-UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, int color, UINode *father, int childsNumber, char* name)
+UINode* CreatePanel(SDL_Surface * surface, int x, int y, int width, int height, 
+	int color, UINode *father, int childsNumber, char* name)
 {
 	Panel *panel = (Panel*)malloc(sizeof(Panel));
 	panel->x = x;
@@ -334,9 +360,11 @@ UINode * createButtonWithColor(SDL_Surface * surface, int x, int y, char * filen
 
 UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name)
 {
+	int parentX = getUINodeX(father);
+	int parentY = getUINodeY(father);
 	Label* label = (Label*)malloc(sizeof(Label));
-	label->x = x;
-	label->y = y;
+	label->x = parentX + x;
+	label->y = parentY + y;
 	label->filename = filename;
 	label->type = LABEL;
 	label->name = name;

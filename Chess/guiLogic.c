@@ -8,7 +8,8 @@
 /*creating the uitree for the main window*/
 void CreateMainWindow()
 {
-	mainWindow = CreateWindow("Chess", WIN_WIDTH, WIN_HEIGHT, 0,NULL);
+
+	mainWindow = CreateWindow("Chess", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255,255,255);
 
 	Window* win = (Window*)mainWindow->control;
 	Uint32 clearColor = SDL_MapRGB(win->surface->format, 255, 255, 255);
@@ -90,6 +91,59 @@ void showBestMove()
 	
 	presentUITree(gameWindow);
 }
+void saveGame()
+{
+	
+	//open SLOTNUM buttons
+	//CreatePanel(win->surface, 0, 0, 600, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 0, 0, 0), gameWindow, 0, "gamePanel");
+	Window* win = (Window*)gameWindow->control;
+
+	Uint32 background = SDL_MapRGBA(win->surface->format, 255, 255,255, SDL_ALPHA_TRANSPARENT);
+
+	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
+	UINode* mis = CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "mis");
+	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	UINode* savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "saveGamePanel");
+
+	Window* win2 = (Window*)savePanel->control;
+	UINode* slotNumBtn = createLabel(win2->surface, 100, 30, "images/slotNumSave.bmp", savePanel, "slotNumSave");
+	addChildToFather(gameWindow, mis);
+	addChildToFather(gameWindow, savePanel);
+	addChildToFather(savePanel, slotNumBtn);
+
+	int x = 120;
+	int x2 = 160;
+	int y = 60;
+	int lasty = y;
+	//load buttons
+	for (int i = 1; i <= SLOTS_NUM; i++)
+	{
+		int xpos = 0;
+		int ypos = 0;
+		char imageName[20];
+		char* btnName = getBtnName(i);
+		sprintf(imageName, "%s%d.bmp", "images/", i);
+		if (i % 4 == 0)
+		{
+			xpos = x2;
+			ypos = lasty;
+
+		}
+		else
+		{
+			xpos = x;
+			ypos = y;
+			lasty = y;
+		}
+
+		UINode* slotNumBtn = CreateButton(win->surface, xpos, ypos, imageName, NULL, savePanel, 0, btnName);
+		addChildToFather(savePanel, slotNumBtn);
+		y = y + 20;
+	}
+
+	presentUITree(savePanel);
+
+}
 
 void CreateGameWindow()
 {
@@ -98,7 +152,7 @@ void CreateGameWindow()
 	screenRect.x = screenRect.y = 0;
 	screenRect.w = WIN_WIDTH;
 	screenRect.h = WIN_HEIGHT;
-	gameWindow = CreateWindow("Chess New Game", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	gameWindow = CreateWindow("Chess New Game", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255, 255, 255);
 	Window* win = (Window*)gameWindow->control;
 	
 	UINode* gamePanel = CreatePanel(win->surface, 0, 0, 600, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 0, 0, 0), gameWindow, 0, "gamePanel");
@@ -110,7 +164,7 @@ void CreateGameWindow()
 	addChildToFather(gameWindow, leftPanel);
 	//Panel* p = (Panel*)leftPanel->control;
 	//int x = p->width / 2 - 170 / 2;
-	UINode* saveGameBtn = CreateButton(win->surface,20, 50, "images/saveGame.bmp", NULL, leftPanel, 0,"saveGame");
+	UINode* saveGameBtn = CreateButton(win->surface, 20, 50, "images/saveGame.bmp", saveGame, leftPanel, 0, "saveGame");
 	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", goToMainMenu, leftPanel, 0, "mainMenu");
 	UINode* bestMove = CreateButton(win->surface, 20, 200, "images/bestMove.bmp", showBestMove, leftPanel, 0, "mainMenu");
 	UINode* quitBtn = CreateButton(win->surface, 20, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
@@ -120,6 +174,7 @@ void CreateGameWindow()
 	addChildToFather(leftPanel, bestMove);
 	addChildToFather(leftPanel, quitBtn);
 }
+
 
 void loadGameFromSlot(void* name)
 {
@@ -167,15 +222,18 @@ char* getBtnName(int i)
 void loadGame()
 {
 
-	int slotArr[gameSlots];//init to 1
+	int slotArr[SLOTS_NUM];//init to 1
 	//find all FILENAME files in the project dir
 	char filename[16];
-	for (int k = 0; k < gameSlots; k++)
+	for (int k = 0; k < SLOTS_NUM; k++)
 	{
 		int num = k + 1;
 		sprintf(filename, "%s%d.xml", FILENAME, num);
 		if (fileExists(filename) == 1)
+		{
 			slotArr[k] = 1;
+		}
+			
 		else
 			slotArr[k] = 0;
 	}
@@ -187,16 +245,19 @@ void loadGame()
 	int y = 170;
 	int lasty = y;
 	addChildToFather(mainWindow->children[0], slotNumBtn);
-	for (int i = 1; i <= gameSlots; i++)
+	int numBtn = 0;
+	for (int i = 1; i <= SLOTS_NUM; i++)
 	{
+
 		int xpos = 0;
 		int ypos = 0;
 		if (slotArr[i - 1] == 0)
 			continue;
+		numBtn++;
 		char imageName[20];
 		char* btnName = getBtnName(i);
 		sprintf(imageName, "%s%d.bmp","images/", i);
-		if (i % 2 == 0)
+		if (numBtn % 2 == 0)
 		{
 			xpos = x2;
 			ypos = lasty;
@@ -625,8 +686,7 @@ void openSettingWindow()
 		depthBestBtnP = "images/AISettings/bestm.bmp";
 	}
 
-	//clean resources
-	settingWindow = CreateWindow("Chess Game AI Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	settingWindow = CreateWindow("Chess Game AI Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255, 255, 255);
 	Window* win = (Window*)settingWindow->control;
 	UINode* settingPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), settingWindow, 0, "AISettingPanel");
 
@@ -756,8 +816,7 @@ void startNewGameIfBoardValid()
 
 void openBoardSettingWindow()
 {
-
-	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255, 255, 255);
 	Window* win = (Window*)boardSettingsWindow->control;
 
 	UINode *boardPanel = CreatePanel(win->surface, 0, 0, 608, 608, 0, boardSettingsWindow, 0, "Board Panel");
@@ -996,7 +1055,7 @@ void openPlayerSelectionWindow(void* sourceBottomName)
 
 	//move to the next window
 	//create window
-	playerSelectionWindow = CreateWindow("Chess Players Selection", WIN_WIDTH, WIN_HEIGHT, 0, NULL);
+	playerSelectionWindow = CreateWindow("Chess Players Selection", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255, 255, 255);
 	Window* win = (Window*)playerSelectionWindow->control;
 	UINode* selectPanel = CreatePanel(win->surface, 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 255, 255, 255), playerSelectionWindow, 0, "selectPanel");
 
