@@ -718,7 +718,7 @@ int checkAndDeclareGameStatus(int colorToCheck)
 		isGameOver = 1;
 		return 1;
 	}
-	else if (isPlayerUnderCheckNew(board, colorToCheck))
+	else if (isPlayerUnderCheck(board, colorToCheck))
 	{
 		//declare check
 		Window * win = (Window *)gameWindow;

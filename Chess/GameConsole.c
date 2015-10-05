@@ -568,7 +568,7 @@ int ComputerMove()
 			}
 		}
 
-		if (isPlayerUnderCheckNew(board, opponentColor) == 1)
+		if (isPlayerUnderCheck(board, opponentColor) == 1)
 		{
 			printf("%s", "Check!\n");
 		}
@@ -748,7 +748,7 @@ int UserMove(int playerColor)
 		if (guiMode == 0)
 			exit(0);
 	}
-	if (isPlayerUnderCheckNew(board, opponentColor) == 1)
+	if (isPlayerUnderCheck(board, opponentColor) == 1)
 	{
 		printf("%s", "Check!\n");
 	}
@@ -847,7 +847,7 @@ void testMateTieCheck()
 	set_disc("<c,2>", "black", "knight");
 	set_disc("<a,1>", "white", "rook");
 	//print_board(board);
-	int res = isPlayerUnderCheckNew(board, BLACK);
+	int res = isPlayerUnderCheck(board, BLACK);
 	assert(res == 1);
 	//mate:
 	set_disc("<d,5>", "black", "rook");

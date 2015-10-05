@@ -152,11 +152,8 @@ int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 
-
-MoveNode * getMoveFlag(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor, int returnCheckMoves);
-MoveNode * getMovesFlag(char board[BOARD_SIZE][BOARD_SIZE], int playerColor, int returnCheckMoves);
 int isMoveEatKing(Move* move);
-int isPlayerUnderCheckNew(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
+
 
 
 #endif 

@@ -710,104 +710,6 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 	return movesList;
 }
 
-MoveNode * getMoveFlag(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor, int returnCheckMoves)
-{
-	MoveNode *movesList = NULL;
-	char currentTool = board[pos.x][pos.y];
-
-	char currentToolLowered = tolower(currentTool);
-
-	switch (currentToolLowered)
-	{
-	case WHITE_P:
-		movesList = getPawnMoves(pos, board, playerColor);
-		break;
-	case WHITE_B:
-		movesList = getBishopMoves(pos, board, playerColor);
-		break;
-	case WHITE_K:
-		movesList = getKingMoves(pos, board, playerColor);
-		break;
-	case WHITE_N:
-		movesList = getKnightMoves(pos, board, playerColor);
-		break;
-	case WHITE_Q:
-		movesList = getQueenMoves(pos, board, playerColor);
-		break;
-	case WHITE_R:
-		movesList = getRookMoves(pos, board, playerColor);
-		break;
-	default:
-		return NULL;
-	}
-
-	
-	//check if player under check and then remove any moves that keeps the check status
-	MoveNode * toFree = NULL;
-	if (returnCheckMoves == 0)
-	{
-		MoveNode * moveNode = movesList;
-		MoveNode * prev = NULL;
-		while (moveNode != NULL)
-		{
-			toFree = NULL;
-			if (isMoveEatKing(moveNode->move) == 1)
-			{
-				if (prev == NULL)
-				{
-					toFree = movesList;
-					movesList = moveNode->next;
-				}
-				else
-				{
-					toFree = moveNode;
-					prev->next = moveNode->next;
-				}
-			}
-			else
-			{
-				prev = moveNode;
-			}
-
-			moveNode = moveNode->next;
-
-			if (toFree != NULL)
-				freeMoveNode(toFree);
-		}
-	}
-	else if (returnCheckMoves == 1)
-	{
-		MoveNode * moveNode = movesList;
-		MoveNode * prev = NULL;
-		while (moveNode != NULL)
-		{
-			toFree = NULL;
-			if (isMoveEatKing(moveNode->move) == 0)//remove all moves that do not eat king
-			{
-				if (prev == NULL)
-				{
-					toFree = movesList;
-					movesList = moveNode->next;
-				}
-				else
-				{
-					toFree = moveNode;
-					prev->next = moveNode->next;
-				}
-			}
-			else
-			{
-				prev = moveNode;
-			}
-
-			moveNode = moveNode->next;
-
-			if (toFree != NULL)
-				freeMoveNode(toFree);
-		}
-	}
-	return movesList;
-}
 
 int isMoveEatKing(Move* move)
 {
@@ -849,33 +751,6 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	return firstMoveNode;
 }
 
-MoveNode * getMovesFlag(char board[BOARD_SIZE][BOARD_SIZE], int playerColor, int returnCheckMoves)
-{
-	MoveNode *firstMoveNode = NULL;
-	int i, j;
-	for (i = 0; i < BOARD_SIZE; i++)
-	{
-		for (j = 0; j < BOARD_SIZE; j++)
-		{
-			Pos pos;
-			pos.x = i;
-			pos.y = j;
-
-			char currentTool = board[pos.x][pos.y];
-
-			if (getColor(currentTool) != playerColor)
-				continue;
-
-			MoveNode * movesList = getMoveFlag(board, pos, playerColor, returnCheckMoves);
-			//freeMoves(movesList, NULL);
-			//movesList = NULL;
-			if (movesList != NULL)
-				addMoveNodeToList(&firstMoveNode, movesList);
-		}
-	}
-
-	return firstMoveNode;
-}
 
 MoveNode *createMoveNode(Pos pos, Pos destPos)
 {
@@ -926,21 +801,6 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	moveNode->next = NULL;
 
 	return moveNode;
-}
-
-int isPlayerUnderCheckNew(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
-{
-	int opponentCol = playerColor == WHITE ? BLACK : WHITE;
-	MoveNode *moveList = getMovesFlag(board, opponentCol, 1);
-	if (moveList == NULL)// there is no moves with eating king
-	{
-		return 0;
-	}
-	else
-	{
-		freeMoves(moveList, NULL);
-		return 1;//the player
-	}
 }
 
 Pos * formatPos(char* pos_input)
@@ -1015,7 +875,7 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	int isMate = 1;
 	MoveNode * moves = getMoves(board, playerColor);
 	MoveNode* movesPointer = moves;
-	if (isPlayerUnderCheckNew(board, playerColor) == 0)
+	if (isPlayerUnderCheck(board, playerColor) == 0)
 	{
 		freeMoves(moves, NULL);
 		return 0;
@@ -1026,7 +886,7 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	while (movesPointer != NULL)
 	{
 		performMoveMinimax(board, movesPointer->move);
-		if (isPlayerUnderCheckNew(board, playerColor) == 0)
+		if (isPlayerUnderCheck(board, playerColor) == 0)
 		{
 			UndoMove(board, movesPointer->move);
 			isMate = 0;
@@ -1106,7 +966,7 @@ void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOA
 
 int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
-	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheckNew(board, playerColor) == 0)
+	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheck(board, playerColor) == 0)
 		return 1;
 	return 0;
 }
@@ -1377,7 +1237,7 @@ int isMoveLegal(Move *move, int userColor)
 	{
 		//a player cannot insert himself to check state
 		performMoveMinimax(board, move);
-		if (isPlayerUnderCheckNew(board, userColor) == 1)
+		if (isPlayerUnderCheck(board, userColor) == 1)
 		{
 			legal = 0;
 		}
