@@ -598,9 +598,9 @@ int UserMove(int playerColor)
 	while (MoveDone == 0)//didn't perform any move, continuing loop
 	{
 		if (playerColor == WHITE)
-			printf("%s", "WHITE player - enter your move:\n");
+			printf("%s", "White player - enter your move:\n");
 		else
-			printf("%s", "BLACK player - enter your move:\n");
+			printf("%s", "Black player - enter your move:\n");
 		fgets(input, 50, stdin);
 		reduceSpaces(input);
 		strcpy(input, str_replace(input, "\n", ""));
