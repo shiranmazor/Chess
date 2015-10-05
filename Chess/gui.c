@@ -865,7 +865,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					move.currPos = &posToMoveFrom;
 					move.movePromotePawn = 0;
 					if ( (board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == WHITE_P)
-						&& isPawnNeedPromotion(nextPlayer, &move))
+						&& isPawnNeedPromotion(nextPlayer, &move, 0))
 					{
 						isGameOver = 1; //not really over, we just want to force the user to choose promotion tool
 						Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);

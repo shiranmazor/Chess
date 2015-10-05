@@ -111,9 +111,15 @@ int getOpponentColor(int userColor)
 {
 	return userColor == 1 ? 0 : 1;
 }
-int isPawnNeedPromotion(int playerColor, Move* move)
+int isPawnNeedPromotion(int playerColor, Move* move, int fromCheckPawn)
 {
-	if ((playerColor == WHITE && move->currPos->y == BOARD_SIZE - 2 && move->dest->pos->y == BOARD_SIZE - 1 && move->movePromotePawn == 0) ||
+	char pwan = playerColor == WHITE ? WHITE_P : BLACK_P;
+	if (fromCheckPawn == 0)
+	{
+		if (board[move->currPos->x][move->currPos->y] != pwan)
+			return 0;
+	}
+	if ((playerColor == WHITE && move->currPos->y == BOARD_SIZE - 2 && move->dest->pos->y == BOARD_SIZE - 1 && move->movePromotePawn == 0 ) ||
 		(playerColor == BLACK && move->currPos->y == 1 && move->dest->pos->y == 0 && move->movePromotePawn == 0))
 		return 1;
 	else return 0;
@@ -210,7 +216,7 @@ MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColo
 	{
 		MoveNode * toFree = NULL;
 		int playerColor = getColorByPos(pos.x, pos.y);
-		if (isPawnNeedPromotion(playerColor, moveNode->move) ==1)
+		if (isPawnNeedPromotion(playerColor, moveNode->move, 1) ==1)
 		{
 			Pos curr1; 
 			Pos dest1;
@@ -1113,7 +1119,7 @@ Move * parseMoveCommand(char *command, int playerColor)
 			lastPos = lastPos->next;
 		}
 	}
-	if (isPawnNeedPromotion(playerColor, move) == 1)
+	if (isPawnNeedPromotion(playerColor, move, 0) == 1)
 	{
 		move->pawnPromotionTool = pawnPromotionTool;
 		move->movePromotePawn = 1;
