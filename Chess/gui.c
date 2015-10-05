@@ -759,7 +759,14 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 				else if (root->children[k]->Action != NULL)
 				{
-					root->children[k]->Action(NULL);
+					if (root->type == PANEL && root->childsNumber == 8)//in save panel
+					{
+						ImgButton * btn = (ImgButton *)root->children[k]->control;
+						char* btnName = btn->name;
+						root->children[k]->Action(btnName);
+					}
+					else
+						root->children[k]->Action(NULL);
 				}				
 				//in main windows all bottons functions recieve sourcebtnName
 				int i = clickedX / 76;

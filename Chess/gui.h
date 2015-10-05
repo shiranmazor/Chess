@@ -35,6 +35,7 @@ struct UINode* playerSelectionWindow;
 struct UINode* boardSettingsWindow;
 struct UINode* gameWindow;
 struct UINode* ActiveWindow;
+struct UINode* savePanel;
 
 char lastChosenTool;
 int shouldQuitEvents;
@@ -162,6 +163,7 @@ void loadGameFromSlot(void* name);
 void RunGui();
 void QuitError();
 void saveGame();
+void saveGameFromSlot(void* name);
 
 #endif 
 

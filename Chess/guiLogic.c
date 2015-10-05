@@ -94,57 +94,90 @@ void showBestMove()
 	
 	presentUITree(gameWindow);
 }
+void saveGameFromSlot(void* name)
+{
+	char* slotName = (char*)name;
+	int slotNum = atoi(slotName);
+	GameStatus status;
+	copyBoard(board, status.board);
+	status.userColor = userColor;
+	status.gameMode = gameMode;
+	status.nextTurn = nextPlayer;
+	status.difficulty = minimax_depth;
+	saveFileWithSlotNumber(status, slotNum);
+	isGameOver = 0;
+	freeUINode(savePanel);
+	ActiveWindow = gameWindow;
+	presentUITree(ActiveWindow);
+}
 void saveGame()
 {
-	
+	isGameOver = 1;
 	//open SLOTNUM buttons
-	//CreatePanel(win->surface, 0, 0, 600, WIN_HEIGHT, SDL_MapRGB(win->surface->format, 0, 0, 0), gameWindow, 0, "gamePanel");
 	Window* win = (Window*)gameWindow->control;
-
-	Uint32 background = SDL_MapRGBA(win->surface->format, 255, 255,255, SDL_ALPHA_TRANSPARENT);
 
 	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
 	UINode* mis = CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "mis");
 	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
-	UINode* savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "saveGamePanel");
+	savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "saveGamePanel");
 
 	Window* win2 = (Window*)savePanel->control;
-	UINode* slotNumBtn = createLabel(win2->surface, 100, 30, "images/slotNumSave.bmp", savePanel, "slotNumSave");
-	addChildToFather(gameWindow, mis);
-	addChildToFather(gameWindow, savePanel);
+	UINode* slotNumBtn = createLabel(win2->surface, 100, 10, "images/slotNum.bmp", savePanel, "slotNumSave");
 	addChildToFather(savePanel, slotNumBtn);
-
-	int x = 120;
-	int x2 = 160;
-	int y = 60;
-	int lasty = y;
-	//load buttons
-	for (int i = 1; i <= SLOTS_NUM; i++)
+	
+	if (SLOTS_NUM >= 1)
 	{
-		int xpos = 0;
-		int ypos = 0;
-		char imageName[20];
-		char* btnName = getBtnName(i);
-		sprintf(imageName, "%s%d.bmp", "images/", i);
-		if (i % 4 == 0)
-		{
-			xpos = x2;
-			ypos = lasty;
-
-		}
-		else
-		{
-			xpos = x;
-			ypos = y;
-			lasty = y;
-		}
-
-		UINode* slotNumBtn = CreateButton(win->surface, xpos, ypos, imageName, NULL, savePanel, 0, btnName);
-		addChildToFather(savePanel, slotNumBtn);
-		y = y + 20;
+		UINode* slotNumBtn1 = CreateButton(win->surface, 120, 60, "images/1.bmp", saveGameFromSlot, savePanel, 0, "1");
+		addChildToFather(savePanel, slotNumBtn1);
+	}
+	if (SLOTS_NUM >= 2)
+	{
+		UINode* slotNumBtn2 = CreateButton(win->surface, 160, 60, "images/2.bmp", saveGameFromSlot, savePanel, 0, "2");
+		addChildToFather(savePanel, slotNumBtn2);
+	}
+	if (SLOTS_NUM >= 3)
+	{
+		UINode* slotNumBtn3 = CreateButton(win->surface, 200, 60, "images/3.bmp", saveGameFromSlot, savePanel, 0, "3");
+		addChildToFather(savePanel, slotNumBtn3);
+	}
+	if (SLOTS_NUM >= 4)
+	{
+		UINode* slotNumBtn4 = CreateButton(win->surface, 240, 60, "images/4.bmp", saveGameFromSlot, savePanel, 0, "4");
+		addChildToFather(savePanel, slotNumBtn4);
+	}
+	if (SLOTS_NUM >= 5)
+	{
+		UINode* slotNumBtn5 = CreateButton(win->surface, 120, 100, "images/5.bmp", saveGameFromSlot, savePanel, 0, "5");
+		addChildToFather(savePanel, slotNumBtn5);
+	}
+	if (SLOTS_NUM >= 6)
+	{
+		UINode* slotNumBtn6 = CreateButton(win->surface, 160, 100, "images/6.bmp", saveGameFromSlot, savePanel, 0, "6");
+		addChildToFather(savePanel, slotNumBtn6);
+	}
+	if (SLOTS_NUM >= 7)
+	{
+		UINode* slotNumBtn7 = CreateButton(win->surface, 200, 100, "images/7.bmp", saveGameFromSlot, savePanel, 0, "7");
+		addChildToFather(savePanel, slotNumBtn7);
+	}
+	if (SLOTS_NUM >= 8)
+	{
+		UINode* slotNumBtn8 = CreateButton(win->surface, 240, 100, "images/8.bmp", saveGameFromSlot, savePanel, 0, "8");
+		addChildToFather(savePanel, slotNumBtn8);
+	}
+	if (SLOTS_NUM >= 9)
+	{
+		UINode* slotNumBtn9 = CreateButton(win->surface, 120, 140, "images/9.bmp", saveGameFromSlot, savePanel, 0, "9");
+		addChildToFather(savePanel, slotNumBtn9);
+	}
+	if (SLOTS_NUM >= 10)
+	{
+		UINode* slotNumBtn10 = CreateButton(win->surface, 200, 140, "images/10.bmp", saveGameFromSlot, savePanel, 0, "10");
+		addChildToFather(savePanel, slotNumBtn10);
 	}
 
 	presentUITree(savePanel);
+	ActiveWindow = savePanel;
 
 }
 
@@ -191,7 +224,6 @@ void loadGameFromSlot(void* name)
 	userColor = gStatus.userColor;
 	minimax_depth = gStatus.difficulty;
 	nextPlayer = gStatus.nextTurn;
-
 
 
 	openPlayerSelectionWindow("loadGame");

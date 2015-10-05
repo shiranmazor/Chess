@@ -715,7 +715,6 @@ int UserMove(int playerColor)
 			//create gamseState struct:
 			GameStatus status;
 			copyBoard(board,status.board);
-			//strcpy(status.board, board);
 			status.userColor = userColor;
 			status.gameMode = gameMode;
 			status.nextTurn = nextPlayer;
