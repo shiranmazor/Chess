@@ -152,6 +152,9 @@ int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 int checkQueenThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 int checkKingThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *kingPos);
 
+int isMoveEatKing(Move* move);
+
+
 
 #endif 
 

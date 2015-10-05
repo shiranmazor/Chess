@@ -550,6 +550,69 @@ void drawBoard(char board[BOARD_SIZE][BOARD_SIZE], UINode * root)
 char promotionTool;
 Pos promotionPos;
 
+//checks for tie/mate/check and declares it to the user
+int checkAndDeclareGameStatus(int colorToCheck)
+{
+	//clear chess/tie/mate button area
+	if (getNodeByName("check", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("check", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("tie", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("tie", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+	if (getNodeByName("mate", gameWindow) != NULL)
+	{
+		freeUINode(getNodeByName("mate", gameWindow));
+		gameWindow->children[1]->childsNumber--;
+	}
+
+	Window * win = (Window *)gameWindow->control;
+	SDL_Rect rect;
+	rect.x = 605;
+	rect.y = 270;
+	rect.w = 195;
+	rect.h = 170;
+
+	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	SDL_FillRect(win->surface, &rect, white);
+	presentUITree(gameWindow);
+
+	if (isPlayerUnderMate(board, colorToCheck))
+	{
+		//declare win
+		Window * win = (Window *)gameWindow;
+		UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1], 0, "mate");
+		addChildToFather(gameWindow->children[1], mate);
+		presentUITree(gameWindow);
+		isGameOver = 1;
+		return 1;
+	}
+	else if (checkForTie(board, colorToCheck))
+	{
+		//decalre tie
+		Window * win = (Window *)gameWindow;
+		UINode* tie = CreateButton(win->surface, 20, 270, "images/tie.bmp", NULL, gameWindow->children[1], 0, "tie");
+		addChildToFather(gameWindow->children[1], tie);
+		presentUITree(gameWindow);
+		isGameOver = 1;
+		return 1;
+	}
+	else if (isPlayerUnderCheck(board, colorToCheck))
+	{
+		//declare check
+		Window * win = (Window *)gameWindow;
+		UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
+		addChildToFather(gameWindow->children[1], check);
+		presentUITree(gameWindow);
+		SDL_Delay(1500);
+	}
+}
+
+
 void doPromotion()
 {
 	board[promotionPos.x][promotionPos.y] = promotionTool;
@@ -667,77 +730,12 @@ void emptyClicked()
 	isEmptyClicked = 1;
 }
 
-//checks for tie/mate/check and declares it to the user
-int checkAndDeclareGameStatus(int colorToCheck)
-{
-	//clear chess/tie/mate button area
-	if (getNodeByName("check", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("check", gameWindow));
-		gameWindow->children[1]->childsNumber--;
-	}
-	if (getNodeByName("tie", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("tie", gameWindow));
-		gameWindow->children[1]->childsNumber--;
-	}
-	if (getNodeByName("mate", gameWindow) != NULL)
-	{
-		freeUINode(getNodeByName("mate", gameWindow));
-		gameWindow->children[1]->childsNumber--;
-	}
 
-	Window * win = (Window *)gameWindow->control;
-	SDL_Rect rect;
-	rect.x = 605;
-	rect.y = 270;
-	rect.w = 195;
-	rect.h = 170;
-
-	Uint32 white = SDL_MapRGB(win->surface->format, 255, 255, 255);
-	SDL_FillRect(win->surface, &rect, white);
-	presentUITree(gameWindow);
-
-	if (isPlayerUnderMate(board, colorToCheck))
-	{
-		//declare win
-		Window * win = (Window *)gameWindow;
-		UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1], 0, "mate");
-		addChildToFather(gameWindow->children[1], mate);
-		presentUITree(gameWindow);
-		isGameOver = 1;
-		return 1;
-	}
-	else if (checkForTie(board, colorToCheck))
-	{
-		//decalre tie
-		Window * win = (Window *)gameWindow;
-		UINode* tie = CreateButton(win->surface, 20, 270, "images/tie.bmp", NULL, gameWindow->children[1], 0, "tie");
-		addChildToFather(gameWindow->children[1], tie);
-		presentUITree(gameWindow);
-		isGameOver = 1;
-		return 1;
-	}
-	else if (isPlayerUnderCheck(board, colorToCheck))
-	{
-		//declare check
-		Window * win = (Window *)gameWindow;
-		UINode* check = CreateButton(win->surface, 20, 270, "images/check.bmp", NULL, gameWindow->children[1], 0, "check");
-		addChildToFather(gameWindow->children[1], check);
-		presentUITree(gameWindow);
-		SDL_Delay(1500);
-	}
-	return 0;
-}
 
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
 		return; 
-	if (root->type == PANEL)
-	{
-		int foo = 1;
-	}
 
 	for (int k = 0; k < root->childsNumber; k++)
 	{

@@ -292,5 +292,41 @@
     <Image Include="images\10.bmp">
       <Filter>Images</Filter>
     </Image>
+    <Image Include="images\bestMove.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\check.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\grey.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\mate.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\slotNumSave.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\tie.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\trash.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\AISettings\button.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\clear.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\play.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\return.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\AISettings\title.bmp">
+      <Filter>Images\AISettings</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -294,8 +294,7 @@ void getDiagAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -332,8 +331,7 @@ void getStraightAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -372,8 +370,7 @@ void getAdjPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 	//down:
@@ -424,8 +421,7 @@ void getKnightPositions(Pos pos, Pos** adj)
 		{
 			free(adj);
 			perror_message("getManMoves");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 	}
 
@@ -707,10 +703,18 @@ MoveNode * getMove(char board[BOARD_SIZE][BOARD_SIZE], Pos pos, int playerColor)
 				freeMoveNode(toFree);
 		}
 	}
-
-
-
 	return movesList;
+}
+
+
+int isMoveEatKing(Move* move)
+{
+	int i = move->dest->pos->x;
+	int j = move->dest->pos->y;
+	if (board[i][j] == WHITE_K || board[i][j] == BLACK_K)
+		return 1;
+	else
+		return 0;
 }
 
 MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
@@ -718,7 +722,7 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	MoveNode *firstMoveNode = NULL;
 
 	int i, j;
-	
+
 	for (i = 0; i < BOARD_SIZE; i++)
 	{
 		for (j = 0; j < BOARD_SIZE; j++)
@@ -726,7 +730,7 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 			Pos pos;
 			pos.x = i;
 			pos.y = j;
-			
+
 			char currentTool = board[pos.x][pos.y];
 
 			if (getColor(currentTool) != playerColor)
@@ -739,9 +743,10 @@ MoveNode * getMoves(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 				addMoveNodeToList(&firstMoveNode, movesList);
 		}
 	}
-	
+
 	return firstMoveNode;
 }
+
 
 MoveNode *createMoveNode(Pos pos, Pos destPos)
 {
@@ -749,15 +754,13 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (moveNode == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	Move *move = malloc(sizeof(Move));
 	if (move == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->movePromotePawn = 0;
 	move->pawnPromotionTool = EMPTY;
@@ -765,8 +768,7 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (move->currPos == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->currPos->x = pos.x;
 	move->currPos->y = pos.y;
@@ -774,15 +776,13 @@ MoveNode *createMoveNode(Pos pos, Pos destPos)
 	if (move->dest == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->dest->pos = malloc(sizeof(Pos));
 	if (move->dest->pos == NULL)
 	{
 		perror_message("createMoveNode");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	move->dest->pos->x = destPos.x;
 	move->dest->pos->y = destPos.y;
@@ -802,8 +802,7 @@ Pos * formatPos(char* pos_input)
 	{
 		free(pos_input);
 		perror_message("formatPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	pos_input = replace(pos_input, '<', "");
 	char * toFree = pos_input;
@@ -821,43 +820,13 @@ Pos * formatPos(char* pos_input)
 		if (printf("%s", WRONG_POSITION) < 0)
 		{
 			perror_message("formatPos");
-			if (guiMode == 0)
-				exit(0);
+			exit(1);
 		}
 		free(pos);
 		return NULL;
 	}
 
 	return pos;
-}
-void print_line2()
-{
-	int i;
-	printf("  |");
-	for (i = 1; i < BOARD_SIZE * 4; i++){
-		printf("-");
-	}
-	printf("|\n");
-}
-
-void print_board2(char board[BOARD_SIZE][BOARD_SIZE])
-{
-	int i, j;
-	print_line2();
-	for (j = BOARD_SIZE - 1; j >= 0; j--)
-	{
-		printf((j < 9 ? " %d" : "%d"), j + 1);
-		for (i = 0; i < BOARD_SIZE; i++){
-			printf("| %c ", board[i][j]);
-		}
-		printf("|\n");
-		print_line2();
-	}
-	printf("   ");
-	for (j = 0; j < BOARD_SIZE; j++){
-		printf(" %c  ", (char)('a' + j));
-	}
-	printf("\n");
 }
 
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
@@ -888,8 +857,6 @@ int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 	}
 	freeMoves(moves, NULL);
 	return isMate;
-
-	return 0;
 }
 
 char* getStringFormatMove(Move move)
@@ -898,8 +865,7 @@ char* getStringFormatMove(Move move)
 	if (res == NULL)
 	{
 		perror_message("getStringFormatMove");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	Pos* curr = move.currPos;
 	char* curr_str = getStringFormatPos(curr);
@@ -927,8 +893,7 @@ char* getStringFormatPos(Pos* pos)
 	if (res == NULL)
 	{
 		perror_message("getStringFormatPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	res[0] = '<';
 	char x_char = pos->x + 'a';
@@ -958,7 +923,7 @@ void copyBoard(char board[BOARD_SIZE][BOARD_SIZE], char newBoard[BOARD_SIZE][BOA
 
 int checkForTie(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
-	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheck(board,playerColor) == 0)
+	if (isPlayerStuck(playerColor) == 1 && isPlayerUnderCheck(board, playerColor) == 0)
 		return 1;
 	return 0;
 }
@@ -2034,8 +1999,7 @@ Pos* getKingPos(int playerColor)
 	if (pos == NULL)
 	{
 		perror_message("getKingPos");
-		if (guiMode == 0)
-			exit(0);
+		exit(1);
 	}
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
@@ -2071,18 +2035,10 @@ int checkPawnThreat(char board[BOARD_SIZE][BOARD_SIZE],int oponnentColor, Pos *k
 			return 1;
 		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == BLACK_P)
 			return 1;
-		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == BLACK_P)
-			return 1;
-		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == BLACK_P)
-			return 1;
 	}
 	else
 	{
-		if(isValidIndexes(i + 1, j + 1) && board[i + 1][j + 1] == WHITE_P)
-			return 1;
-		else if (isValidIndexes(i - 1, j + 1) && board[i - 1][j + 1] == WHITE_P)
-			return 1;
-		else if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_P)
+		if (isValidIndexes(i - 1, j - 1) && board[i - 1][j - 1] == WHITE_P)
 			return 1;
 		else if (isValidIndexes(i + 1, j - 1) && board[i + 1][j - 1] == WHITE_P)
 			return 1;

@@ -7,10 +7,9 @@
 #define realloc(x,y) myRealloc(x,y)
 
 
-void print_line()
-{
+void print_line(){
 	int i;
-	printf("  |");
+	printf(" |");
 	for (i = 1; i < BOARD_SIZE * 4; i++){
 		printf("-");
 	}
@@ -21,22 +20,21 @@ void print_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
 	int i, j;
 	print_line();
-	for (j = BOARD_SIZE - 1; j >= 0; j--)
+	for (j = BOARD_SIZE-1; j >= 0; j--)
 	{
-		printf((j < 9 ? " %d" : "%d"), j + 1);
+		printf("%d", j + 1);
 		for (i = 0; i < BOARD_SIZE; i++){
 			printf("| %c ", board[i][j]);
 		}
 		printf("|\n");
 		print_line();
 	}
-	printf("   ");
+	printf("  ");
 	for (j = 0; j < BOARD_SIZE; j++){
 		printf(" %c  ", (char)('a' + j));
 	}
 	printf("\n");
 }
-
 void clear_board()
 {
 	int i, j;
@@ -124,8 +122,7 @@ void settingState()
 				else if (checkForTie(board, nextPlayer) == 1)
 				{
 					printf("%s", TIE);
-					if (guiMode == 0)
-						exit(0);
+					exit(0);
 				}
 				else if (isPlayerUnderMate(board, nextPlayer) == 1)
 				{
@@ -133,8 +130,7 @@ void settingState()
 						printf("%s", MATE_WHITE);
 					else
 						printf("%s", MATE_BLACK);
-					if (guiMode == 0)
-						exit(0);
+					exit(0);
 				}
 				else
 				{
@@ -142,13 +138,10 @@ void settingState()
 					GameState();
 				}
 
-
 			}
 			else if (strcmp(input, "quit") == 0)
 			{
-				//TODO:clean all memory
-				if (guiMode == 0)
-					exit(0);
+				exit(0);
 			}
 		}
 	}
@@ -269,8 +262,7 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "quit"))
 	{
-		if (guiMode == 0)
-			exit(0);
+		exit(0);
 	}
 	else if (strstr(input, "start"))
 	{
@@ -725,8 +717,7 @@ int UserMove(int playerColor)
 		}
 		else if (StartsWith(input, "quit"))
 		{
-			if (guiMode == 0)
-				exit(0);
+			exit(0);
 		}
 	}
 	//outside move loop, move has compelted:
@@ -736,8 +727,7 @@ int UserMove(int playerColor)
 	if (checkForTie(board, opponentColor))
 	{
 		printf("%s", TIE);
-		if (guiMode == 0)
-			exit(0);
+		exit(0);
 	}
 	if (isPlayerUnderMate(board, opponentColor) == 1)
 	{
@@ -745,8 +735,7 @@ int UserMove(int playerColor)
 			printf("%s", MATE_WHITE);
 		else
 			printf("%s", MATE_BLACK);
-		if (guiMode == 0)
-			exit(0);
+		exit(0);
 	}
 	if (isPlayerUnderCheck(board, opponentColor) == 1)
 	{
