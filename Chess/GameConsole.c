@@ -64,8 +64,8 @@ void init_board(char board[BOARD_SIZE][BOARD_SIZE])
 	board[0][0] = WHITE_R;
 	board[1][0] = WHITE_N;
 	board[2][0] = WHITE_B;
-	board[3][0] = WHITE_K;
-	board[4][0] = WHITE_Q;
+	board[3][0] = WHITE_Q;
+	board[4][0] = WHITE_K;
 	board[5][0] = WHITE_B;
 	board[6][0] = WHITE_N;
 	board[7][0] = WHITE_R;
@@ -73,8 +73,8 @@ void init_board(char board[BOARD_SIZE][BOARD_SIZE])
 	board[0][7] = BLACK_R;
 	board[1][7] = BLACK_N;
 	board[2][7] = BLACK_B;
-	board[3][7] = BLACK_K;
-	board[4][7] = BLACK_Q;
+	board[3][7] = BLACK_Q;
+	board[4][7] = BLACK_K;
 	board[5][7] = BLACK_B;
 	board[6][7] = BLACK_N;
 	board[7][7] = BLACK_R;

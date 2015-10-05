@@ -127,7 +127,7 @@ ImgButton createImgButton(int x, int y, char * filename, SDL_Surface * window);
 UINode* createLabel(SDL_Surface * surface, int x, int y, char * filename, UINode *father, char* name);
 
 
-
+int checkAndDeclareGameStatus(int colorToCheck);
 void init();
 int isButtonClicked(ImgButton btn, int clickedX, int clickedY);
 SDL_Surface* loadImage(ImgButton btn, SDL_Surface * window);
