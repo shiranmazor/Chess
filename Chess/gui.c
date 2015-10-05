@@ -727,6 +727,7 @@ int checkAndDeclareGameStatus(int colorToCheck)
 		presentUITree(gameWindow);
 		SDL_Delay(1500);
 	}
+	return 0;
 }
 
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)

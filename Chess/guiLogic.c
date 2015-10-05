@@ -323,6 +323,17 @@ void startNewGame()
 	
 	//call Events loop for new game
 	ActiveWindow = gameWindow;
+	
+
+	checkAndDeclareGameStatus(nextPlayer);
+	if (gameMode == 2 && nextPlayer == computerColor)
+	{
+		ComputerMove();
+
+		checkAndDeclareGameStatus(nextPlayer);
+		drawBoard(board, gameWindow);
+		presentUITree(gameWindow);
+	}
 }
 void chooseBlackColor()
 {
