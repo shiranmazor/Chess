@@ -610,6 +610,7 @@ int checkAndDeclareGameStatus(int colorToCheck)
 		presentUITree(gameWindow);
 		SDL_Delay(1500);
 	}
+	return 0;
 }
 
 
