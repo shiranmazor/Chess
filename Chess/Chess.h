@@ -96,8 +96,8 @@ struct Move
 #define ILLEGAL_CALTLING_MOVE "Illegal castling move\n"  
 
 #define TIE "The game ends in a tie\n"
-#define MATE_WHITE "Mate! white player wins the game\n"
-#define MATE_BLACK "Mate! black player wins the game\n"
+#define MATE_WHITE "Mate! White player wins the game\n"
+#define MATE_BLACK "Mate! Black player wins the game\n"
 #define perror_message(func_name) (fprintf(stderr, "Error: standard function %s has failed\n", func_name));
 #define print_message(message) (printf("%s", message));
 
@@ -133,7 +133,7 @@ void printGameMoves(MoveNode *movesList);
 int countPlayers(char board[BOARD_SIZE][BOARD_SIZE]);
 void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move);
 Move * get_best_move(int playerColor, int depth);
-int isPawnNeedPromotion(int playerColor, Move* move);
+int isPawnNeedPromotion(int playerColor, Move* move, int fromCheckPawn);
 
 
 int isMoveLegal(Move *move, int userColor);

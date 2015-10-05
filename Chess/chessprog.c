@@ -4,13 +4,16 @@
 int main(int argc, char* args[])
 {
 	guiMode = 0;
-	if (strcmp(args[1], "console") == 0)
-		runConsole();
-	else if (strcmp(args[1], "gui") == 0)
+	if (argc > 1)
 	{
-		guiMode = 1;
-		RunGui();
-	}		
+		if (strcmp(args[1], "console") == 0)
+			runConsole();
+		else if (strcmp(args[1], "gui") == 0)
+		{
+			guiMode = 1;
+			RunGui();
+		}
+	}
 	else
 		runConsole();
 }
