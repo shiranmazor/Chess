@@ -840,36 +840,6 @@ Pos * formatPos(char* pos_input)
 	return pos;
 }
 
-void print_line2()
-{
-	int i;
-	printf("  |");
-	for (i = 1; i < BOARD_SIZE * 4; i++){
-		printf("-");
-	}
-	printf("|\n");
-}
-
-void print_board2(char board[BOARD_SIZE][BOARD_SIZE])
-{
-	int i, j;
-	print_line2();
-	for (j = BOARD_SIZE - 1; j >= 0; j--)
-	{
-		printf((j < 9 ? " %d" : "%d"), j + 1);
-		for (i = 0; i < BOARD_SIZE; i++){
-			printf("| %c ", board[i][j]);
-		}
-		printf("|\n");
-		print_line2();
-	}
-	printf("   ");
-	for (j = 0; j < BOARD_SIZE; j++){
-		printf(" %c  ", (char)('a' + j));
-	}
-	printf("\n");
-}
-
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	int isMate = 1;

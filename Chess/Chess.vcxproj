@@ -110,19 +110,28 @@
     <Image Include="images\AISettings\4m.bmp" />
     <Image Include="images\AISettings\best.bmp" />
     <Image Include="images\AISettings\bestm.bmp" />
+    <Image Include="images\AISettings\button.bmp" />
+    <Image Include="images\AISettings\clear.bmp" />
     <Image Include="images\AISettings\gameDepth.bmp" />
+    <Image Include="images\AISettings\play.bmp" />
+    <Image Include="images\AISettings\return.bmp" />
+    <Image Include="images\AISettings\title.bmp" />
     <Image Include="images\AISettings\userColor.bmp" />
+    <Image Include="images\bestMove.bmp" />
     <Image Include="images\boardSettings.bmp" />
     <Image Include="images\cancel.bmp" />
+    <Image Include="images\check.bmp" />
     <Image Include="images\chesslogo.bmp" />
     <Image Include="images\darkRect.bmp" />
     <Image Include="images\darkRect.png" />
     <Image Include="images\gameMode.bmp" />
+    <Image Include="images\grey.bmp" />
     <Image Include="images\lightRect.bmp" />
     <Image Include="images\lightRect.png" />
     <Image Include="images\LoadGame.bmp" />
     <Image Include="images\LoadGame.png" />
     <Image Include="images\mainMenu.bmp" />
+    <Image Include="images\mate.bmp" />
     <Image Include="images\NewGame.bmp" />
     <Image Include="images\NewGame.png" />
     <Image Include="images\next.bmp" />
@@ -146,6 +155,8 @@
     <Image Include="images\Quit.png" />
     <Image Include="images\saveGame.bmp" />
     <Image Include="images\slotNum.bmp" />
+    <Image Include="images\slotNumSave.bmp" />
+    <Image Include="images\tie.bmp" />
     <Image Include="images\tools\black_bishop.bmp" />
     <Image Include="images\tools\black_gueen.bmp" />
     <Image Include="images\tools\black_king.bmp" />
@@ -160,6 +171,7 @@
     <Image Include="images\tools\white_pawn.bmp" />
     <Image Include="images\tools\white_queen.bmp" />
     <Image Include="images\tools\white_rook.bmp" />
+    <Image Include="images\trash.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

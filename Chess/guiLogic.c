@@ -852,7 +852,12 @@ void startNewGameIfBoardValid()
 		startNewGame();
 	}
 }
-
+void clearBoard()
+{
+	clear_board();
+	drawBoard(board, boardSettingsWindow);
+	presentUITree(boardSettingsWindow);
+}
 void openBoardSettingWindow()
 {
 	boardSettingsWindow = CreateWindow("Chess Board Settings", WIN_WIDTH, WIN_HEIGHT, 0, NULL, 255, 255, 255);
@@ -880,8 +885,8 @@ void openBoardSettingWindow()
 	addChildToFather(menuPanel, createButtonWithColor(win->surface, 46 * 3, 92, "images/tools/white_knight.bmp", setChosenToolToWhiteKnight, menuPanel, 0, "Bishop", green));
 	addChildToFather(menuPanel, CreateButton(win->surface, 10, 150, "images/trash.bmp", setChosenToolToTrash, menuPanel, 0, "trash"));
 	addChildToFather(menuPanel, CreateButton(win->surface, 15, 400, "images/PlayersSelection/next.bmp", startNewGameIfBoardValid, menuPanel, 0, "next"));
-
-	UINode* returnBtn = CreateButton(win->surface, 15, 500, "images/AISettings/return.bmp", returnFunc, menuPanel, 0, "return");
+	addChildToFather(menuPanel, CreateButton(win->surface, 15, 460, "images/AISettings/clear.bmp", clearBoard, menuPanel, 0, "clear"));
+	UINode* returnBtn = CreateButton(win->surface, 15, 520, "images/AISettings/return.bmp", returnFunc, menuPanel, 0, "return");
 	addChildToFather(menuPanel, returnBtn);
 
 	//init_board(board);

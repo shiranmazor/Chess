@@ -164,6 +164,7 @@ void RunGui();
 void QuitError();
 void saveGame();
 void saveGameFromSlot(void* name);
+void clearBoard();
 
 #endif 
 
