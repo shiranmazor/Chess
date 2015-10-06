@@ -965,6 +965,29 @@ void freeUnActivateWindows()
 			gameWindow = NULL;
 		}
 	}
+	else if (ActiveWindow == boardSettingsWindow)
+	{
+		if (playerSelectionWindow != NULL)
+		{
+			freeUINode(playerSelectionWindow);
+			playerSelectionWindow = NULL;
+		}
+		if (settingWindow != NULL)
+		{
+			freeUINode(settingWindow);
+			settingWindow = NULL;
+		}
+		if (mainWindow != NULL)
+		{
+			freeUINode(mainWindow);
+			mainWindow = NULL;
+		}
+		if (gameWindow != NULL)
+		{
+			freeUINode(gameWindow);
+			gameWindow = NULL;
+		}
+	}
 	else if (ActiveWindow == playerSelectionWindow)
 	{
 		if (mainWindow != NULL)

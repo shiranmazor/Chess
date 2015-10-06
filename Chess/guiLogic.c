@@ -108,11 +108,13 @@ void saveGameFromSlot(void* name)
 	status.difficulty = minimax_depth;
 	saveFileWithSlotNumber(status, slotNum);
 	isGameOver = 0;
+	
 	if (savePanel != NULL)
 	{
-		freeUINode(savePanel);
-		savePanel = NULL;
+	freeUINode(savePanel);
+	savePanel = NULL;
 	}
+	
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
 	
@@ -200,9 +202,9 @@ void saveGame()
 	Window* win = (Window*)gameWindow->control;
 
 	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
-	CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "mis");
+	UINode* mis  = CreatePanel(win->surface, 145, 95, 410, 210, color, NULL, 0, "mis");
 	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
-	savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "saveGamePanel");
+	savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, NULL, 0, "saveGamePanel");
 
 	Window* win2 = (Window*)savePanel->control;
 	UINode* slotNumBtn = createLabel(win2->surface, 100, 10, "images/slotNum.bmp", savePanel, "slotNumSave");
@@ -261,6 +263,7 @@ void saveGame()
 
 	presentUITree(savePanel);
 	ActiveWindow = savePanel;
+	freeUINode(mis);
 
 }
 
