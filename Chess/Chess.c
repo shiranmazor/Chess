@@ -914,32 +914,20 @@ Pos * formatPos(char* pos_input)
 
 int isPlayerUnderMate(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
-	int isMate = 1;
-	MoveNode * moves = getMoves(board, playerColor);
-	MoveNode* movesPointer = moves;
-	if (isPlayerUnderCheck(board, playerColor) == 0)
+	int isMate = 0;
+	if (isPlayerUnderCheck(board, playerColor) == 0)//first check mate
 	{
-		freeMoves(moves, NULL);
 		return 0;
 	}
-
-	if (moves == NULL)
-		return 1;
-	while (movesPointer != NULL)
+	else//the plaayer is under check
 	{
-		performMoveMinimax(board, movesPointer->move);
-		if (isPlayerUnderCheck(board, playerColor) == 0)
-		{
-			UndoMove(board, movesPointer->move);
-			isMate = 0;
-			break;
-		}
-		else
-			UndoMove(board, movesPointer->move);
-		movesPointer = movesPointer->next;
-	}
-	freeMoves(moves, NULL);
-	return isMate;
+		MoveNode * moves = getMoves(board, playerColor); //the player has moves only if he is not in mate
+		if (moves == NULL)
+			isMate = 1;
+
+		freeMoves(moves, NULL);
+		return isMate;
+	}	
 }
 
 char* getStringFormatMove(Move move)

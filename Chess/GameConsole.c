@@ -189,7 +189,7 @@ void executeSettingCmd(char* input)
 		}
 		else if (strstr(input, "best"))
 		{
-			minimax_depth = calcBestDepth();
+			minimax_depth = 4;
 		}
 		else
 		{

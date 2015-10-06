@@ -667,7 +667,7 @@ void chooseDepthBest()
 {
 	Window* win;
 	ImgButton* oldBtn;
-	minimax_depth = calcBestDepth();
+	minimax_depth = 4;
 	UINode* coloredBtnNode;
 	UINode* father = getNodeByName("AISettingPanel", settingWindow);
 	//check if comp players button is marked and change him to unmark
@@ -780,7 +780,7 @@ void openSettingWindow()
 		depth3BtnName = "depth3";
 		depth4BtnName = "depth4Mark";
 		depthBestBtnName = "best";
-		depth1BtnP = "images/AISettings/1m.bmp";
+		depth1BtnP = "images/AISettings/1.bmp";
 		depth2BtnP = "images/AISettings/2.bmp";
 		depth3BtnP = "images/AISettings/3.bmp";
 		depth4BtnP = "images/AISettings/4m.bmp";
