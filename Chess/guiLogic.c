@@ -108,7 +108,11 @@ void saveGameFromSlot(void* name)
 	status.difficulty = minimax_depth;
 	saveFileWithSlotNumber(status, slotNum);
 	isGameOver = 0;
-	
+	if (savePanel != NULL)
+	{
+		freeUINode(savePanel);
+		savePanel = NULL;
+	}
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
 	
@@ -1305,11 +1309,7 @@ void quitGame()
 		freeUINode(playerSelectionWindow);
 		playerSelectionWindow = NULL;
 	}
-	if (savePanel != NULL)
-	{
-		freeUINode(savePanel);
-		savePanel = NULL;
-	}
+
 	shouldQuitEvents = 1;
 	SDL_Quit();
 	exit(0);
