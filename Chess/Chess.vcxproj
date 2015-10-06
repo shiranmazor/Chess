@@ -118,6 +118,7 @@
     <Image Include="images\AISettings\title.bmp" />
     <Image Include="images\AISettings\userColor.bmp" />
     <Image Include="images\bestMove.bmp" />
+    <Image Include="images\blackWins.bmp" />
     <Image Include="images\boardSettings.bmp" />
     <Image Include="images\cancel.bmp" />
     <Image Include="images\check.bmp" />
@@ -172,6 +173,7 @@
     <Image Include="images\tools\white_queen.bmp" />
     <Image Include="images\tools\white_rook.bmp" />
     <Image Include="images\trash.bmp" />
+    <Image Include="images\whiteWins.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

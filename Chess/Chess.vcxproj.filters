@@ -328,5 +328,11 @@
     <Image Include="images\MainMenu.bmp">
       <Filter>Images</Filter>
     </Image>
+    <Image Include="images\whiteWins.bmp">
+      <Filter>Images</Filter>
+    </Image>
+    <Image Include="images\blackWins.bmp">
+      <Filter>Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>

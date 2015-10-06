@@ -597,6 +597,15 @@ int checkAndDeclareGameStatus(int colorToCheck)
 		Window * win = (Window *)gameWindow;
 		UINode* mate = CreateButton(win->surface, 20, 270, "images/mate.bmp", NULL, gameWindow->children[1], 0, "mate");
 		addChildToFather(gameWindow->children[1], mate);
+
+		UINode* winner;
+		if (colorToCheck == WHITE)
+			winner = CreateButton(win->surface, 20, 270 + 45, "images/blackWins.bmp", NULL, gameWindow->children[1], 0, "blackWins");
+		else
+			winner = CreateButton(win->surface, 20, 270 + 45, "images/whiteWins.bmp", NULL, gameWindow->children[1], 0, "whiteWins");
+
+		addChildToFather(gameWindow->children[1], winner);
+
 		presentUITree(gameWindow);
 		isGameOver = 1;
 		return 1;
