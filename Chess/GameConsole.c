@@ -731,6 +731,7 @@ int UserMove(int playerColor)
 			int res = getMoveScore(move, d, playerColor);
 			if (res != -1000)
 			printf("%d\n", res);
+			freeMove(move);
 
 		}
 		else if (StartsWith(input, "save"))
