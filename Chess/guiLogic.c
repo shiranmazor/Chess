@@ -86,13 +86,14 @@ void showBestMove()
 		addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "bestMoveEmpty", green));
 
 		freeMove(bestMove);
+		presentUITree(gameWindow);
 	}
 	else if (gameMode == 1)
 	{
-
+		showDepthOptions();
 	}
 	
-	presentUITree(gameWindow);
+	
 }
 void saveGameFromSlot(void* name)
 {
@@ -110,6 +111,69 @@ void saveGameFromSlot(void* name)
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
 }
+
+void showBestMoveByDepth(void* name)
+{
+	char* depth = (char*)name;
+	int depthInt = atoi(depth);
+	
+	Move *bestMove = get_best_move(nextPlayer, depthInt);
+
+	//draw move
+	Window * win = (Window *)gameWindow->control;
+	Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
+	int destY = bestMove->dest->pos->y;
+	int destX = bestMove->dest->pos->x;
+	UINode * parent = gameWindow->children[0]->children[destY*BOARD_SIZE + destX];
+	addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "bestMoveEmpty", green));
+
+	int fromX = bestMove->currPos->x;
+	int fromY = bestMove->currPos->y;
+
+	parent = gameWindow->children[0]->children[fromY*BOARD_SIZE + fromX];
+	addChildToFather(parent, createButtonWithColor(win->surface, 0, 0, "images/tools/empty.bmp", NULL, parent, 0, "bestMoveEmpty", green));
+
+	freeMove(bestMove);
+
+	freeUINode(showDepth);
+	showDepth = NULL;
+	ActiveWindow = gameWindow;
+	presentUITree(ActiveWindow);
+	isGameOver = 0;
+}
+
+void showDepthOptions()
+{
+	isGameOver = 1;
+	
+	Window* win = (Window*)gameWindow->control;
+
+	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
+	CreatePanel(win->surface, 145, 95, 410, 210, color, gameWindow, 0, "borders");
+	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
+	showDepth = CreatePanel(win->surface, 150, 100, 400, 200, color1, gameWindow, 0, "showDepth");
+
+	Window* win2 = (Window*)showDepth->control;
+	UINode* slotNumBtn = createLabel(win2->surface, 100, 10, "images/AISettings/gameDepth.bmp", showDepth, "slotNumSave");
+	addChildToFather(showDepth, slotNumBtn);
+
+	UINode* slotNumBtn1 = CreateButton(win->surface, 120, 60, "images/1.bmp", showBestMoveByDepth, showDepth, 0, "1");
+	addChildToFather(showDepth, slotNumBtn1);
+
+	UINode* slotNumBtn2 = CreateButton(win->surface, 160, 60, "images/2.bmp", showBestMoveByDepth, showDepth, 0, "2");
+	addChildToFather(showDepth, slotNumBtn2);
+
+	UINode* slotNumBtn3 = CreateButton(win->surface, 200, 60, "images/3.bmp", showBestMoveByDepth, showDepth, 0, "3");
+	addChildToFather(showDepth, slotNumBtn3);
+
+	UINode* slotNumBtn4 = CreateButton(win->surface, 240, 60, "images/4.bmp", showBestMoveByDepth, showDepth, 0, "4");
+	addChildToFather(showDepth, slotNumBtn4);
+
+	presentUITree(showDepth);
+	ActiveWindow = showDepth;
+
+}
+
 void saveGame()
 {
 	isGameOver = 1;

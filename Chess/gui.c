@@ -771,6 +771,11 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					return;
 
 				}
+				else if (ActiveWindow == showDepth)
+				{
+					root->children[k]->Action(btnName);
+					return;
+				}
 				else if (root->children[k]->Action != NULL)
 				{
 					if (root->type == PANEL && root->childsNumber == 8)//in save panel
@@ -1002,6 +1007,7 @@ void freeUnActivateWindows()
 			freeUINode(boardSettingsWindow);
 			boardSettingsWindow = NULL;
 		}
+
 		if (gameWindow != NULL)
 		{
 			freeUINode(gameWindow);

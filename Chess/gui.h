@@ -36,6 +36,7 @@ struct UINode* boardSettingsWindow;
 struct UINode* gameWindow;
 struct UINode* ActiveWindow;
 struct UINode* savePanel;
+struct UINode* showDepth;
 
 char lastChosenTool;
 int shouldQuitEvents;
