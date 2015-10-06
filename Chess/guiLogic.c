@@ -111,8 +111,8 @@ void saveGameFromSlot(void* name)
 	
 	if (savePanel != NULL)
 	{
-	freeUINode(savePanel);
-	savePanel = NULL;
+		freeUINode(savePanel);
+		savePanel = NULL;
 	}
 	
 	ActiveWindow = gameWindow;
