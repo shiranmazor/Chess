@@ -777,10 +777,12 @@ int getMoveScore(Move *move, int d, int playerColor)
 		userColor = opponentColor;
 		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0);
 		freeMove(bestMove);
+		bestMove = NULL;
 		computerColor = oldComputerColor;
 	}
 	UndoMove(board, move);
-	freeMove(bestMove);
+	if (bestMove != NULL)
+		freeMove(bestMove);
 	return res;
 }
 
