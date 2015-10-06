@@ -769,19 +769,19 @@ void emptyClicked()
 void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 {
 	if (root == NULL)
-		return; 
+		return;
 
 	for (int k = 0; k < root->childsNumber; k++)
 	{
 		if (root->children[k]->type == BUTTON)
 		{
-			
+
 			ImgButton * btn = (ImgButton *)root->children[k]->control;
 			char* btnName = btn->name;
 			if (isButtonClicked(*btn, clickedX, clickedY))
 			{
-				Window * win = getRoot(root); 
-				if (mainWindow !=NULL && win == (Window *)mainWindow->control)
+				Window * win = getRoot(root);
+				if (mainWindow != NULL && win == (Window *)mainWindow->control)
 				{
 
 					root->children[k]->Action(btnName);
@@ -795,24 +795,22 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 				else if (root->children[k]->Action != NULL)
 				{
-					if (root->children[k]->type == BUTTON)
+					if (root == savePanel)
 					{
 						ImgButton * btn = (ImgButton *)root->children[k]->control;
 						char* btnName = btn->name;
-						if (strstr(btnName, "savedSlot"))//number button
-							root->children[k]->Action(btnName);
-						else
-							root->children[k]->Action(NULL);
+						root->children[k]->Action(btnName);
 					}
-						
-				}				
+					else
+						root->children[k]->Action(NULL);
+				}
 				//in main windows all bottons functions recieve sourcebtnName
 				int i = clickedX / 76;
 				int j = BOARD_SIZE - (clickedY / 76) - 1;
-				
-				 if (strcmp("cube", btnName) == 0)
+
+				if (strcmp("cube", btnName) == 0)
 				{
-					
+
 					Uint32 green = SDL_MapRGB(win->surface->format, 0, 255, 0);
 					if (boardSettingsWindow != NULL && boardSettingsWindow->control != NULL && win == (Window *)boardSettingsWindow->control)
 					{
@@ -837,7 +835,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						//game window context
 						if (isGameOver == 1)
 							continue;
-						
+
 						Pos pos;
 						pos.x = i;
 						pos.y = j;
@@ -860,7 +858,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 								continue;
 							}
 						}
-						drawBoard(board,gameWindow);
+						drawBoard(board, gameWindow);
 
 						if (getColor(board[i][j]) == nextPlayer)
 						{
@@ -876,7 +874,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 								moveNode = moveNode->next;
 								freeMoveNode(toFree);
 							}
-							
+
 							posToMoveFrom.x = i;
 							posToMoveFrom.y = j;
 						}
@@ -889,7 +887,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					if (isGameOver == 1)
 						continue;
 					//perform move
-	
+
 					Move move;
 					Pos pos;
 					pos.x = i;
@@ -899,10 +897,10 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 					desPos.pos = &pos;
 
 					move.dest = &desPos;
-			
+
 					move.currPos = &posToMoveFrom;
 					move.movePromotePawn = 0;
-					if ( (board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == BLACK_P)
+					if ((board[move.currPos->x][move.currPos->y] == WHITE_P || board[move.currPos->x][move.currPos->y] == BLACK_P)
 						&& isPawnNeedPromotion(nextPlayer, &move, 0))
 					{
 						isGameOver = 1; //not really over, we just want to force the user to choose promotion tool
@@ -911,7 +909,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						if (nextPlayer == BLACK)
 						{
 							addChildToFather(panel, createButtonWithColor(win->surface, 10, 320, "images/tools/black_bishop.bmp", setPromotionToolToBlackBishop, panel, 0, "prom_black_b", green));
-							addChildToFather(panel, createButtonWithColor(win->surface, 10+46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
+							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46, 320, "images/tools/black_queen.bmp", setPromotionToolToBlackQueen, panel, 0, "prom_black_q", green));
 							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 2, 320, "images/tools/black_rook.bmp", setPromotionToolToBlackRook, panel, 0, "prom_black_r", green));
 							addChildToFather(panel, createButtonWithColor(win->surface, 10 + 46 * 3, 320, "images/tools/black_knight.bmp", setPromotionToolToBlackKnight, panel, 0, "prom_black_n", green));
 						}
@@ -924,7 +922,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 						}
 						promotionPos.x = i;
 						promotionPos.y = j;
-						
+
 					}
 
 					performUserMove(&move);
