@@ -134,13 +134,13 @@ void freeControl(void*  control, char type)
 	{
 		Window* win = (Window*)control;
 		SDL_FreeSurface(win->surface);
-		win->surface = NULL;
+		//win->surface = NULL;
 	}
 	else if (type == LABEL)
 	{
 		Label* l = (Label*)control;
 		SDL_FreeSurface(l->surface);
-		l->surface = NULL;
+		//l->surface = NULL;
 		if (l->rect != NULL)
 		{
 			free(l->rect);
@@ -151,14 +151,14 @@ void freeControl(void*  control, char type)
 	{
 		Panel* p = (Panel*)control;
 		SDL_FreeSurface(p->surface);
-		p->surface = NULL;
+		//p->surface = NULL;
 
 	}
 	else if (type == BUTTON)
 	{
 		ImgButton* b = (ImgButton*)control;
 		SDL_FreeSurface(b->surface);
-		b->surface = NULL;
+		//b->surface = NULL;
 		if (b->rect != NULL)
 		{
 			free(b->rect);
@@ -795,14 +795,16 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 				else if (root->children[k]->Action != NULL)
 				{
-					if (root == savePanel)
+					if (root->children[k]->type == BUTTON)
 					{
 						ImgButton * btn = (ImgButton *)root->children[k]->control;
 						char* btnName = btn->name;
-						root->children[k]->Action(btnName);
+						if (strstr(btnName, "savedSlot"))//number button
+							root->children[k]->Action(btnName);
+						else
+							root->children[k]->Action(NULL);
 					}
-					else
-						root->children[k]->Action(NULL);
+						
 				}				
 				//in main windows all bottons functions recieve sourcebtnName
 				int i = clickedX / 76;
