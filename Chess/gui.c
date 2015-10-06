@@ -754,8 +754,6 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 
 	for (int k = 0; k < root->childsNumber; k++)
 	{
-	
-
 		if (root->children[k]->type == BUTTON)
 		{
 			
@@ -778,7 +776,7 @@ void triggerClickEvent(UINode * root, int clickedX, int clickedY)
 				}
 				else if (root->children[k]->Action != NULL)
 				{
-					if (root->type == PANEL && root->childsNumber == 8)//in save panel
+					if (root == savePanel)
 					{
 						ImgButton * btn = (ImgButton *)root->children[k]->control;
 						char* btnName = btn->name;

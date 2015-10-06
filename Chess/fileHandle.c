@@ -109,7 +109,7 @@ GameStatus readFileWithFilename(char * filename)
 		return gameState;
 	}
 
-	free(filename);
+	//free(filename);
 
 	char nextTurn[100];
 	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\n<game>\n\t<next_turn>%[^<]</next_turn>\n", nextTurn);
