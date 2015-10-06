@@ -32,7 +32,7 @@ char * getFilenameBySlotNumber(int slotNumber)
 int saveFileWithFileName(GameStatus gameState, char * fullFileName)
 {
 	FILE *f = fopen(fullFileName, "w");
-	free(fullFileName);
+	
 	if (f == NULL)
 	{
 		printf("%s",WRONG_FILE_NAME);
@@ -95,7 +95,9 @@ int saveFileWithSlotNumber(GameStatus gameState, int slotNumber)
 	
 	char * fullFileName = getFilenameBySlotNumber(slotNumber);
 	
-	return saveFileWithFileName(gameState,fullFileName);
+	int result =  saveFileWithFileName(gameState,fullFileName);
+	//free(fullFileName);
+	return result;
 }
 
 GameStatus readFileWithFilename(char * filename)
@@ -127,6 +129,7 @@ GameStatus readFileWithFilename(char * filename)
 	gameState.difficulty = atoi(diff);
 	char userColorStr[100];
 	currentOffset = ftell(f);
+	userColorStr[0] = 0;
 	if (!fscanf(f, "\t<user_color>%[^<]</user_color>\n", userColorStr))
 	{
 		fseek(f, currentOffset, SEEK_SET);
@@ -157,5 +160,7 @@ GameStatus readFileWithFilename(char * filename)
 GameStatus readFileWithSlotNumber(int slotNumber)
 {
 	char * fullFileName = getFilenameBySlotNumber(slotNumber);
-	return readFileWithFilename(fullFileName);
+	GameStatus gs =  readFileWithFilename(fullFileName);
+	free(fullFileName);
+	return gs;
 }
