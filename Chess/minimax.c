@@ -5,19 +5,7 @@
 #define calloc(x,y) myCalloc(x,y)
 #define realloc(x,y) myRealloc(x,y)
 
-int countKings2(char board[BOARD_SIZE][BOARD_SIZE])
-{
-	int kingsCounter = 0;
-	for (int i = 0; i < BOARD_SIZE; i++)
-	{
-		for (int j = 0; j < BOARD_SIZE; j++)
-		{
-			if (board[i][j] == WHITE_K || board[i][j] == BLACK_K)
-				kingsCounter++;
-		}
-	}
-	return kingsCounter;
-}
+
 //recursive function for return the scoring result of the best move
 int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove, 
 	int alpha, int beta, int isMax, int boardCounter)
@@ -38,7 +26,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 	moves = getMoves(board, color);
 	
 	//check if no moves or depth is 0
-	if (moves == NULL || depth == 0 || boardCounter >= 1000000 || mate ==1)
+	if (moves == NULL || depth == 0 || boardCounter >= MAX_BOARDS || mate == 1)
 	{
 		int res = score(board, computerColor);
 		freeMoves(moves, NULL);
@@ -58,26 +46,6 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				boardCounter++;
 				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 0, boardCounter);
 				UndoMove(board, movesPointer->move);
-				/*
-				if (newRes < temp)
-				{
-				newRes = temp;
-
-				if (depth == minimax_depth)//check if we are in first recursion
-				*(bestMove) = movesPointer->move;
-
-				}
-				//insert prunning:
-				alpha = (alpha > newRes ? alpha : newRes);
-				//if (alpha >= beta)
-				if (alpha >=beta )
-				{
-				freeMoves(moves, *(bestMove));
-				moves = NULL;
-				break;
-
-				}
-				*/
 				newRes = max(newRes, temp);
 				//insert prunning:
 				if (newRes > alpha)
@@ -111,19 +79,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 				int temp = minimax(board, depth - 1, bestMove, alpha, beta, 1, boardCounter);
 				UndoMove(board, movesPointer->move);
 				newRes = min(newRes, temp);
-				/*
-				if (newRes < beta)
-				beta = newRes;
 
-				//if (alpha >= beta)
-				if (beta <= alpha)
-				{
-				freeMoves(moves, *(bestMove));
-				moves = NULL;
-				break;
-
-				}
-				*/
 				if (newRes < beta)
 					beta = newRes;
 

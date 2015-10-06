@@ -137,6 +137,83 @@ int getColor(char tool)
 
 }
 
+int calcBestDepth()
+{
+	int numOfMoves = 1;
+	int bestDepth = 0;
+	int playerColor = nextPlayer;
+
+	while ((numOfMoves *= estimateMoveAmout(board, playerColor)) < MAX_BOARDS)
+	{
+		bestDepth++;
+		playerColor = playerColor == WHITE ? BLACK : WHITE;
+	}
+	return bestDepth;
+}
+int estimateMoveAmout(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
+{
+	int numOfMoves = 0;
+	for (int j = 0; j < BOARD_SIZE; j++)
+	{
+		for (int i = 0; i < BOARD_SIZE; i++)
+		{
+			if (playerColor == WHITE)
+			{
+				switch (board[i][j])
+				{
+				case WHITE_P:
+					numOfMoves += 3;
+					break;
+				case WHITE_N:
+					numOfMoves += 8;
+					break;
+				case WHITE_B:
+					numOfMoves += 13;
+					break;
+				case WHITE_R:
+					numOfMoves += 14;
+					break;
+				case WHITE_Q:
+					numOfMoves += 27;
+					break;
+				case WHITE_K:
+					numOfMoves += 9;
+					break;
+				default:
+					break;
+				}
+			}
+			else if (playerColor == BLACK)
+			{
+				switch (board[i][j])
+				{
+				case BLACK_P:
+					numOfMoves += 3;
+					break;
+				case BLACK_N:
+					numOfMoves += 8;
+					break;
+				case BLACK_B:
+					numOfMoves += 13;
+					break;
+				case BLACK_R:
+					numOfMoves += 14;
+					break;
+				case BLACK_Q:
+					numOfMoves += 27;
+					break;
+				case BLACK_K:
+					numOfMoves += 9;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	return numOfMoves;
+}
+
 MoveNode *getPawnMoves(Pos pos, char board[BOARD_SIZE][BOARD_SIZE], int userColor)
 {
 	MoveNode * movesList = NULL;

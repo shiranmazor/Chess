@@ -106,7 +106,9 @@ void settingState()
 		printf("%s", ENTER_SETTINGS);
 		fgets(input, 50, stdin);
 		reduceSpaces(input);
-		strcpy(input, str_replace(input, "\n", ""));
+		char* newInput = str_replace(input, "\n", "");
+		strcpy(input, newInput);
+		free(newInput);
 		if (strcmp(input, "quit") != 0 && strcmp(input, "start") != 0)
 			executeSettingCmd(input);
 		else
@@ -114,7 +116,7 @@ void settingState()
 			if (strcmp(input, "start") == 0)
 			{
 				// check board init
-					int kings = countKings();
+				int kings = countKings();
 				if (kings != 2)
 				{
 					printf("%s", WROND_BOARD_INITIALIZATION);
@@ -152,7 +154,7 @@ void executeSettingCmd(char* input)
 	//trim all spaces from start and end:
 	input = trimwhitespace(input);
 	char **arr = NULL;
-	split(input, ' ', &arr);
+	int len = split(input, ' ', &arr);
 	if (strstr(input, "game_mode"))
 	{
 		//arr len in 2:
@@ -187,7 +189,7 @@ void executeSettingCmd(char* input)
 		}
 		else if (strstr(input, "best"))
 		{
-			minimax_depth = 4;
+			minimax_depth = calcBestDepth();
 		}
 		else
 		{
@@ -262,6 +264,7 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "quit"))
 	{
+		free(arr);
 		exit(0);
 	}
 	else if (strstr(input, "start"))
@@ -277,7 +280,11 @@ void executeSettingCmd(char* input)
 		{
 			printf("%s", TIE);
 			if (guiMode == 0)
+			{
+				free(arr);
 				exit(0);
+			}
+				
 		}
 		else if (isPlayerUnderMate(board, nextPlayer) == 1)
 		{
@@ -286,11 +293,16 @@ void executeSettingCmd(char* input)
 			else
 				printf("%s", MATE_BLACK);
 			if (guiMode == 0)
-				exit(0);
+			{
+				free(arr);
+				exit(1);
+			}
+				
 		}
 		else
 		{
 			//moving to game state:
+			free(arr);
 			GameState();
 		}
 		
@@ -299,6 +311,7 @@ void executeSettingCmd(char* input)
 	{
 		printf("%s", ILLEGAL_COMMAND);
 	}
+	free(arr);
 }
 
 int countKings()

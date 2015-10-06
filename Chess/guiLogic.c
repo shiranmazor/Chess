@@ -603,7 +603,7 @@ void chooseDepthBest()
 {
 	Window* win;
 	ImgButton* oldBtn;
-	minimax_depth = 4;
+	minimax_depth = calcBestDepth();
 	UINode* coloredBtnNode;
 	UINode* father = getNodeByName("AISettingPanel", settingWindow);
 	//check if comp players button is marked and change him to unmark
