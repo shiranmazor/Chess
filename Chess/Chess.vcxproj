@@ -130,7 +130,7 @@
     <Image Include="images\lightRect.png" />
     <Image Include="images\LoadGame.bmp" />
     <Image Include="images\LoadGame.png" />
-    <Image Include="images\mainMenu.bmp" />
+    <Image Include="images\MainMenu.bmp" />
     <Image Include="images\mate.bmp" />
     <Image Include="images\NewGame.bmp" />
     <Image Include="images\NewGame.png" />

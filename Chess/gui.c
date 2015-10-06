@@ -1011,30 +1011,31 @@ void freeUnActivateWindows()
 			freeUINode(gameWindow);
 			gameWindow = NULL;
 		}
-		else if (ActiveWindow == gameWindow)
+	}
+	else if (ActiveWindow == gameWindow)
+	{
+		if (mainWindow != NULL)
 		{
-			if (mainWindow != NULL)
-			{
-				freeUINode(mainWindow);
-				mainWindow = NULL;
-			}
-			if (playerSelectionWindow != NULL)
-			{
-				freeUINode(playerSelectionWindow);
-				playerSelectionWindow = NULL;
-			}
-			if (boardSettingsWindow != NULL)
-			{
-				freeUINode(boardSettingsWindow);
-				boardSettingsWindow = NULL;
-			}
-			if (settingWindow != NULL)
-			{
-				freeUINode(settingWindow);
-				settingWindow = NULL;
-			}
+			freeUINode(mainWindow);
+			mainWindow = NULL;
+		}
+		if (playerSelectionWindow != NULL)
+		{
+			freeUINode(playerSelectionWindow);
+			playerSelectionWindow = NULL;
+		}
+		if (boardSettingsWindow != NULL)
+		{
+			freeUINode(boardSettingsWindow);
+			boardSettingsWindow = NULL;
+		}
+		if (settingWindow != NULL)
+		{
+			freeUINode(settingWindow);
+			settingWindow = NULL;
 		}
 	}
+	
 }
 void EventsLoop()
 {

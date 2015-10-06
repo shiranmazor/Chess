@@ -108,6 +108,7 @@ void saveGameFromSlot(void* name)
 	saveFileWithSlotNumber(status, slotNum);
 	isGameOver = 0;
 	freeUINode(savePanel);
+	savePanel = NULL;
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
 }
