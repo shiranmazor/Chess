@@ -134,26 +134,36 @@ void freeControl(void*  control, char type)
 	{
 		Window* win = (Window*)control;
 		SDL_FreeSurface(win->surface);
+		win->surface = NULL;
 	}
 	else if (type == LABEL)
 	{
 		Label* l = (Label*)control;
 		SDL_FreeSurface(l->surface);
+		l->surface = NULL;
 		if (l->rect != NULL)
+		{
 			free(l->rect);
+			l->rect = NULL;
+		}
 	}
 	else if (type == PANEL)
 	{
 		Panel* p = (Panel*)control;
 		SDL_FreeSurface(p->surface);
+		p->surface = NULL;
 
 	}
 	else if (type == BUTTON)
 	{
 		ImgButton* b = (ImgButton*)control;
 		SDL_FreeSurface(b->surface);
+		b->surface = NULL;
 		if (b->rect != NULL)
+		{
 			free(b->rect);
+			b->rect = NULL;
+		}
 	}
 	free(control);
 }
