@@ -109,9 +109,6 @@
     <Image Include="images\mainMenu.bmp">
       <Filter>Images</Filter>
     </Image>
-    <Image Include="images\saveGame.bmp">
-      <Filter>Images</Filter>
-    </Image>
     <Image Include="images\next.bmp">
       <Filter>Images\PlayersSelection</Filter>
     </Image>
@@ -327,6 +324,9 @@
     </Image>
     <Image Include="images\AISettings\title.bmp">
       <Filter>Images\AISettings</Filter>
+    </Image>
+    <Image Include="images\SaveGame.bmp">
+      <Filter>Images</Filter>
     </Image>
   </ItemGroup>
 </Project>

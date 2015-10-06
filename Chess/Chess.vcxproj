@@ -153,7 +153,7 @@
     <Image Include="images\PlayersSelection\whiteMark.bmp" />
     <Image Include="images\Quit.bmp" />
     <Image Include="images\Quit.png" />
-    <Image Include="images\saveGame.bmp" />
+    <Image Include="images\SaveGame.bmp" />
     <Image Include="images\slotNum.bmp" />
     <Image Include="images\slotNumSave.bmp" />
     <Image Include="images\tie.bmp" />
