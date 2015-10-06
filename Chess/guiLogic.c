@@ -169,6 +169,9 @@ void showDepthOptions()
 	UINode* slotNumBtn4 = CreateButton(win->surface, 240, 60, "images/4.bmp", showBestMoveByDepth, showDepth, 0, "4");
 	addChildToFather(showDepth, slotNumBtn4);
 
+	UINode* slotNumBtn5 = CreateButton(win->surface, 280, 60, "images/AISettings/best.bmp", showBestMoveByDepth, showDepth, 0, "4");
+	addChildToFather(showDepth, slotNumBtn5);
+
 	presentUITree(showDepth);
 	ActiveWindow = showDepth;
 
