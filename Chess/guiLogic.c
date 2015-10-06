@@ -289,6 +289,7 @@ void loadGameFromSlot(void* name)
 	gameMode = gStatus.gameMode;
 	copyBoard(gStatus.board,board);
 	userColor = gStatus.userColor;
+	computerColor = userColor == WHITE ? BLACK : WHITE;
 	minimax_depth = gStatus.difficulty;
 	nextPlayer = gStatus.nextTurn;
 

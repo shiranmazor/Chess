@@ -265,7 +265,7 @@ void executeSettingCmd(char* input)
 	}
 	else if (strstr(input, "quit"))
 	{
-		free(arr);
+		freeArray(arr, len);
 		exit(0);
 	}
 	else if (strstr(input, "start"))
@@ -282,7 +282,7 @@ void executeSettingCmd(char* input)
 			printf("%s", TIE);
 			if (guiMode == 0)
 			{
-				free(arr);
+				freeArray(arr, len);
 				exit(0);
 			}
 				
@@ -295,7 +295,7 @@ void executeSettingCmd(char* input)
 				printf("%s", MATE_BLACK);
 			if (guiMode == 0)
 			{
-				free(arr);
+				freeArray(arr, len);
 				exit(1);
 			}
 				
@@ -303,7 +303,7 @@ void executeSettingCmd(char* input)
 		else
 		{
 			//moving to game state:
-			free(arr);
+			freeArray(arr, len);
 			GameState();
 		}
 		
@@ -312,7 +312,7 @@ void executeSettingCmd(char* input)
 	{
 		printf("%s", ILLEGAL_COMMAND);
 	}
-	free(arr);
+	freeArray(arr, len);
 }
 
 int countKings()
@@ -617,7 +617,9 @@ int UserMove(int playerColor)
 			printf("%s", "Black player - enter your move:\n");
 		fgets(input, 50, stdin);
 		reduceSpaces(input);
-		strcpy(input, str_replace(input, "\n", ""));
+		char* newInput = str_replace(input, "\n", "");
+		strcpy(input, newInput);
+		free(newInput);
 		if (StartsWith(input, "move"))
 		{
 			Move *move = parseMoveCommand(input, playerColor);//Invalid position or color on the board- move==NULL
@@ -644,7 +646,7 @@ int UserMove(int playerColor)
 		else if (StartsWith(input, "get_moves"))
 		{
 			char **arr = NULL;
-			split(input, ' ', &arr);
+			int len = split(input, ' ', &arr);
 			Pos* pos = formatPos(arr[1]);
 			if (pos == NULL)
 				continue;
@@ -652,6 +654,7 @@ int UserMove(int playerColor)
 			{
 				printf("%s", WRONG_POS_COLOR);
 				free(pos);
+				freeArray(arr, len);
 				continue;
 			}
 			//else
@@ -660,14 +663,14 @@ int UserMove(int playerColor)
 			{
 				printGameMoves(moves);
 			}
-			free(arr);
+			freeArray(arr, len);
 			freeMoves(moves, NULL);
 		}
 		else if (StartsWith(input, "get_best_moves"))
 		{
 			int d;
 			char **arr = NULL;
-			split(input, ' ', &arr);
+			int len = split(input, ' ', &arr);
 			if (strcmp(arr[1], "best") == 0)
 			{
 				setBestDepthUser = 1;
@@ -679,8 +682,7 @@ int UserMove(int playerColor)
 				d = atoi(arr[1]);
 			}
 				
-
-			free(arr);
+			freeArray(arr, len);
 			//get all move and check their score by minimax
 			MoveNode* highestMoves = NULL;
 			MoveNode* moves = getMoves(board, playerColor);

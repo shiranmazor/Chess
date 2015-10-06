@@ -137,7 +137,6 @@ void UndoMove(char board[BOARD_SIZE][BOARD_SIZE], Move* move);
 Move * get_best_move(int playerColor, int depth);
 int isPawnNeedPromotion(int playerColor, Move* move, int fromCheckPawn);
 
-int calcBestMove();
 int estimateMoveAmout(char board[BOARD_SIZE][BOARD_SIZE], int playerColor);
 int isMoveLegal(Move *move, int userColor);
 int isPawnMoveLegal(Move *move, int useColor);

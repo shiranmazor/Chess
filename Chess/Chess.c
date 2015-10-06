@@ -137,19 +137,7 @@ int getColor(char tool)
 
 }
 
-int calcBestDepth()
-{
-	int numOfMoves = 1;
-	int bestDepth = 0;
-	int playerColor = nextPlayer;
 
-	while ((numOfMoves *= estimateMoveAmout(board, playerColor)) < MAX_BOARDS)
-	{
-		bestDepth++;
-		playerColor = playerColor == WHITE ? BLACK : WHITE;
-	}
-	return bestDepth;
-}
 int estimateMoveAmout(char board[BOARD_SIZE][BOARD_SIZE], int playerColor)
 {
 	int numOfMoves = 0;
@@ -1150,7 +1138,6 @@ Move * parseMoveCommand(char *command, int playerColor)
 		}
 		
 	}
-
 	move->currPos = formatPos(arr[1]);
 	if (!move->currPos)//position was invalid
 		return NULL;
@@ -1158,7 +1145,9 @@ Move * parseMoveCommand(char *command, int playerColor)
 	if (playerColor != getColorByPos(move->currPos->x, move->currPos->y))
 	{
 		printf("%s", WRONG_POS_COLOR);
+		freeArray(arr, arrLen);
 		return NULL;
+		
 	}
 
 	char **destArr = NULL;
