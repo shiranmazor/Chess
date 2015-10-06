@@ -97,6 +97,7 @@ void showBestMove()
 }
 void saveGameFromSlot(void* name)
 {
+	
 	char* slotName = (char*)name;
 	int slotNum = atoi(slotName);
 	GameStatus status;
@@ -107,10 +108,15 @@ void saveGameFromSlot(void* name)
 	status.difficulty = minimax_depth;
 	saveFileWithSlotNumber(status, slotNum);
 	isGameOver = 0;
-	freeUINode(savePanel);
-	savePanel = NULL;
+	if (savePanel != NULL)
+	{
+		freeUINode(savePanel);
+		savePanel = NULL;
+	}
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
+	
+	
 }
 
 void showBestMoveByDepth(void* name)
