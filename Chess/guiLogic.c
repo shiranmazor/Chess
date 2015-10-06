@@ -277,8 +277,8 @@ void CreateGameWindow()
 	addChildToFather(gameWindow, leftPanel);
 	//Panel* p = (Panel*)leftPanel->control;
 	//int x = p->width / 2 - 170 / 2;
-	UINode* saveGameBtn = CreateButton(win->surface, 20, 50, "images/saveGame.bmp", saveGame, leftPanel, 0, "saveGame");
-	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/mainMenu.bmp", goToMainMenu, leftPanel, 0, "mainMenu");
+	UINode* saveGameBtn = CreateButton(win->surface, 20, 50, "images/SaveGame.bmp", saveGame, leftPanel, 0, "saveGame");
+	UINode* mainMenuBtn = CreateButton(win->surface, 20, 100, "images/MainMenu.bmp", goToMainMenu, leftPanel, 0, "mainMenu");
 	UINode* bestMove = CreateButton(win->surface, 20, 200, "images/bestMove.bmp", showBestMove, leftPanel, 0, "bestMove");
 	UINode* quitBtn = CreateButton(win->surface, 20, 500, "images/Quit.bmp", quitGame, leftPanel, 0, "quit");
 
