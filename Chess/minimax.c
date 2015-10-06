@@ -26,7 +26,7 @@ int minimax(char board[BOARD_SIZE][BOARD_SIZE], int depth, Move** bestMove,
 	moves = getMoves(board, color);
 	
 	//check if no moves or depth is 0
-	if (moves == NULL || depth == 0 || boardCounter >= MAX_BOARDS || mate == 1)
+	if (moves == NULL || depth == 0 || (setBestDepthComp == 1 && boardCounter >= MAX_BOARDS) || mate == 1)
 	{
 		int res = score(board, computerColor);
 		freeMoves(moves, NULL);

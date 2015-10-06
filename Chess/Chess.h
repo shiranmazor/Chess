@@ -34,13 +34,14 @@ char board[BOARD_SIZE][BOARD_SIZE];
 gamemode=1 - two players,2- player vs AI
 */
 int gameMode;
+int setBestDepthComp;
+int setBestDepthUser;
 int minimax_depth;
 int userColor;
 int nextPlayer;
 int computerColor;
 int guiMode;
 
-int isLastMovePromotePawn;
 int getOpponentColor(int userColor);
 
 

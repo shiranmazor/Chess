@@ -190,6 +190,7 @@ void executeSettingCmd(char* input)
 		else if (strstr(input, "best"))
 		{
 			minimax_depth = 4;
+			setBestDepthComp = 1;
 		}
 		else
 		{
@@ -664,9 +665,21 @@ int UserMove(int playerColor)
 		}
 		else if (StartsWith(input, "get_best_moves"))
 		{
+			int d;
 			char **arr = NULL;
 			split(input, ' ', &arr);
-			int d = atoi(arr[1]);
+			if (strcmp(arr[1], "best") == 0)
+			{
+				setBestDepthUser = 1;
+				d = 4;
+			}
+			else
+			{
+				setBestDepthUser = 0;
+				d = atoi(arr[1]);
+			}
+				
+
 			free(arr);
 			//get all move and check their score by minimax
 			MoveNode* highestMoves = NULL;
@@ -773,12 +786,15 @@ int getMoveScore(Move *move, int d, int playerColor)
 	else
 	{
 		int oldComputerColor = computerColor;
+		int oldSetBestDepth = setBestDepthComp;
+		setBestDepthComp = setBestDepthUser;
 		computerColor = playerColor;
 		userColor = opponentColor;
 		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0);
 		freeMove(bestMove);
 		bestMove = NULL;
 		computerColor = oldComputerColor;
+		setBestDepthComp = oldSetBestDepth;
 	}
 	UndoMove(board, move);
 	if (bestMove != NULL)
@@ -967,7 +983,8 @@ void test_config_for_best_move2()
 void runConsole()
 {
 	objectsInMemory = 0;
-	isLastMovePromotePawn = 0;
+	setBestDepthComp = 0;
+	setBestDepthUser = 0;
 
 	//first initializetion	
 	gameMode = 1;
