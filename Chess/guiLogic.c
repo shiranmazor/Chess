@@ -117,6 +117,15 @@ void showBestMoveByDepth(void* name)
 	char* depth = (char*)name;
 	int depthInt = atoi(depth);
 	
+	if (depthInt == 5)
+	{
+		setBestDepthUser = 1;
+		depthInt = 4;
+	}
+	else
+	{
+		setBestDepthUser = 0;
+	}
 	Move *bestMove = get_best_move(nextPlayer, depthInt);
 
 	//draw move
@@ -169,7 +178,7 @@ void showDepthOptions()
 	UINode* slotNumBtn4 = CreateButton(win->surface, 240, 60, "images/4.bmp", showBestMoveByDepth, showDepth, 0, "4");
 	addChildToFather(showDepth, slotNumBtn4);
 
-	UINode* slotNumBtn5 = CreateButton(win->surface, 280, 60, "images/AISettings/best.bmp", showBestMoveByDepth, showDepth, 0, "4");
+	UINode* slotNumBtn5 = CreateButton(win->surface, 280, 60, "images/AISettings/best.bmp", showBestMoveByDepth, showDepth, 0, "5");
 	addChildToFather(showDepth, slotNumBtn5);
 
 	presentUITree(showDepth);
