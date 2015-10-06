@@ -96,7 +96,7 @@ int saveFileWithSlotNumber(GameStatus gameState, int slotNumber)
 	char * fullFileName = getFilenameBySlotNumber(slotNumber);
 	
 	int result =  saveFileWithFileName(gameState,fullFileName);
-	//free(fullFileName);
+	free(fullFileName);
 	return result;
 }
 
