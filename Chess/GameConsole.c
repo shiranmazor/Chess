@@ -659,6 +659,7 @@ int UserMove(int playerColor)
 			}
 			//else
 			MoveNode *moves = getMove(board, *pos, playerColor);
+			free(pos);
 			if (moves != NULL)
 			{
 				printGameMoves(moves);
@@ -713,25 +714,30 @@ int UserMove(int playerColor)
 				movesPointer = movesPointer->next;
 			}
 			printGameMoves(highestMoves);
+			if (highestMoves !=NULL)
+				freeMoves(highestMoves, NULL);
+			if (moves != NULL)
+				freeMoves(moves, NULL);
 		}
 		else if (StartsWith(input, "get_score"))
 		{
 			char **arr = NULL;
-			split(input, ' ', &arr);
+			int len = split(input, ' ', &arr);
 			int d = atoi(arr[1]);
-			free(arr);
+			freeArray(arr, len);
 			//get_score d move <x,y> to <i,j> x
 			str_cut(input, 0, 12);
 			Move* move = parseMoveCommand(input, playerColor);
 			int res = getMoveScore(move, d, playerColor);
 			if (res != -1000)
 			printf("%d\n", res);
+			freeMove(move);
 
 		}
 		else if (StartsWith(input, "save"))
 		{
 			char **arr = NULL;
-			split(input, ' ', &arr);
+			int len = split(input, ' ', &arr);
 			//create gamseState struct:
 			GameStatus status;
 			copyBoard(board,status.board);
@@ -740,7 +746,7 @@ int UserMove(int playerColor)
 			status.nextTurn = nextPlayer;
 			status.difficulty=minimax_depth;
 			saveFileWithFileName(status, arr[1]);
-			free(arr);
+			freeArray(arr, len);
 
 		}
 		else if (StartsWith(input, "quit"))
@@ -832,12 +838,17 @@ void printGameMoves(MoveNode *movesList)
 		char* moveStr = getStringFormatMove(*(movesList->move));
 		if (movesList->move->movePromotePawn == 1)
 		{
-			moveStr = str_replace(moveStr, "\n","");
-			printf("%s %s\n", moveStr, getPawnPromoteString(movesList->move->pawnPromotionTool));
+			char* newMoveStr = str_replace(moveStr, "\n","");
+			free(moveStr);
+			printf("%s %s\n", newMoveStr, getPawnPromoteString(movesList->move->pawnPromotionTool));
+			free(newMoveStr);
 		}
 		else
+		{
 			printf("%s", moveStr);
-		free(moveStr);
+			free(moveStr);
+		}
+			
 		movesList = movesList->next;
 	}
 }
