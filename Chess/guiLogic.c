@@ -97,7 +97,7 @@ void showBestMove()
 }
 void saveGameFromSlot(void* name)
 {
-	
+
 	char* slotName = (char*)name;
 	int slotNum = atoi(slotName);
 	GameStatus status;
@@ -108,15 +108,10 @@ void saveGameFromSlot(void* name)
 	status.difficulty = minimax_depth;
 	saveFileWithSlotNumber(status, slotNum);
 	isGameOver = 0;
-	if (savePanel != NULL)
-	{
-		freeUINode(savePanel);
-		savePanel = NULL;
-	}
 	ActiveWindow = gameWindow;
 	presentUITree(ActiveWindow);
-	
-	
+
+
 }
 
 void showBestMoveByDepth(void* name)
@@ -200,14 +195,14 @@ void saveGame()
 	Window* win = (Window*)gameWindow->control;
 
 	int color = SDL_MapRGB(win->surface->format, 89, 89, 89);
-	UINode* mis  = CreatePanel(win->surface, 145, 95, 410, 210, color, NULL, 0, "mis");
+	UINode* mis = CreatePanel(win->surface, 145, 95, 410, 210, color, NULL, 0, "mis");
 	int color1 = SDL_MapRGB(win->surface->format, 255, 255, 255);
 	savePanel = CreatePanel(win->surface, 150, 100, 400, 200, color1, NULL, 0, "saveGamePanel");
 
 	Window* win2 = (Window*)savePanel->control;
 	UINode* slotNumBtn = createLabel(win2->surface, 100, 10, "images/slotNum.bmp", savePanel, "slotNumSave");
 	addChildToFather(savePanel, slotNumBtn);
-	
+
 	if (SLOTS_NUM >= 1)
 	{
 		UINode* slotNumBtn1 = CreateButton(win->surface, 120, 60, "images/1.bmp", saveGameFromSlot, savePanel, 0, "1");
@@ -1316,7 +1311,11 @@ void quitGame()
 		freeUINode(playerSelectionWindow);
 		playerSelectionWindow = NULL;
 	}
-
+	if (savePanel != NULL)
+	{
+		freeUINode(savePanel);
+		savePanel = NULL;
+	}
 	shouldQuitEvents = 1;
 	SDL_Quit();
 	exit(0);
