@@ -694,7 +694,6 @@ int UserMove(int playerColor)
 			while (movesPointer != NULL)
 			{
 				int res = getMoveScore(movesPointer->move, d, playerColor);
-				char* moveStr = getStringFormatMove(*(movesPointer->move));
 				if (res > maxRes)
 				{
 					maxRes = res;
