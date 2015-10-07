@@ -945,7 +945,14 @@ void startNewGameIfBoardValid()
 	}
 	else
 	{
-		startNewGame();
+		if (gameMode == 2)
+		{
+			openSettingWindow();
+		}
+		else
+		{
+			startNewGame();
+		}
 	}
 }
 void clearBoard()
