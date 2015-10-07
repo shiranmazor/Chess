@@ -191,6 +191,14 @@ void showDepthOptions()
 void saveGame()
 {
 	isGameOver = 1;
+	
+	if (savePanel != NULL)
+	{
+	freeUINode(savePanel);
+	savePanel = NULL;
+	}
+	
+
 	//open SLOTNUM buttons
 	Window* win = (Window*)gameWindow->control;
 
@@ -1308,6 +1316,11 @@ void quitGame()
 	{
 		freeUINode(savePanel);
 		savePanel = NULL;
+	}
+	if (showDepth != NULL)
+	{
+		freeUINode(showDepth);
+		showDepth = NULL;
 	}
 	shouldQuitEvents = 1;
 	SDL_Quit();

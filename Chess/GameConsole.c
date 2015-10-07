@@ -694,6 +694,7 @@ int UserMove(int playerColor)
 			while (movesPointer != NULL)
 			{
 				int res = getMoveScore(movesPointer->move, d, playerColor);
+				char* moveStr = getStringFormatMove(*(movesPointer->move));
 				if (res > maxRes)
 				{
 					maxRes = res;
@@ -795,14 +796,17 @@ int getMoveScore(Move *move, int d, int playerColor)
 	{
 		int oldComputerColor = computerColor;
 		int oldSetBestDepth = setBestDepthComp;
+		int oldMinimaxDepth = minimax_depth;
 		setBestDepthComp = setBestDepthUser;
 		computerColor = playerColor;
 		userColor = opponentColor;
+		minimax_depth = d - 1;
 		res = minimax(board, d - 1, &bestMove, -9999, 9999, 0, 0);
 		freeMove(bestMove);
 		bestMove = NULL;
 		computerColor = oldComputerColor;
 		setBestDepthComp = oldSetBestDepth;
+		minimax_depth = oldMinimaxDepth;
 	}
 	UndoMove(board, move);
 	if (bestMove != NULL)
